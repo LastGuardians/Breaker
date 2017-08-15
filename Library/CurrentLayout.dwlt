@@ -20,7 +20,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 8}
-  m_MinSize: {x: 950, y: 542}
+  m_MinSize: {x: 950, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -92,10 +92,10 @@ MonoBehaviour:
     y: 30
     width: 1280
     height: 587
-  m_MinSize: {x: 885, y: 492}
-  m_MaxSize: {x: 16010, y: 14042}
+  m_MinSize: {x: 887, y: 492}
+  m_MaxSize: {x: 16012, y: 14042}
   vertical: 0
-  controlID: 124
+  controlID: 107
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -195,7 +195,7 @@ MonoBehaviour:
     y: 0
     width: 1280
     height: 637
-  m_MinSize: {x: 950, y: 542}
+  m_MinSize: {x: 950, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &9
 MonoBehaviour:
@@ -261,7 +261,7 @@ MonoBehaviour:
   m_MinSize: {x: 610, y: 492}
   m_MaxSize: {x: 12010, y: 14042}
   vertical: 1
-  controlID: 125
+  controlID: 108
 --- !u!114 &12
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -286,7 +286,7 @@ MonoBehaviour:
   m_MinSize: {x: 610, y: 221}
   m_MaxSize: {x: 12010, y: 4021}
   vertical: 0
-  controlID: 126
+  controlID: 109
 --- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -400,18 +400,18 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Script/GamePlay
+    - Assets/Scene
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Script/GamePlay
+  - Assets/Scene
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\song\Documents\Prison_Crush
   m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 280}
-    m_SelectedIDs: 7a2a0000
-    m_LastClickedID: 10874
+    m_SelectedIDs: 282a0000
+    m_LastClickedID: 10792
     m_ExpandedIDs: 000000002e280000a2280000d428000008290000102900004c290000522900005a29000090290000d6290000f2290000fc290000bc2a0000062d0000082d00000a2d00000c2d00000e2d0000102d0000122d000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -555,10 +555,10 @@ MonoBehaviour:
     width: 204
     height: 292
   m_TreeViewState:
-    scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 16080000
+    scrollPos: {x: 0, y: 13}
+    m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: defbffff00000000
+    m_ExpandedIDs: 443dffffa870ffff3099ffff14cdffff62cfffff80d2ffff7cd4ffff92ddffffcce4ffffdefbffff00000000702e00006a300000ba300000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -577,7 +577,7 @@ MonoBehaviour:
       m_ClientGUIView: {fileID: 3}
     m_SearchString: 
   m_ExpandedScenes:
-  - GamePlay
+  - Main
   m_CurrenRootInstanceID: 0
   m_Locked: 1
   m_CurrentSortingName: TransformSorting
@@ -608,14 +608,14 @@ MonoBehaviour:
     width: 479
     height: 292
   m_SceneLighting: 1
-  lastFramingTime: 1626.5655016928815
+  lastFramingTime: 6768.201419853099
   m_2DMode: 1
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 0.09293124, y: 1.4550714, z: 0}
+    m_Target: {x: 395.2635, y: 146.24547, z: 0}
     speed: 2
-    m_Value: {x: 0.09293124, y: 1.4550714, z: 0}
+    m_Value: {x: 395.2635, y: 146.24547, z: 0}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -642,9 +642,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 39.672348
+    m_Target: 534.24005
     speed: 2
-    m_Value: 39.672348
+    m_Value: 534.24005
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -699,7 +699,7 @@ MonoBehaviour:
     m_VAllowExceedBaseRangeMax: 1
     m_ScaleWithWindow: 0
     m_HSlider: 0
-    m_VSlider: 0
+    m_VSlider: 1
     m_IgnoreScrollWheelUntilClicked: 0
     m_EnableMouseInput: 1
     m_EnableSliderZoom: 0
@@ -711,18 +711,18 @@ MonoBehaviour:
       y: 17
       width: 273
       height: 275
-    m_Scale: {x: 0.21484375, y: 0.21484375}
-    m_Translation: {x: 136.5, y: 137.5}
+    m_Scale: {x: 0.23080733, y: 0.23080733}
+    m_Translation: {x: 136.5, y: 127.28332}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -635.34546
-      y: -640
-      width: 1270.6909
-      height: 1280
+      x: -591.40234
+      y: -551.47
+      width: 1182.8047
+      height: 1191.47
     m_MinimalGUI: 1
   m_defaultScale: 0.21484375
   m_TargetTexture: {fileID: 0}

@@ -189,7 +189,7 @@ public class GPGSManager : MonoBehaviour {
     }
 
 
-        IEnumerator LoginCor()
+    IEnumerator LoginCor()
     {
         Debug.Log("LoginCor 생성");
         // 폼 필드 생성

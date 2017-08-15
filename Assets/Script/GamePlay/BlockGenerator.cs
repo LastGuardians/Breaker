@@ -111,7 +111,6 @@ public class BlockGenerator : MonoBehaviour
 
     IEnumerator BlockGenerate()
     {
-        Debug.Log("BlockDestroy 리턴 값 : " + BlockDestroy());
         yield return new WaitUntil(BlockDestroy);   // 함수 리턴값이 true면 아래 코드 실행
         Debug.Log("BlockDestroy 리턴 값 : " + BlockDestroy());
        
