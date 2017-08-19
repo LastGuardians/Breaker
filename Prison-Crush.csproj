@@ -392,7 +392,7 @@
     <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
     <Compile Include="Assets\Script\Character\CharacterManager.cs" />
-    <Compile Include="Assets\Script\Character\Click.cs" />
+    <Compile Include="Assets\Script\Character\OnButton.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockGenerator.cs" />
     <Compile Include="Assets\Script\GamePlay\CameraController.cs" />
     <Compile Include="Assets\Script\GamePlay\DropControll.cs" />
