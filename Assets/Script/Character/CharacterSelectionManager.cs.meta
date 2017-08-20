@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 68f056f97412e434eb364dd499ed3eb9
+timeCreated: 1503250959
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - TargetAtlas: {fileID: 114339584606828192, guid: e11fb64dce1659c43859d649abf1bd9d,
+      type: 2}
+  - TargetButton: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
