@@ -391,7 +391,7 @@
     <Compile Include="Assets\NGUI\Scripts\UI\UITiledSprite.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
-    <Compile Include="Assets\Script\Character\CharacterManager.cs" />
+    <Compile Include="Assets\Script\Character\CharacterButtonManager.cs" />
     <Compile Include="Assets\Script\Character\OnButton.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockGenerator.cs" />
     <Compile Include="Assets\Script\GamePlay\CameraController.cs" />
