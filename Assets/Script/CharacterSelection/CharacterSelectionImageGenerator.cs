@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CharacterSelectionManager : MonoBehaviour
+public class CharacterSelectionImageGenerator: MonoBehaviour
 {
 	private GameObject CharacterImage;
 	public UIAtlas CharacterImageAtlas;
@@ -19,7 +19,7 @@ public class CharacterSelectionManager : MonoBehaviour
 		CharacterImageSprite = CharacterImage.AddComponent<UISprite>();
 
 		CharacterImageSprite.atlas = CharacterImageAtlas;
-		CharacterImageSprite.spriteName = SceneButtonManager.TargetCharacter;
+		CharacterImageSprite.spriteName = CharacterButtonManager.TargetCharacter;
 		CharacterImageSprite.depth = 1;
 
 		CharacterImage.transform.localScale = new Vector3(180, 240, 0);
@@ -28,7 +28,7 @@ public class CharacterSelectionManager : MonoBehaviour
 
 	public void ChangeCharacter(UISprite TargetButton)
 	{
-		int TargetCharacterIndex = int.Parse(SceneButtonManager.TargetCharacter.Substring(6));
+		int TargetCharacterIndex = int.Parse(CharacterButtonManager.TargetCharacter.Substring(6));
 		if (TargetButton.name == "LeftButton")
 		{
 			if(TargetCharacterIndex == 1)
@@ -51,7 +51,7 @@ public class CharacterSelectionManager : MonoBehaviour
 				TargetCharacterIndex++;
 			}
 		}
-		SceneButtonManager.TargetCharacter = "select" + TargetCharacterIndex.ToString();
-		CharacterImageSprite.spriteName = SceneButtonManager.TargetCharacter;
+		CharacterButtonManager.TargetCharacter = "select" + TargetCharacterIndex.ToString();
+		CharacterImageSprite.spriteName = CharacterButtonManager.TargetCharacter;
 	}
 }

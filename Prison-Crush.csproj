@@ -391,9 +391,10 @@
     <Compile Include="Assets\NGUI\Scripts\UI\UITiledSprite.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
-    <Compile Include="Assets\Script\Character\CharacterButtonGenerator.cs" />
-    <Compile Include="Assets\Script\Character\CharacterSelectionManager.cs" />
-    <Compile Include="Assets\Script\Character\SceneButtonManager.cs" />
+    <Compile Include="Assets\Script\Character\CharacterButtonManager.cs" />
+    <Compile Include="Assets\Script\Character\CharacterImageGenerator.cs" />
+    <Compile Include="Assets\Script\CharacterSelection\CharacterSelectionButtonManager.cs" />
+    <Compile Include="Assets\Script\CharacterSelection\CharacterSelectionImageGenerator.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockGenerator.cs" />
     <Compile Include="Assets\Script\GamePlay\CameraController.cs" />
     <Compile Include="Assets\Script\GamePlay\DropControll.cs" />
