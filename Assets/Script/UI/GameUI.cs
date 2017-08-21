@@ -14,13 +14,13 @@ public class GameUI : MonoBehaviour {
     //public void OnMouseDown()
     //{
     //    Debug.Log("공격 버튼 down");
-    //    PlayerManager.instance.touchOn = true;
+    //    PlayerManager.instance.attackOn = true;
     //}
 
     //public void OnMouseUp()
     //{
     //    Debug.Log("공격 버튼 up");
-    //    PlayerManager.instance.touchOn = false;
+    //    PlayerManager.instance.attackOn = false;
     //}
     
 

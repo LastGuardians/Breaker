@@ -6,6 +6,9 @@ public class DropControll : MonoBehaviour {
 
     public float dropSpeed = -1.0f;
     public GameObject[] blockParents = new GameObject[5];
+    public bool dropYPos = false;
+
+    public static DropControll instance = null;
 
     public int hp = 0;
     void Start () {
@@ -28,13 +31,17 @@ public class DropControll : MonoBehaviour {
 
 
     void Update () {
-        if (transform.position.y < 1.0f)
+        BlockDropMin();
+    }
+
+    public bool BlockDropMin()
+    {
+        if (transform.position.y < -0.5f && transform.position.y >= -1.7)
         {
-            //for (int i = 0; i < 5; ++i)
-                //Destroy(blockParents[0].gameObject);
-
+            return true;
         }
-
+        else
+            return false;
     }
 
     void OnTriggerEnter2D(Collider2D collision)

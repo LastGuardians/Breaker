@@ -50,7 +50,7 @@ public class BlockGenerator : MonoBehaviour
         {
             blockData[i].hp = 1;
             blockArr[i] = transform.Find("BlockGroup").transform.Find("building" + (i + 1).ToString()).gameObject;
-        
+            //blockArr[i] = Resources.Load("Background/BlockGroup")
 
         }
         //blockParents = Instantiate(blockGroup, new Vector2(transform.position.x, (transform.position.y) + 15)
@@ -80,13 +80,12 @@ public class BlockGenerator : MonoBehaviour
         //     Instantiate(blockGroup, new Vector2(transform.position.x, (transform.position.y) + 15), transform.rotation);
         
         //}
-        BlockDestroy(); // 나중에 삭제
-
-        //if (blockParents.transform.position.y < 1.0f)
-        //{
-        //    if (blockParents != null)
-        //        Destroy(blockParents.gameObject);
-        //}
+       
+        if(BlockDestroy())
+        {
+            blockParents = Instantiate(Resources.Load("Background/BlockGroup"),
+            new Vector2(transform.position.x, (transform.position.y) + 20), transform.rotation) as GameObject;
+        }
     }
 
     public void BlockHpControll()
@@ -100,6 +99,7 @@ public class BlockGenerator : MonoBehaviour
 
     }
 
+    // 블럭이 모두 파괴되었는지 체크
     public bool BlockDestroy()
     {
         GameObject obj = GameObject.Find("building5");
@@ -109,13 +109,17 @@ public class BlockGenerator : MonoBehaviour
             return true;
     }
 
+    // 블럭 생성 코루틴
     IEnumerator BlockGenerate()
     {
+        Debug.Log("BlockDestroy 리턴 값 : " + BlockDestroy());
+
         yield return new WaitUntil(BlockDestroy);   // 함수 리턴값이 true면 아래 코드 실행
         Debug.Log("BlockDestroy 리턴 값 : " + BlockDestroy());
-       
+
         blockParents = Instantiate(Resources.Load("Background/BlockGroup"),
         new Vector2(transform.position.x, (transform.position.y) + 20), transform.rotation) as GameObject;
+
         //blockParents = Instantiate(blockGroup, new Vector2(transform.position.x, (transform.position.y) + 50)
         //    , transform.rotation) as GameObject;                    
 
