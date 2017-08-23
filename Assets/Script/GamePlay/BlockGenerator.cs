@@ -18,14 +18,12 @@ public class BlockGenerator : MonoBehaviour
     //}
     
     public GameObject blockParents;
-    public GameObject blockGroup;
+    //public GameObject blockGroup;
     public GameObject[] blockArr = new GameObject[5];
-    public Block[] blockData = new Block[5];
+    //public Block[] blockData = new Block[5];
 
-    public float span = 10.0f;
-    public float delta = 0;
-
-    public int hp = 0;      // 블록 hp
+    float span = 10.0f;
+    float delta = 0; 
 
     public static BlockGenerator instance = null;
 
@@ -41,18 +39,14 @@ public class BlockGenerator : MonoBehaviour
             Destroy(gameObject);
         }
                 
-        //Instantiate(Resources.Load("Background/BlockGroup"),
-        //    new Vector2(transform.position.x, (transform.position.y) + 15), transform.rotation) ;
-
-
-
+  
         for (int i = 0; i < 5; ++i)
         {
-            blockData[i].hp = 1;
             blockArr[i] = transform.Find("BlockGroup").transform.Find("building" + (i + 1).ToString()).gameObject;
-            //blockArr[i] = Resources.Load("Background/BlockGroup")
-
+            blockArr[i].AddComponent<BlockStatusManager>();
         }
+
+        //blockParents.AddComponent<BlockStatusManager>();
         //blockParents = Instantiate(blockGroup, new Vector2(transform.position.x, (transform.position.y) + 15)
         //    , transform.rotation) as GameObject;
     }
@@ -61,10 +55,10 @@ public class BlockGenerator : MonoBehaviour
     void Start()
     {
      
-        for (int i = 0; i < 5; ++i)
-        {
-            blockArr[i].AddComponent<DropControll>().hp = 1;
-        }
+        //for (int i = 0; i < 5; ++i)
+        //{
+        //    blockArr[i].AddComponent<DropControll>().hp = 1;
+        //}
         BlockDestroy();
         //StartCoroutine(BlockGenerate());
     }
@@ -85,19 +79,16 @@ public class BlockGenerator : MonoBehaviour
         {
             blockParents = Instantiate(Resources.Load("Background/BlockGroup"),
             new Vector2(transform.position.x, (transform.position.y) + 20), transform.rotation) as GameObject;
+            //blockParents.AddComponent<BlockGenerator>();
+            GameObject[] newBlockArr= new GameObject[5];
+            for (int i = 0; i < 5; ++i)
+            {
+                newBlockArr[i] = GameObject.Find("BlockGroup(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
+                newBlockArr[i].AddComponent<BlockStatusManager>();
+            }
         }
     }
-
-    public void BlockHpControll()
-    {
-        this.delta += Time.deltaTime;
-
-        if (this.delta > this.span)
-        {
-            hp += 1;
-        }
-
-    }
+    
 
     // 블럭이 모두 파괴되었는지 체크
     public bool BlockDestroy()
@@ -112,8 +103,6 @@ public class BlockGenerator : MonoBehaviour
     // 블럭 생성 코루틴
     IEnumerator BlockGenerate()
     {
-        Debug.Log("BlockDestroy 리턴 값 : " + BlockDestroy());
-
         yield return new WaitUntil(BlockDestroy);   // 함수 리턴값이 true면 아래 코드 실행
         Debug.Log("BlockDestroy 리턴 값 : " + BlockDestroy());
 

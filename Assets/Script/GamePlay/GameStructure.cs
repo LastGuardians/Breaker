@@ -20,3 +20,11 @@ public struct Character     // 캐릭터
     public int attack;         // 공격력
     public int jump;           // 점프력
 }
+
+public struct User
+{
+    public int score;       // 획득 점수
+    public int best_score;  // 획득한 점수 중 최고 점수
+    public int coin;        // 코인 수
+    public int key;         // 열쇠 수
+}
