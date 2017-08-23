@@ -17,19 +17,19 @@ public class PlayerManager : MonoBehaviour {
 
     public GameObject block_origin; // hierarchy 상에 원래 존재하던 블럭 오브젝트
     public GameObject block_new;    // 새로 생성한 블럭 오브젝트
-    BoxCollider2D coll_origin;       // origin 블럭의 컬라이더
-    BoxCollider2D coll_new;         // new 블럭의 컬라이더
+    public Collider2D col_origin;       // origin 블럭의 건물 컬라이더(활성/비활성화용)
+    public Collider2D col_new;         // new 블럭의 건물 컬라이더
 
-
+   
     //public GameObject[] blockArr = new GameObject[5];  // 블럭 좌표를 확인하기 위한 배열
 
-    public bool block_drop_min = false; // 블럭이 최소 좌표에 도달했는지 확인하는 변수
+    //public bool block_drop_min = false; // 블럭이 최소 좌표에 도달했는지 확인하는 변수
 
     public bool attackOn = false;    // 공격 버튼이 터치 되었는지 확인하는 변수
     public bool shieldOn = false;   // 방어 버튼이 터치 되었는지 확인
 
     public bool block_destroy = false;   // 블럭이 모두 파괴되었는지 확인하는 변수
-    public bool trigger_on = false;     // 플레이어의 트리거 활성화 여부 판단
+    public bool ground_collsion = false;     // 플레이어가 땅과 충돌되었는지 확인하는 변수
 
     private Touch tempTouchs;
 
@@ -49,13 +49,12 @@ public class PlayerManager : MonoBehaviour {
         block_destroy = BlockGenerator.instance.BlockDestroy();
 
         this.playerRg = GetComponent<Rigidbody2D>();
+        playerRg.velocity = Vector2.zero;
         block_origin.AddComponent<BoxCollider>();
-
-        coll_origin = block_origin.GetComponent<BoxCollider2D>();
-
+        //col_origin = GetComponent<Collider2D>();
+       // col_player = GetComponent<BoxCollider2D>();
         player.AddComponent<PlayerStatusManager>();
-       
-
+        //col_origin.enabled = false;
     }
 
     void Update()
@@ -66,6 +65,8 @@ public class PlayerManager : MonoBehaviour {
             //Time.timeScale = 0;     // 일시정지 -> 나중에 사용
             SceneManager.LoadScene("Main");
         }
+
+        BlockDestroy();
 
         // 블록 y좌표가 -0.5 미만이라면( = 플레이어와 충돌했다면)   
         //if ((block_origin.transform.position.y < -0.4f && block_origin.transform.position.y >= -1.7)
@@ -120,10 +121,14 @@ public class PlayerManager : MonoBehaviour {
     public void Jump()
     {
         //Debug.Log("Jump키 눌림");
-        if (playerRg.velocity.y == 0)
-        {
+        //if (playerRg.velocity.y == 0)
+        //{
+        //    playerRg.AddForce(new Vector2(0, jumpSpeed));
+        //}
+
+        // 땅에 충돌되어있을 때만 점프.
+        if(ground_collsion)
             playerRg.AddForce(new Vector2(0, jumpSpeed));
-        }
     }
 
     public void Attack()    // pc 테스트용 공격 함수
@@ -136,60 +141,69 @@ public class PlayerManager : MonoBehaviour {
         shieldOn = true;
 
         // 건물의 콜라이더 활성화
-        
+       // col_origin.enabled = true;
         // 블럭의 콜라이더를 건물의 콜라이더 자식으로 넣는다.
+    }
+
+    void BlockDestroy()
+    {
+        if(block_destroy && attackOn)
+        {
+            Destroy(col_new.gameObject);
+        }
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.Log("OnCollisionEnter2D");
         // 블럭 좌표가 -0.5 미만일 때
         if (collision.collider.transform.position.y < -0.4
             && collision.collider.transform.position.y >= -1.7)
         {
             //Debug.Log("collisionEnter에서 y좌표 0.5 미만일 때");
+            block_destroy = true;
             col_player.isTrigger = true;
+            col_player.GetComponent<Collider2D>().isTrigger = true;
             playerRg.constraints = RigidbodyConstraints2D.FreezePositionY;
         }
-        else
+        else if(collision.collider.transform.position.y > 0)
         {
+            block_destroy = false;
             col_player.isTrigger = false;
             playerRg.constraints = RigidbodyConstraints2D.None;
             playerRg.constraints = RigidbodyConstraints2D.FreezeRotation;
             playerRg.constraints = RigidbodyConstraints2D.FreezePositionX;
         }
 
-
+        if (collision.collider.tag == "Collision")
+            ground_collsion = true;
         //BoxCollider temp = (BoxCollider)(block_origin.GetComponent<Collider>());
 
         // 블럭과 충돌
         if (collision.collider.tag == ("block1") || collision.collider.tag == ("block2")
             || collision.collider.tag == ("block3") || collision.collider.tag == ("block4")
             || collision.collider.tag == ("block5"))
-        {
-          
+        {          
             GameObject newObj = collision.collider.gameObject;
-            if (attackOn) // 공격 누른 상태로 블록과 충돌
+            if (attackOn && ground_collsion) // 땅과 충돌된 상태로 공격 버튼 눌렀을 때.
             {
                 // 블록 destroy
-                Destroy(newObj.gameObject);
-                // 블록 컬라이더 사이즈 축소
-                //coll_origin.size = new Vector2(coll_origin.size.x, coll_origin.size.y - (float)1.4);
+                col_new = collision.collider;
                 attackOn = false;
             }
-                       
+            else if (attackOn)  // 공격 버튼만 눌렀을 때.
+                Destroy(newObj.gameObject);
+
         }
 
-        //if(shieldOn)
+        //if (shieldOn)
         //{
         //    // 컬라이더 활성화
-        //    coll_origin.enabled = true;
-        //    coll_origin.transform.Translate(0,
-        //           coll_origin.transform.position.y + 3, 0);
+        //    col_origin.GetComponent<Collider2D>().enabled = true;
+        //    col_origin.transform.Translate(0,
+        //           col_origin.transform.position.y + 3, 0);
         //    shieldOn = false;
-        //}
-        //else
-        //{
-        //    coll_origin.enabled = false;
+        //    col_origin.GetComponent<Collider2D>().enabled = false;
         //}
 
         //if (collision.collider.tag == "BlockPrefab")
@@ -206,6 +220,7 @@ public class PlayerManager : MonoBehaviour {
 
     public void OnCollisionStay2D(Collision2D collision)
     {
+       // Debug.Log("OnCollisionStay2D");
         // 블럭 좌표가 -0.5 미만일 때
         if (collision.collider.transform.position.y < -0.4
             && collision.collider.transform.position.y >= -1.7)
@@ -214,13 +229,16 @@ public class PlayerManager : MonoBehaviour {
             col_player.isTrigger = true;
             playerRg.constraints = RigidbodyConstraints2D.FreezePositionY;
         }
-        else
+        else if(collision.collider.transform.position.y > 0)
         {
             col_player.isTrigger = false;
             playerRg.constraints = RigidbodyConstraints2D.None;
             playerRg.constraints = RigidbodyConstraints2D.FreezeRotation;
             playerRg.constraints = RigidbodyConstraints2D.FreezePositionX;
         }
+
+        if (collision.collider.tag == "Collision")
+            ground_collsion = true;
 
         // 블럭과 충돌
         if (collision.collider.tag == ("block1") || collision.collider.tag == ("block2")
@@ -229,31 +247,26 @@ public class PlayerManager : MonoBehaviour {
         {          
 
             GameObject newObj = collision.collider.gameObject;
-            
-            if (attackOn) // 터치된 상태로, 블록과 충돌
+
+            if (attackOn && ground_collsion) // 땅과 충돌된 상태로 공격 버튼 눌렀을 때.
             {
                 // 블록 destroy
-                Destroy(newObj.gameObject);
-                // 블록 컬라이더 사이즈 축소
-                //coll_origin.size = new Vector2(coll_origin.size.x, coll_origin.size.y - (float)1.4);
+                col_new = collision.collider;
                 attackOn = false;
             }
-
+            else if (attackOn)  // 공격 버튼만 눌렀을 때.
+                Destroy(newObj.gameObject);
         }
 
         //if (shieldOn)
         //{
         //    // 컬라이더 활성화
-        //    coll_origin.enabled = true;
-        //    coll_origin.transform.Translate(0,
-        //           coll_origin.transform.position.y + 3, 0);
+        //    col_origin.GetComponent<Collider2D>().enabled = true;
+        //    col_origin.transform.Translate(0,
+        //           col_origin.transform.position.y + 3, 0);
         //    shieldOn = false;
+        //    col_origin.GetComponent<Collider2D>().enabled = false;
         //}
-        //else
-        //{
-        //    coll_origin.enabled = false;
-        //}
-
 
         //if (collision.collider.tag == "BlockPrefab")
         //{
@@ -281,12 +294,16 @@ public class PlayerManager : MonoBehaviour {
             collision.collider.tag == ("block3") || collision.collider.tag == ("block4") ||
             collision.collider.tag == ("block5"))
         {
+            block_destroy = false;
             col_player.isTrigger = false;
             // 플레이어 y좌표 freeze 되있던 것을 초기화
             playerRg.constraints = RigidbodyConstraints2D.None;
             playerRg.constraints = RigidbodyConstraints2D.FreezeRotation;
             playerRg.constraints = RigidbodyConstraints2D.FreezePositionX;
         }
+
+        if (collision.collider.tag == "Collision")
+            ground_collsion = false;
     }
 
     // 트리거 함수 자체는 플레이어의 트리거가 true일 때만 발동.
@@ -318,8 +335,8 @@ public class PlayerManager : MonoBehaviour {
     public void OnTriggerStay2D(Collider2D collision)
     {
         //Debug.Log("OnTriggerStay2D");
-
-       // GameObject newObj = collision.gameObject;
+        block_destroy = true;
+        // GameObject newObj = collision.gameObject;
         if (collision.tag == ("block1") || collision.tag == ("block2")
             || collision.tag == ("block3") || collision.tag == ("block4")
             || collision.tag == ("block5"))
@@ -327,7 +344,8 @@ public class PlayerManager : MonoBehaviour {
             // Debug.Log("블록과 충돌중");
             if (attackOn) // 터치된 상태로, 블록과 충돌
             {
-                BlockDestroy(collision);
+                col_new = collision;
+                //BlockDestroy(collision);
                 attackOn = false;
                 //Destroy(newObj);
             }
@@ -364,6 +382,7 @@ public class PlayerManager : MonoBehaviour {
     public void OnTriggerExit2D(Collider2D collision)
     {
         col_player.isTrigger = false;
+        block_destroy = false;
         playerRg.constraints = RigidbodyConstraints2D.None;
         playerRg.constraints = RigidbodyConstraints2D.FreezeRotation;
         playerRg.constraints = RigidbodyConstraints2D.FreezePositionX;
@@ -372,7 +391,7 @@ public class PlayerManager : MonoBehaviour {
             || collision.tag == ("block3") || collision.tag == ("block4")
             ||*/ collision.tag == ("block5"))
         {
-            coll_origin.enabled = false;
+            //coll_origin.enabled = false;
             col_player.isTrigger = false;
             playerRg.constraints = RigidbodyConstraints2D.None;
             playerRg.constraints = RigidbodyConstraints2D.FreezeRotation;

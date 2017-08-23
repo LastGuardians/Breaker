@@ -42,7 +42,7 @@ public class BlockGenerator : MonoBehaviour
   
         for (int i = 0; i < 5; ++i)
         {
-            blockArr[i] = transform.Find("BlockGroup").transform.Find("building" + (i + 1).ToString()).gameObject;
+            blockArr[i] = GameObject.Find("BlockGroup").transform.Find("building" + (i + 1).ToString()).gameObject;
             blockArr[i].AddComponent<BlockStatusManager>();
         }
 
@@ -81,11 +81,11 @@ public class BlockGenerator : MonoBehaviour
             new Vector2(transform.position.x, (transform.position.y) + 20), transform.rotation) as GameObject;
             //blockParents.AddComponent<BlockGenerator>();
             GameObject[] newBlockArr= new GameObject[5];
-            for (int i = 0; i < 5; ++i)
-            {
-                newBlockArr[i] = GameObject.Find("BlockGroup(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
-                newBlockArr[i].AddComponent<BlockStatusManager>();
-            }
+            //for (int i = 0; i < 5; ++i)
+            //{
+            //    newBlockArr[i] = GameObject.Find("BlockGroup(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
+            //    newBlockArr[i].AddComponent<BlockStatusManager>();
+            //}
         }
     }
     

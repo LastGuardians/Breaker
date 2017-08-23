@@ -17,15 +17,15 @@ public class BlockStatusManager : MonoBehaviour
 
     void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else if (instance != this)
-        {
-            //잘못된 인스턴스를 가르키고 있을 경우
-            Destroy(gameObject);
-        }
+        //if (instance == null)
+        //{
+        //    instance = this;
+        //}
+        //else if (instance != this)
+        //{
+        //    //잘못된 인스턴스를 가르키고 있을 경우
+        //    Destroy(gameObject);
+        //}
         
     }
 
