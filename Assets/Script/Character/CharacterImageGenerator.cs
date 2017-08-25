@@ -5,12 +5,22 @@ using UnityEngine;
 public class CharacterImageGenerator: MonoBehaviour
 {
 	private GameObject CharacterButton;
+	private GameObject CoinAmountLabel;
+	private GameObject KeyAmountLabel;
 	public UIAtlas TargetAtlas;
 	private UISprite TargetSprite;
 	private BoxCollider TargetCollider;
-	
+	public UILabel CoinLabel;
+	public UILabel KeyLabel;
+	public UIFont MainFont;
+	public static int CoinAmount;
+	public static int KeyAmount;
+	public static string[] CharacterStatusArray = new string[16] { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Locked" };
+
 	void Start()
     {
+		KeyAmount = 10;
+		CoinAmount = 100;
 		for (int i = 1; i <= 4; i++)
         {
             for (int j = 1; j <= 4; j++)
@@ -23,7 +33,7 @@ public class CharacterImageGenerator: MonoBehaviour
 				TargetCollider = CharacterButton.AddComponent<BoxCollider>();
 
 				TargetSprite.atlas = TargetAtlas;
-				TargetSprite.spriteName = "select" + (4 * (i - 1) + j).ToString();
+				TargetSprite.spriteName = "select" + (4 * (i - 1) + j).ToString() + CharacterStatusArray[4 * (i - 1) + j - 1];
 				TargetSprite.depth = 1;
 
 				System.Type ButtonScript = System.Type.GetType("CharacterButtonManager");
@@ -33,7 +43,31 @@ public class CharacterImageGenerator: MonoBehaviour
 				CharacterButton.transform.localPosition = new Vector3(100 * j - 250 , 130 * (5 - i) - 300, 0);
 			}
 		}
-    }
+
+		//코인 보유량 라벨 생성
+		CoinAmountLabel = new GameObject("CoinAmountLabel");
+		CoinAmountLabel.transform.parent = GameObject.Find("UI Root (2D)").transform;
+		CoinAmountLabel.layer = 9;
+		CoinLabel = CoinAmountLabel.AddComponent<UILabel>();
+		CoinLabel.depth = 1;
+		CoinLabel.font = MainFont;
+
+		CoinLabel.text = "Coin " + CoinAmount.ToString();
+		CoinLabel.transform.localScale = new Vector3(30, 30, 0);
+		CoinLabel.transform.localPosition = new Vector3(- 60, 340, 0);
+
+		//키 보유량 라벨 생성
+		KeyAmountLabel = new GameObject("KeyAmountLabel");
+		KeyAmountLabel.transform.parent = GameObject.Find("UI Root (2D)").transform;
+		KeyAmountLabel.layer = 9;
+		KeyLabel = KeyAmountLabel.AddComponent<UILabel>();
+		KeyLabel.depth = 1;
+		KeyLabel.font = MainFont;
+
+		KeyLabel.text = "Key " + KeyAmount.ToString();
+		KeyLabel.transform.localScale = new Vector3(30, 30, 0);
+		KeyLabel.transform.localPosition = new Vector3(80, 340, 0);
+	}
 }
 
 

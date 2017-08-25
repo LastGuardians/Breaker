@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 public class UIAnimation : MonoBehaviour
 {
-
-    void Awake()
+	void Awake()
     {
         setDisable();
     }
@@ -45,8 +44,7 @@ public class UIAnimation : MonoBehaviour
         tween.duration = duration;
         tween.delay = startDelay;
         tween.animationCurve = animationCurve;
-
-    }
+	}
 
     // 팝업 닫기
     public void close()

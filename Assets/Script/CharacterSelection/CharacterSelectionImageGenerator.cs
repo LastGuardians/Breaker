@@ -33,7 +33,6 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		{
 			if(TargetCharacterIndex == 1)
 			{
-				TargetCharacterIndex = 16;
 			}
 			else
 			{
@@ -44,7 +43,6 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		{
 			if (TargetCharacterIndex == 16)
 			{
-				TargetCharacterIndex = 1;
 			}
 			else
 			{
