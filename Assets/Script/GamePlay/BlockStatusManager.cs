@@ -15,24 +15,21 @@ public class BlockStatusManager : MonoBehaviour
 
     public static BlockStatusManager instance = null;
 
-    void Awake()
-    {
-        //if (instance == null)
-        //{
-        //    instance = this;
-        //}
-        //else if (instance != this)
-        //{
-        //    //잘못된 인스턴스를 가르키고 있을 경우
-        //    Destroy(gameObject);
-        //}
-        
-    }
-
+    GameObject UserStat;
+   
     void Start()
     {
+        UserStat = GameObject.Find("Player");
+    }
 
-
-    } 
-
+    void Update()
+    {
+        if(UserStat.GetComponent<PlayerStatusManager>().score < 700)
+        {
+            hp = 15;
+            grade = 1;
+            blockType = 0;
+            score = 20;
+        }
+    }
 }

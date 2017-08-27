@@ -22,34 +22,31 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		CharacterImageSprite.spriteName = CharacterButtonManager.TargetCharacter;
 		CharacterImageSprite.depth = 1;
 
-		CharacterImage.transform.localScale = new Vector3(180, 240, 0);
+		CharacterImage.transform.localScale = new Vector3(360, 480, 0);
 		CharacterImage.transform.localPosition = new Vector3(0, 0, 0);
 	}
 
 	public void ChangeCharacter(UISprite TargetButton)
 	{
-		int TargetCharacterIndex = int.Parse(CharacterButtonManager.TargetCharacter.Substring(6));
+		int TargetCharacterIndex = int.Parse(CharacterButtonManager.TargetCharacter.Substring(6)) - 1;
 		if (TargetButton.name == "LeftButton")
 		{
-			if(TargetCharacterIndex == 1)
+			do
 			{
+				TargetCharacterIndex = ((TargetCharacterIndex - 1) % 16 + 16) % 16;
 			}
-			else
-			{
-				TargetCharacterIndex--;
-			}
+			while (CharacterImageGenerator.CharacterStatusArray[TargetCharacterIndex] == "Locked");
 		}
 		else if (TargetButton.name == "RightButton")
 		{
-			if (TargetCharacterIndex == 16)
+			do
 			{
+				TargetCharacterIndex = ((TargetCharacterIndex + 1) % 16 + 16) % 16;
 			}
-			else
-			{
-				TargetCharacterIndex++;
-			}
+			while (CharacterImageGenerator.CharacterStatusArray[TargetCharacterIndex] == "Locked");
+
 		}
-		CharacterButtonManager.TargetCharacter = "select" + TargetCharacterIndex.ToString();
+		CharacterButtonManager.TargetCharacter = "select" + (TargetCharacterIndex + 1).ToString();
 		CharacterImageSprite.spriteName = CharacterButtonManager.TargetCharacter;
 	}
 }

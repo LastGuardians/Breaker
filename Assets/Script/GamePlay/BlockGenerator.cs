@@ -20,7 +20,9 @@ public class BlockGenerator : MonoBehaviour
     public GameObject blockParents;
     //public GameObject blockGroup;
     public GameObject[] blockArr = new GameObject[5];
+    public Collider2D[] blockColArr = new Collider2D[5];
     //public Block[] blockData = new Block[5];
+    public bool block_ypos_min = false;
 
     float span = 10.0f;
     float delta = 0; 
@@ -54,11 +56,6 @@ public class BlockGenerator : MonoBehaviour
 
     void Start()
     {
-     
-        //for (int i = 0; i < 5; ++i)
-        //{
-        //    blockArr[i].AddComponent<DropControll>().hp = 1;
-        //}
         BlockDestroy();
         //StartCoroutine(BlockGenerate());
     }
@@ -66,27 +63,39 @@ public class BlockGenerator : MonoBehaviour
     void Update()
     {
 
-        //this.delta += Time.deltaTime;
-        //if (this.delta > this.span)
-        //{
-        //    this.delta = 0;
-
-        //     Instantiate(blockGroup, new Vector2(transform.position.x, (transform.position.y) + 15), transform.rotation);
-        
-        //}
-       
-        if(BlockDestroy())
+        if (BlockDestroy()) // 블럭이 모두 파괴되었을 때.
         {
             blockParents = Instantiate(Resources.Load("Background/BlockGroup"),
             new Vector2(transform.position.x, (transform.position.y) + 20), transform.rotation) as GameObject;
             //blockParents.AddComponent<BlockGenerator>();
-            GameObject[] newBlockArr= new GameObject[5];
-            //for (int i = 0; i < 5; ++i)
-            //{
-            //    newBlockArr[i] = GameObject.Find("BlockGroup(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
-            //    newBlockArr[i].AddComponent<BlockStatusManager>();
-            //}
+
+            for (int i = 0; i < 5; ++i)
+            {
+                blockArr[i] = GameObject.Find("BlockGroup(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
+                blockArr[i].AddComponent<BlockStatusManager>();
+            }
         }
+        else 
+        {
+            for (int i = 0; i < 5; ++i)
+            {
+                if (blockArr[i] == null)
+                    continue;
+
+                if (blockArr[i].transform.position.y < -0.3 &&
+                    blockArr[i].transform.position.y >= -1.7)
+                {
+                    Debug.Log("블럭 ypos -0.3 미만");
+                    block_ypos_min = true;
+                }              
+            }
+        }
+
+        //if (blockColArr[0].transform.position.y > 0
+        //            || blockColArr[4] == null)
+        //{
+        //    block_ypos_min = false;
+        //}
     }
     
 
@@ -95,9 +104,12 @@ public class BlockGenerator : MonoBehaviour
     {
         GameObject obj = GameObject.Find("building5");
         if (obj != null)  // hierarchy 상에 오브젝트가 존재하면 블록 생성 x
-            return false;
+            return false; 
         else
+        {
+            block_ypos_min = false;
             return true;
+        }
     }
 
     // 블럭 생성 코루틴

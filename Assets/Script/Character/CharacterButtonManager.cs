@@ -11,13 +11,23 @@ public class CharacterButtonManager : MonoBehaviour
 	void OnClick()
 	{
 		TargetButton = this.GetComponent<UISprite>();
-		if (TargetButton.name == "HomeButton")
+
+		if (this.name == "HomeButton")
 		{
 			SceneManager.LoadScene("Main");
 		}
-		else if (TargetButton.name == "ShopButton")
+		else if (this.name == "ShopButton")
 		{
 			SceneManager.LoadScene("Main");
+		}
+		else if (TargetButton.spriteName.Substring(TargetButton.spriteName.Length - 6) == "Locked")
+		{
+			GameObject.Find("UI Root (2D)").GetComponent<CharacterImageGenerator>().GenerateWindow();
+		}
+		else if (this.name == "CancelButton")
+		{
+			this.transform.parent.gameObject.SetActive(false);
+			GameObject.Find("UI Root (2D)").GetComponent<CharacterImageGenerator>().CharacterButtonController(true);
 		}
 		else
 		{
@@ -25,4 +35,5 @@ public class CharacterButtonManager : MonoBehaviour
 			SceneManager.LoadScene("SpecificCharacter");
 		}
 	}
+
 }

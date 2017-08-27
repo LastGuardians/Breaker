@@ -1,16 +1,17 @@
 fileFormatVersion: 2
 guid: b0a06631a90b14347b589882fdd31c01
-timeCreated: 1503591766
+timeCreated: 1503640288
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - TargetAtlas: {fileID: 114339584606828192, guid: e11fb64dce1659c43859d649abf1bd9d,
       type: 2}
-  - KeyLabel: {instanceID: 0}
-  - CoinLabel: {instanceID: 0}
-  - MainFont: {fileID: 114203500198124270, guid: 93be243c9b06b9443b482c75c4e4d8b6,
+  - WindowAtlas: {fileID: 114772411860793796, guid: 996fe01b1655bc7479b9f70733bdbe3f,
       type: 2}
+  - CoinLabel: {instanceID: 0}
+  - KeyLabel: {instanceID: 0}
+  - MainFont: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
