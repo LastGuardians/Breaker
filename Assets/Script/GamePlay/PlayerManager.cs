@@ -47,15 +47,9 @@ public class PlayerManager : MonoBehaviour {
 
         this.playerRg = GetComponent<Rigidbody2D>();
         blockRg = GetComponent<Rigidbody2D>();
-
-        //for (int i = 0; i < 5; ++i)
-        //{
-        //    blockArrRg[i] = GetComponent<Rigidbody2D>();
-        //}
-
+        
         playerRg.velocity = Vector2.zero;
         player.AddComponent<PlayerStatusManager>();
-        //col_origin.enabled = false;
     }
 
     void Update()
@@ -133,23 +127,23 @@ public class PlayerManager : MonoBehaviour {
         shieldOn = true;
         // 건물의 콜라이더 활성화
         // 블럭의 콜라이더를 건물의 콜라이더 자식으로 넣는다.s
-        if (shield_able)
-        {
-            col_parent.enabled = true;
-            for (int i = 0; i < 5; ++i)
-            {
-                blockArrCol[i].transform.parent = col_parent.transform;
-                blockRg.AddForce(new Vector2(0, jumpSpeed));
-            }
-            //col_origin.GetComponent<Collider2D>().enabled = true;
-            //blockRg.AddForce(new Vector2(0, 100.0f));
-            //col_origin.transform.Translate(0,
-            //        col_origin.transform.position.y + 3, 0);
-            ////shieldOn = false;
-            //col_origin.GetComponent<Collider2D>().enabled = false;
-        }
-        else
-            col_parent.enabled = false;
+        //if (shield_able)
+        //{
+        //    col_parent.enabled = true;
+        //    for (int i = 0; i < 5; ++i)
+        //    {
+        //        blockArrCol[i].transform.parent = col_parent.transform;
+        //        blockRg.AddForce(new Vector2(0, jumpSpeed));
+        //    }
+        //    //col_origin.GetComponent<Collider2D>().enabled = true;
+        //    //blockRg.AddForce(new Vector2(0, 100.0f));
+        //    //col_origin.transform.Translate(0,
+        //    //        col_origin.transform.position.y + 3, 0);
+        //    ////shieldOn = false;
+        //    //col_origin.GetComponent<Collider2D>().enabled = false;
+        //}
+        //else
+        //    col_parent.enabled = false;
     }
 
     // 파괴할 블럭 처리
@@ -309,7 +303,7 @@ public class PlayerManager : MonoBehaviour {
 
     void BlockDestroy(Collider2D collision)
     {
-        Debug.Log("BlockDestroy 호출");
+        //Debug.Log("BlockDestroy 호출");
         GameObject newObj = collision.gameObject;
         Destroy(newObj);
     }

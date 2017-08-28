@@ -415,6 +415,7 @@
     <Compile Include="Assets\Script\Main\SceneState.cs" />
     <Compile Include="Assets\Script\Network.cs" />
     <Compile Include="Assets\Script\UI\GameUI.cs" />
+    <Compile Include="Assets\Script\UI\TimeManager.cs" />
     <Compile Include="Assets\Script\UI\UIAnimation.cs" />
     <Compile Include="Assets\Script\UnityAds\UnityAdsHelper.cs" />
   </ItemGroup>

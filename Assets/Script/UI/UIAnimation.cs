@@ -8,8 +8,9 @@ public class UIAnimation : MonoBehaviour
     void Awake()
     {
         setDisable();
+        //Time.unscaledTime;
     }
-
+    
     //SetActive(true) 호출 시 실행됩니다.
     void OnEnable()
     {

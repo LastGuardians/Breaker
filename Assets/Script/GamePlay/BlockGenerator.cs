@@ -23,14 +23,19 @@ public class BlockGenerator : MonoBehaviour
     public Collider2D[] blockColArr = new Collider2D[5];
     //public Block[] blockData = new Block[5];
     public bool block_ypos_min = false;
-
+        
     float span = 10.0f;
-    float delta = 0; 
+    float delta = 0;
 
+    System.Random r = new System.Random();
+    //Random r = new Random();
+    int range = 0;      // 확률 범위
+
+    BlockStatusManager[] block_stat = new BlockStatusManager[5];
     public static BlockGenerator instance = null;
 
     void Awake()
-    {
+    {        
         if (instance == null)
         {
             instance = this;
@@ -39,25 +44,20 @@ public class BlockGenerator : MonoBehaviour
         {
             //잘못된 인스턴스를 가르키고 있을 경우
             Destroy(gameObject);
-        }
-                
-  
+        }   
+
         for (int i = 0; i < 5; ++i)
         {
-            blockArr[i] = GameObject.Find("BlockGroup").transform.Find("building" + (i + 1).ToString()).gameObject;
+            blockArr[i] = GameObject.Find("BlockGroup").transform.Find("building" + (i + 1).ToString()).gameObject;       
             blockArr[i].AddComponent<BlockStatusManager>();
-        }
-
-        //blockParents.AddComponent<BlockStatusManager>();
-        //blockParents = Instantiate(blockGroup, new Vector2(transform.position.x, (transform.position.y) + 15)
-        //    , transform.rotation) as GameObject;
+        }        
     }
 
 
     void Start()
     {
         BlockDestroy();
-        //StartCoroutine(BlockGenerate());
+
     }
 
     void Update()
@@ -85,7 +85,7 @@ public class BlockGenerator : MonoBehaviour
                 if (blockArr[i].transform.position.y < -0.3 &&
                     blockArr[i].transform.position.y >= -1.7)
                 {
-                    Debug.Log("블럭 ypos -0.3 미만");
+                    //Debug.Log("블럭 ypos -0.3 미만");
                     block_ypos_min = true;
                 }              
             }

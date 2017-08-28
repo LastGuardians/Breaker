@@ -10,26 +10,58 @@ public class BlockStatusManager : MonoBehaviour
     public int hp = 0;              // 블록 hp
     public int grade = 0;           // 블록 등급
     public int blockType = 0;       // 블록 타입(기본 =0 / 강화 =1)
-    public int buildingType = 0;    // 건물 타입(리소스에 따라 달라진다.)
+    public int resourceType = 0;    // 블록 리소스 타입(ex. 철창, 철문)
     public int score = 0;           // 블록의 점수
 
+    System.Random r = new System.Random();
+    int range = 0;
     public static BlockStatusManager instance = null;
 
-    GameObject UserStat;
+    public GameObject UserStat;
    
     void Start()
     {
         UserStat = GameObject.Find("Player");
+
+        //for (int i = 0; i < 5; ++i) 
+        //{
+        //    range = r.Next(0, i);
+
+        //    if (range < 1)  // 강화 블럭
+        //    {
+        //        hp = 23;
+        //        grade = 1;
+        //        blockType = 1;
+        //        score = 20;
+        //    }
+        //    else
+        //    {
+        //        hp = 15;
+        //        grade = 1;
+        //        blockType = 0;
+        //        score = 20;
+        //    }
+        //}
     }
 
     void Update()
-    {
-        if(UserStat.GetComponent<PlayerStatusManager>().score < 700)
+    {        
+        if (UserStat.GetComponent<PlayerStatusManager>().score < 700)
         {
-            hp = 15;
-            grade = 1;
-            blockType = 0;
-            score = 20;
+            //if(range < 20)  // 강화 블럭
+            //{
+            //    hp = 23;
+            //    grade = 1;
+            //    blockType = 1;
+            //    score = 20;
+            //}
+            //else
+            //{
+            //    hp = 15;
+            //    grade = 1;
+            //    blockType = 0;
+            //    score = 20;
+            //}
         }
     }
 }
