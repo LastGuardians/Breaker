@@ -8,18 +8,20 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 	public GameObject CharacterImage;
 	public UIAtlas CharacterImageAtlas;
 	public UISprite CharacterImageSprite;
-	public Animation CharacterImageAnimation;
-	public AnimationClip LeftAnimationClip;
-	public AnimationClip RightAnimationClip;
+	public Animator CharacterImageAnimator;
+	public RuntimeAnimatorController AnimatorController;
 
 	public void Start()
 	{
-		if(CharacterButtonManager.TargetCharacter == null)
+		if (CharacterButtonManager.TargetCharacter == null)
 		{
 			CharacterButtonManager.TargetCharacter = "select9";
 		}
+		GenerateSelectionImage();
+	}
 
-
+	public void GenerateSelectionImage()
+	{
 		// 캐릭터 이미지 오브젝트 생성
 		CharacterImage = new GameObject("CharacterImage");
 		CharacterImage.transform.parent = GameObject.Find("UI Root (2D)").transform; // UI Root의 자식으로 이동
@@ -27,13 +29,9 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 
 		CharacterImageSprite = CharacterImage.AddComponent<UISprite>();
 
-		CharacterImageAnimation = CharacterImage.AddComponent<Animation>();
-		CharacterImageAnimation.playAutomatically = false;
-		LeftAnimationClip.legacy = true;
-		RightAnimationClip.legacy = true;
-		CharacterImageAnimation.AddClip(LeftAnimationClip, "LeftAnimation");
-		CharacterImageAnimation.AddClip(RightAnimationClip, "RightAnimation");
-		
+		CharacterImageAnimator = CharacterImage.AddComponent<Animator>();
+		CharacterImageAnimator.runtimeAnimatorController = AnimatorController;
+
 		CharacterImageSprite.atlas = CharacterImageAtlas;
 		CharacterImageSprite.spriteName = CharacterButtonManager.TargetCharacter;
 		CharacterImageSprite.depth = 1;
@@ -47,7 +45,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		int TargetCharacterIndex = int.Parse(CharacterButtonManager.TargetCharacter.Substring(6)) - 1;
 		if (TargetButton.name == "LeftButton")
 		{
-			CharacterImageAnimation.Play("LeftAnimation");
+			CharacterImageAnimator.SetBool("LeftClicked", true);
 			do
 			{
 				TargetCharacterIndex = ((TargetCharacterIndex - 1) % 16 + 16) % 16;
@@ -56,7 +54,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		}
 		else if (TargetButton.name == "RightButton")
 		{
-			CharacterImageAnimation.Play("RightAnimation");
+			CharacterImageAnimator.SetBool("RightClicked", true);
 			do
 			{
 				TargetCharacterIndex = ((TargetCharacterIndex + 1) % 16 + 16) % 16;
@@ -65,12 +63,6 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		}
 
 		CharacterButtonManager.TargetCharacter = "select" + (TargetCharacterIndex + 1).ToString();
-		StartCoroutine(ChangeImage());
-	}
-
-	public IEnumerator ChangeImage()
-	{
-		yield return new WaitForSeconds(0.5f);
 		CharacterImageSprite.spriteName = CharacterButtonManager.TargetCharacter;
 	}
 }

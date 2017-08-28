@@ -35,13 +35,18 @@ public class CharacterImageGenerator: MonoBehaviour
 
 	void Start()
     {
+		GenerateImage();
+	}
+
+	public void GenerateImage()
+	{
 		KeyAmount = 10;
 		CoinAmount = 100;
 		for (int i = 1; i <= 4; i++)
-        {
-            for (int j = 1; j <= 4; j++)
-            {
-                CharacterButton = new GameObject(string.Format("SelectButton{0}", 4 * (i - 1) + j)); // 버튼 오브젝트 생성
+		{
+			for (int j = 1; j <= 4; j++)
+			{
+				CharacterButton = new GameObject(string.Format("SelectButton{0}", 4 * (i - 1) + j)); // 버튼 오브젝트 생성
 				CharacterButton.transform.parent = GameObject.Find("UI Root (2D)").transform; // UI Root의 자식으로 이동
 				CharacterButton.layer = 9; //레이어를 GUI로 바꿈
 
@@ -56,7 +61,7 @@ public class CharacterImageGenerator: MonoBehaviour
 				CharacterButton.AddComponent(ButtonScript);
 
 				CharacterButton.transform.localScale = new Vector3(80, 120, 0);
-				CharacterButton.transform.localPosition = new Vector3(100 * j - 250 , 130 * (5 - i) - 300, 0);
+				CharacterButton.transform.localPosition = new Vector3(100 * j - 250, 130 * (5 - i) - 300, 0);
 
 				CharacterButtonArray[4 * (i - 1) + j - 1] = CharacterButton;
 			}
@@ -73,7 +78,7 @@ public class CharacterImageGenerator: MonoBehaviour
 
 		CoinLabel.text = "Coin " + CoinAmount.ToString();
 		Coin.transform.localScale = new Vector3(30, 30, 0);
-		Coin.transform.localPosition = new Vector3(- 60, 340, 0);
+		Coin.transform.localPosition = new Vector3(-60, 340, 0);
 
 		//키 보유량 라벨 생성
 		Key = new GameObject("KeyAmountLabel");
