@@ -5,17 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class CharacterSelectionButtonManager : MonoBehaviour
 {
-	public UISprite TargetButton;
 	void OnClick()
 	{
-		TargetButton = this.GetComponent<UISprite>();
 		if (this.name == "LeftButton")
 		{
-			GameObject.Find("UI Root (2D)").GetComponent<CharacterSelectionImageGenerator>().ChangeCharacter(TargetButton);
+			GameObject.Find("UI Root (2D)").GetComponent<CharacterSelectionImageGenerator>().ChangeCharacter(gameObject);
 		}
 		else if (this.name == "RightButton")
 		{
-			GameObject.Find("UI Root (2D)").GetComponent<CharacterSelectionImageGenerator>().ChangeCharacter(TargetButton);
+			GameObject.Find("UI Root (2D)").GetComponent<CharacterSelectionImageGenerator>().ChangeCharacter(gameObject);
 		}
 		else if (this.name == "ExitButton")
 		{

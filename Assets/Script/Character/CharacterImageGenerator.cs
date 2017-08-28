@@ -4,23 +4,23 @@ using UnityEngine;
 
 public class CharacterImageGenerator: MonoBehaviour
 {
-	private GameObject CharacterButton;
-	private GameObject Coin;
-	private GameObject Key;
-	private GameObject YesOrNoFrame;
-	private GameObject YesOrNoWindow;
-	private GameObject CancelButton;
-	private GameObject Message;
+	public GameObject CharacterButton;
+	public GameObject Coin;
+	public GameObject Key;
+	public GameObject YesOrNoFrame;
+	public GameObject YesOrNoWindow;
+	public GameObject CancelButton;
+	public GameObject Message;
 
 	public UIAtlas CharacterButtonAtlas;
 	public UIAtlas WindowAtlas;
 
-	private UISprite CharacterButtonSprite;
-	private UISprite YesOrNoWindowSprite;
-	private UISprite CancelButtonSprite;
+	public UISprite CharacterButtonSprite;
+	public UISprite YesOrNoWindowSprite;
+	public UISprite CancelButtonSprite;
 
-	private BoxCollider TargetCollider;
-	private BoxCollider CancelButtonCollider;
+	public BoxCollider TargetCollider;
+	public BoxCollider CancelButtonCollider;
 
 	public UILabel CoinLabel;
 	public UILabel KeyLabel;
@@ -31,7 +31,7 @@ public class CharacterImageGenerator: MonoBehaviour
 	public static int CoinAmount;
 	public static int KeyAmount;
 	public static string[] CharacterStatusArray = new string[16] { "", "", "", "", "", "", "", "", "", "", "", "", "Locked", "", "", "Locked" };
-	private GameObject[] CharacterButtonArray = new GameObject[16];
+	public GameObject[] CharacterButtonArray = new GameObject[16];
 
 	void Start()
     {
