@@ -18,16 +18,24 @@ public class BlockStatusManager : MonoBehaviour
     //public int type_ratio = 0;    // 블록 타입 비율(기본 or 강화)
     public static BlockStatusManager instance = null;
 
+<<<<<<< HEAD
     public GameObject UserStat;
+=======
+    GameObject UserStat;
+>>>>>>> Prison_Crush/ParkChanghwi
    
     void Start()
     {
         UserStat = GameObject.Find("Player");
+<<<<<<< HEAD
      
+=======
+>>>>>>> Prison_Crush/ParkChanghwi
     }
 
     void Update()
     {
+<<<<<<< HEAD
         //BlockSetting();
         //if (BlockGenerator.instance.range == 1)
         //    BlockUpgrade();
@@ -82,4 +90,14 @@ public class BlockStatusManager : MonoBehaviour
         }
     }
 
+=======
+        if(UserStat.GetComponent<PlayerStatusManager>().score < 700)
+        {
+            hp = 15;
+            grade = 1;
+            blockType = 0;
+            score = 20;
+        }
+    }
+>>>>>>> Prison_Crush/ParkChanghwi
 }

@@ -5,25 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class CharacterSelectionButtonManager : MonoBehaviour
 {
-	public UISprite TargetButton;
 	void OnClick()
 	{
-		TargetButton = this.GetComponent<UISprite>();
-		if (TargetButton.name == "LeftButton")
+		if (this.name == "LeftButton")
 		{
-			GameObject.Find("UI Root (2D)").GetComponent<CharacterSelectionImageGenerator>().ChangeCharacter(TargetButton);
+			GameObject.Find("UI Root (2D)").GetComponent<CharacterSelectionImageGenerator>().ChangeCharacter(gameObject);
 		}
-		else if (TargetButton.name == "RightButton")
+		else if (this.name == "RightButton")
 		{
-			GameObject.Find("UI Root (2D)").GetComponent<CharacterSelectionImageGenerator>().ChangeCharacter(TargetButton);
+			GameObject.Find("UI Root (2D)").GetComponent<CharacterSelectionImageGenerator>().ChangeCharacter(gameObject);
 		}
-		else if (TargetButton.name == "BackButton")
+		else if (this.name == "ExitButton")
 		{
 			SceneManager.LoadScene("Character");
-		}
-		else if (TargetButton.name == "ShopButton")
-		{
-			SceneManager.LoadScene("Main");
 		}
 	}
 }
