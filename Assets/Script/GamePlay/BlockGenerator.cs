@@ -20,16 +20,16 @@ public class BlockGenerator : MonoBehaviour
     public GameObject blockParents;
     //public GameObject blockGroup;
     public GameObject[] blockArr = new GameObject[5];
-    public Collider2D[] blockColArr = new Collider2D[5];
     //public Block[] blockData = new Block[5];
     public bool block_ypos_min = false;
         
     float span = 10.0f;
     float delta = 0;
-
+    
     System.Random r = new System.Random();
     //Random r = new Random();
-    int range = 0;      // 확률 범위
+    public int range = 0;      // 확률 범위
+    public int grade_range = 0; // 블록 등급 확률 범위
 
     BlockStatusManager[] block_stat = new BlockStatusManager[5];
     public static BlockGenerator instance = null;
@@ -50,14 +50,26 @@ public class BlockGenerator : MonoBehaviour
         {
             blockArr[i] = GameObject.Find("BlockGroup").transform.Find("building" + (i + 1).ToString()).gameObject;       
             blockArr[i].AddComponent<BlockStatusManager>();
-        }        
+            
+        }
+        
     }
 
 
     void Start()
     {
         BlockDestroy();
+        range = r.Next(0, 5);
+       
 
+        for (int i = 0; i < 5; ++i)
+        {
+            grade_range = r.Next(0, 100);
+            if (i == range)      // 랜덤한 한 블럭을 강화블럭으로 셋팅
+                blockArr[i].GetComponent<BlockStatusManager>().BlockUpgrade();
+            else
+                blockArr[i].GetComponent<BlockStatusManager>().BlockNormal();
+        }
     }
 
     void Update()
@@ -68,11 +80,16 @@ public class BlockGenerator : MonoBehaviour
             blockParents = Instantiate(Resources.Load("Background/BlockGroup"),
             new Vector2(transform.position.x, (transform.position.y) + 20), transform.rotation) as GameObject;
             //blockParents.AddComponent<BlockGenerator>();
-
+            range = r.Next(0, 5);
             for (int i = 0; i < 5; ++i)
             {
                 blockArr[i] = GameObject.Find("BlockGroup(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
                 blockArr[i].AddComponent<BlockStatusManager>();
+
+                if (i == range)      // 랜덤한 한 블럭을 강화블럭으로 셋팅
+                    blockArr[i].GetComponent<BlockStatusManager>().BlockUpgrade();
+                else
+                    blockArr[i].GetComponent<BlockStatusManager>().BlockNormal();
             }
         }
         else 

@@ -30,6 +30,8 @@ public class PlayerManager : MonoBehaviour {
 
     private Touch tempTouchs;
 
+    public int score = 2600;   // test용 score
+
     public static PlayerManager instance = null;
 
     void Start () {
