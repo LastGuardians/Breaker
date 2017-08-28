@@ -23,11 +23,7 @@ public class BlockGenerator : MonoBehaviour
     public Collider2D[] blockColArr = new Collider2D[5];
     //public Block[] blockData = new Block[5];
     public bool block_ypos_min = false;
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> Prison_Crush/ParkChanghwi
     float span = 10.0f;
     float delta = 0;
     
@@ -85,23 +81,19 @@ public class BlockGenerator : MonoBehaviour
             blockParents = Instantiate(Resources.Load("Background/BlockGroup"),
             new Vector2(transform.position.x, (transform.position.y) + 20), transform.rotation) as GameObject;
             //blockParents.AddComponent<BlockGenerator>();
-<<<<<<< HEAD
-            range = r.Next(0, 5);
-=======
 
->>>>>>> Prison_Crush/ParkChanghwi
+            range = r.Next(0, 5);
             for (int i = 0; i < 5; ++i)
             {
+                grade_range = r.Next(0, 100);
                 blockArr[i] = GameObject.Find("BlockGroup(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
                 blockArr[i].AddComponent<BlockStatusManager>();
-<<<<<<< HEAD
 
                 if (i == range)      // 랜덤한 한 블럭을 강화블럭으로 셋팅
                     blockArr[i].GetComponent<BlockStatusManager>().BlockUpgrade();
                 else
                     blockArr[i].GetComponent<BlockStatusManager>().BlockNormal();
-=======
->>>>>>> Prison_Crush/ParkChanghwi
+
             }
         }
         else 
@@ -114,11 +106,6 @@ public class BlockGenerator : MonoBehaviour
                 if (blockArr[i].transform.position.y < -0.3 &&
                     blockArr[i].transform.position.y >= -1.7)
                 {
-<<<<<<< HEAD
-                    //Debug.Log("블럭 ypos -0.3 미만");
-=======
-                    Debug.Log("블럭 ypos -0.3 미만");
->>>>>>> Prison_Crush/ParkChanghwi
                     block_ypos_min = true;
                 }              
             }

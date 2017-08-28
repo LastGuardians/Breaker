@@ -11,11 +11,9 @@ public class PlayerStatusManager : MonoBehaviour
     public int best_score = 0;  // 획득한 점수 중 최고 점수
     public int coin = 0;        // 코인 수
     public int key = 0;         // 열쇠 수
-<<<<<<< HEAD
+
 
     public static PlayerStatusManager instance = null;
-=======
->>>>>>> Prison_Crush/ParkChanghwi
 
     void Start()
     {
