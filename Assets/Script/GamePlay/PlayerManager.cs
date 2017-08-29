@@ -10,7 +10,7 @@ public class PlayerManager : MonoBehaviour {
     public float jumpSpeed = 200f;
     Rigidbody2D playerRg;       // 플레이어 리지드바디
     public Rigidbody2D blockRg;        // 블럭 리지드바디
-    public Collider2D[] blockArrCol = new Collider2D[5];
+    //public Collider2D[] blockArrCol = new Collider2D[5];
     public Collider2D col_player;   // 플레이어의 컬라이더
     public GameObject player;       // 플레이어 오브젝트
     public bool isCollision = false;
@@ -30,7 +30,7 @@ public class PlayerManager : MonoBehaviour {
 
     private Touch tempTouchs;
 
-    public int score = 2600;   // test용 score
+    public int score = 2400;   // test용 score
 
     public static PlayerManager instance = null;
 
@@ -92,12 +92,12 @@ public class PlayerManager : MonoBehaviour {
                     {    //해당 터치가 시작됐다면.
                         var touchedPos = Camera.main.ScreenToWorldPoint(tempTouchs.position);
                         attackOn = true;
-                        Debug.Log("attackOn : " + attackOn);
+                        //Debug.Log("attackOn : " + attackOn);
                         break;   //한 프레임(update)에는 하나만.
                     }
                     else if (tempTouchs.phase == TouchPhase.Ended)  // 터치가 끝났다면.
                     {
-                        Debug.Log("attack 버튼 터치 End");
+                        //Debug.Log("attack 버튼 터치 End");
                         attackOn = false;
                     }
                 }
@@ -128,26 +128,25 @@ public class PlayerManager : MonoBehaviour {
     {
         shieldOn = true;
         // 건물의 콜라이더 활성화
-        // 블럭의 콜라이더를 건물의 콜라이더 자식으로 넣는다.s
-
-
-        if (shield_able)
-        {
-            col_parent.enabled = true;
-            for (int i = 0; i < 5; ++i)
-            {
-                blockArrCol[i].transform.parent = col_parent.transform;
-                blockRg.AddForce(new Vector2(0, jumpSpeed));
-            }
-            //col_origin.GetComponent<Collider2D>().enabled = true;
-            //blockRg.AddForce(new Vector2(0, 100.0f));
-            //col_origin.transform.Translate(0,
-            //        col_origin.transform.position.y + 3, 0);
-            ////shieldOn = false;
-            //col_origin.GetComponent<Collider2D>().enabled = false;
-        }
-        else
-            col_parent.enabled = false;
+        // 블럭의 콜라이더를 건물의 콜라이더 자식으로 넣는다.
+        
+        //if (shield_able)
+        //{
+        //    col_parent.enabled = true;
+        //    for (int i = 0; i < 5; ++i)
+        //    {
+        //        blockArrCol[i].transform.parent = col_parent.transform;
+        //        blockRg.AddForce(new Vector2(0, jumpSpeed));
+        //    }
+        //    //col_origin.GetComponent<Collider2D>().enabled = true;
+        //    //blockRg.AddForce(new Vector2(0, 100.0f));
+        //    //col_origin.transform.Translate(0,
+        //    //        col_origin.transform.position.y + 3, 0);
+        //    ////shieldOn = false;
+        //    //col_origin.GetComponent<Collider2D>().enabled = false;
+        //}
+        //else
+        //    col_parent.enabled = false;
 
     }
 
@@ -171,7 +170,7 @@ public class PlayerManager : MonoBehaviour {
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("OnCollisionEnter2D");
+        //Debug.Log("OnCollisionEnter2D");
 
         // 땅과 충돌
         if (collision.collider.tag == "Collision")
@@ -262,7 +261,7 @@ public class PlayerManager : MonoBehaviour {
 
     public void OnCollisionExit2D(Collision2D collision)
     {
-        Debug.Log("OnCollisionExit2D");
+        //Debug.Log("OnCollisionExit2D");
         col_player.isTrigger = false;
         // 플레이어 y좌표 freeze 되있던 것을 초기화
         playerRg.constraints = RigidbodyConstraints2D.None;
@@ -289,7 +288,7 @@ public class PlayerManager : MonoBehaviour {
     // 트리거 함수 자체는 플레이어의 트리거가 true일 때만 발동.
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("OnTriggerEnter2D");
+        //Debug.Log("OnTriggerEnter2D");
         GameObject newObj = collision.gameObject;
         if (collision.tag == ("block1") || collision.tag == ("block2")
             || collision.tag == ("block3") || collision.tag == ("block4")
