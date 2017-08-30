@@ -30,7 +30,8 @@ public class PlayerManager : MonoBehaviour {
 
     private Touch tempTouchs;
 
-    public int score = 2400;   // test용 score
+    public int score = 0;   // test용 score
+    GameObject scoreText;
 
     public static PlayerManager instance = null;
 
@@ -45,6 +46,7 @@ public class PlayerManager : MonoBehaviour {
             Destroy(gameObject);
         }
 
+        scoreText = GameObject.Find("Score");
         block_destroy = BlockGenerator.instance.BlockDestroy();
 
         this.playerRg = GetComponent<Rigidbody2D>();
@@ -63,7 +65,9 @@ public class PlayerManager : MonoBehaviour {
             SceneManager.LoadScene("Main");
         }
 
-        if(BlockGenerator.instance.block_ypos_min)
+        scoreText.GetComponent<Text>().text = this.score.ToString();    // UI에 점수 갱신
+
+        if (BlockGenerator.instance.block_ypos_min)
         {
             //Debug.Log("block_ypos_min : " + BlockGenerator.instance.block_ypos_min);
             col_player.isTrigger = true;
@@ -157,13 +161,26 @@ public class PlayerManager : MonoBehaviour {
         {
             if (destroy_block == null)
                 return;
-            if(destroy_block.tag == "block5")   // 마지막 블럭일 때, 부모 삭제
+
+            int destroy_block_score = 0;    // 파괴할 블럭의 점수
+
+            if (destroy_block.tag == "block5")   // 마지막 블럭일 때, 부모 삭제
             {
                 GameObject parent = destroy_block.transform.parent.gameObject;
+                destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
                 Destroy(parent);
-                
+                score += destroy_block_score;
+              //  Debug.Log("score : " + score);
+                //score += BlockStatusManager.instance.score;
             }
-            Destroy(destroy_block);
+            else
+            {
+                destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
+                Destroy(destroy_block);
+                score += destroy_block_score;
+                //score += BlockStatusManager.instance.score;
+               // Debug.Log("score : " + score);
+            }
             attackOn = false;
         }
     }
@@ -181,11 +198,16 @@ public class PlayerManager : MonoBehaviour {
             || collision.collider.tag == ("block3") || collision.collider.tag == ("block4")
             || collision.collider.tag == ("block5"))
         {
-            shield_able = true;
+            int destroy_block_score = 0;    // 파괴할 블럭의 점수
+
+            //shield_able = true;
             GameObject newObj = collision.collider.gameObject;
+            destroy_block_score = newObj.GetComponent<BlockStatusManager>().score;
             if (attackOn)  // 공격 버튼만 눌렀을 때.
             {
                 Destroy(newObj.gameObject);
+                score += destroy_block_score;
+               // Debug.Log("score : " + score);
                 attackOn = false;
             }
 
@@ -226,12 +248,16 @@ public class PlayerManager : MonoBehaviour {
             || collision.collider.tag == ("block3") || collision.collider.tag == ("block4")
             || collision.collider.tag == ("block5"))
         {
-            shield_able = true;
+            //shield_able = true;
+            int destroy_block_score = 0;
             GameObject newObj = collision.collider.gameObject;
+            destroy_block_score = newObj.GetComponent<BlockStatusManager>().score;
 
             if (attackOn)  // 공격 버튼만 눌렀을 때.
             {
                 Destroy(newObj.gameObject);
+                score += destroy_block_score;
+               // Debug.Log("score : " + score);
                 attackOn = false;
             }
         }
