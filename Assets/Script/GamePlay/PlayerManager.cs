@@ -7,13 +7,11 @@ using UnityEngine.EventSystems;
 
 public class PlayerManager : MonoBehaviour {
     
-    public float jumpSpeed = 200f;
+    float jumpSpeed = 700f;
     Rigidbody2D playerRg;       // 플레이어 리지드바디
     public Rigidbody2D blockRg;        // 블럭 리지드바디
-    //public Collider2D[] blockArrCol = new Collider2D[5];
     public Collider2D col_player;   // 플레이어의 컬라이더
     public GameObject player;       // 플레이어 오브젝트
-    public bool isCollision = false;
 
     public Collider2D col_parent;       // 블럭의 부모 컬라이더(활성/비활성화용)
 
@@ -22,16 +20,18 @@ public class PlayerManager : MonoBehaviour {
     //public bool block_drop_min = false; // 블럭이 최소 좌표에 도달했는지 확인하는 변수
 
     public bool attackOn = false;    // 공격 버튼이 터치 되었는지 확인하는 변수
-    public bool shieldOn = false;   // 방어 버튼이 터치 되었는지 확인
+    bool shieldOn = false;   // 방어 버튼이 터치 되었는지 확인
 
     public bool block_destroy = false;   // 블럭이 모두 파괴되었는지 확인하는 변수
     public bool ground_collsion = false;     // 플레이어가 땅과 충돌되었는지 확인하는 변수
-    public bool shield_able = false;   // 방어가 가능한 상태인지 판단.
+    bool shield_able = false;   // 방어가 가능한 상태인지 판단.
 
     private Touch tempTouchs;
 
     public int score = 0;   // test용 score
-    GameObject scoreText;
+    public int life = 0;    // test용 life
+    GameObject scoreText;   // score UI
+    GameObject lifeSlider;  // 생명 UI 
 
     public static PlayerManager instance = null;
 
@@ -47,6 +47,8 @@ public class PlayerManager : MonoBehaviour {
         }
 
         scoreText = GameObject.Find("Score");
+        lifeSlider = GameObject.Find("Life");
+
         block_destroy = BlockGenerator.instance.BlockDestroy();
 
         this.playerRg = GetComponent<Rigidbody2D>();
@@ -66,6 +68,7 @@ public class PlayerManager : MonoBehaviour {
         }
 
         scoreText.GetComponent<Text>().text = this.score.ToString();    // UI에 점수 갱신
+        lifeSlider.GetComponent<Slider>().value = life;
 
         if (BlockGenerator.instance.block_ypos_min)
         {

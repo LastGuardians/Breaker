@@ -403,6 +403,7 @@
     <Compile Include="Assets\Script\Character\CharacterImageGenerator.cs" />
     <Compile Include="Assets\Script\CharacterSelection\CharacterSelectionButtonManager.cs" />
     <Compile Include="Assets\Script\CharacterSelection\CharacterSelectionImageGenerator.cs" />
+    <Compile Include="Assets\Script\GamePlay\BlockCollisionManager.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockGenerator.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockStatusManager.cs" />
     <Compile Include="Assets\Script\GamePlay\CameraController.cs" />

@@ -31,7 +31,7 @@ public class BlockGenerator : MonoBehaviour
     //Random r = new Random();
     public int range = 0;      // 확률 범위
     public int grade_range = 0; // 블록 등급 확률 범위
-
+    
     BlockStatusManager[] block_stat = new BlockStatusManager[5];
     public static BlockGenerator instance = null;
 
@@ -107,15 +107,9 @@ public class BlockGenerator : MonoBehaviour
                     blockArr[i].transform.position.y >= -1.7)
                 {
                     block_ypos_min = true;
-                }              
+                }                  
             }
         }
-
-        //if (blockColArr[0].transform.position.y > 0
-        //            || blockColArr[4] == null)
-        //{
-        //    block_ypos_min = false;
-        //}
     }
     
 
@@ -131,6 +125,7 @@ public class BlockGenerator : MonoBehaviour
             return true;
         }
     }
+   
 
     // 블럭 생성 코루틴
     IEnumerator BlockGenerate()
