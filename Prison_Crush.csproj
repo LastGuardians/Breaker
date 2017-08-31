@@ -406,6 +406,7 @@
     <Compile Include="Assets\Script\GamePlay\BlockCollisionManager.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockGenerator.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockStatusManager.cs" />
+    <Compile Include="Assets\Script\GamePlay\ButtonCoolTime.cs" />
     <Compile Include="Assets\Script\GamePlay\CameraController.cs" />
     <Compile Include="Assets\Script\GamePlay\GameStructure.cs" />
     <Compile Include="Assets\Script\GamePlay\PlayerManager.cs" />

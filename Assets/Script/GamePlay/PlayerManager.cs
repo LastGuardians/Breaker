@@ -24,7 +24,7 @@ public class PlayerManager : MonoBehaviour {
 
     public bool block_destroy = false;   // 블럭이 모두 파괴되었는지 확인하는 변수
     public bool ground_collsion = false;     // 플레이어가 땅과 충돌되었는지 확인하는 변수
-    bool shield_able = false;   // 방어가 가능한 상태인지 판단.
+    public bool shield_able = false;   // 방어가 가능한 상태인지 판단.
 
     private Touch tempTouchs;
 
@@ -52,7 +52,7 @@ public class PlayerManager : MonoBehaviour {
         block_destroy = BlockGenerator.instance.BlockDestroy();
 
         this.playerRg = GetComponent<Rigidbody2D>();
-        blockRg = GetComponent<Rigidbody2D>();
+        blockRg = GameObject.Find("BlockGroup").GetComponent<Rigidbody2D>();
                 
         playerRg.velocity = Vector2.zero;
         player.AddComponent<PlayerStatusManager>();
@@ -67,9 +67,11 @@ public class PlayerManager : MonoBehaviour {
             SceneManager.LoadScene("Main");
         }
 
+        // UI 갱신
         scoreText.GetComponent<Text>().text = this.score.ToString();    // UI에 점수 갱신
         lifeSlider.GetComponent<Slider>().value = life;
 
+        // 블럭이 일정 좌표 이상 내려오면 플레이어 트리거 활성화.
         if (BlockGenerator.instance.block_ypos_min)
         {
             //Debug.Log("block_ypos_min : " + BlockGenerator.instance.block_ypos_min);
@@ -86,6 +88,13 @@ public class PlayerManager : MonoBehaviour {
 
 
         BlockDestroy();
+
+        // 원본 블록이 파괴되면, 프리팹 블록을 새로 갱신.
+        if (col_parent == null)
+            col_parent = GameObject.Find("BlockGroup(Clone)").GetComponent<Collider2D>();
+
+        if (blockRg == null)
+            blockRg = GameObject.Find("BlockGroup(Clone)").GetComponent<Rigidbody2D>();
 
 
         if (Input.touchCount > 0)
@@ -110,17 +119,17 @@ public class PlayerManager : MonoBehaviour {
                 }
             }
         }
-        //else if(tempTouchs.phase == TouchPhase.Ended)
-        //else  // 터치가 없으면
-        //{
-        //    attackOn = false;
-        //    //Debug.Log("attackOn : " + attackOn);
-        //}
+
+        if(life == 3)
+        {
+            Debug.Log("Game Over");
+            GameObject.Find("GPGSManager").GetComponent<GPGSManager>().ReportScore(score);
+        }
     }
 
     public void Jump()
     {
-        // 땅에 충돌되어있을 때만 점프.
+        // 땅에 충돌되어있을 때만 점프 가능.
         if(ground_collsion)
             playerRg.AddForce(new Vector2(0, jumpSpeed));
        
@@ -133,28 +142,9 @@ public class PlayerManager : MonoBehaviour {
 
     public void Shield()    // 방어 버튼
     {
-        shieldOn = true;
-        // 건물의 콜라이더 활성화
-        // 블럭의 콜라이더를 건물의 콜라이더 자식으로 넣는다.
+        // 쿨타임 시작
+        GameObject.Find("ShieldButton").GetComponent<ButtonCoolTime>().UseShield();
         
-        //if (shield_able)
-        //{
-        //    col_parent.enabled = true;
-        //    for (int i = 0; i < 5; ++i)
-        //    {
-        //        blockArrCol[i].transform.parent = col_parent.transform;
-        //        blockRg.AddForce(new Vector2(0, jumpSpeed));
-        //    }
-        //    //col_origin.GetComponent<Collider2D>().enabled = true;
-        //    //blockRg.AddForce(new Vector2(0, 100.0f));
-        //    //col_origin.transform.Translate(0,
-        //    //        col_origin.transform.position.y + 3, 0);
-        //    ////shieldOn = false;
-        //    //col_origin.GetComponent<Collider2D>().enabled = false;
-        //}
-        //else
-        //    col_parent.enabled = false;
-
     }
 
     // 파괴할 블럭 처리
@@ -173,16 +163,12 @@ public class PlayerManager : MonoBehaviour {
                 destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
                 Destroy(parent);
                 score += destroy_block_score;
-              //  Debug.Log("score : " + score);
-                //score += BlockStatusManager.instance.score;
             }
             else
             {
                 destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
                 Destroy(destroy_block);
                 score += destroy_block_score;
-                //score += BlockStatusManager.instance.score;
-               // Debug.Log("score : " + score);
             }
             attackOn = false;
         }
@@ -210,7 +196,6 @@ public class PlayerManager : MonoBehaviour {
             {
                 Destroy(newObj.gameObject);
                 score += destroy_block_score;
-               // Debug.Log("score : " + score);
                 attackOn = false;
             }
 

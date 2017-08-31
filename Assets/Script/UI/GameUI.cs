@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameUI : MonoBehaviour {
 
@@ -11,30 +12,23 @@ public class GameUI : MonoBehaviour {
     public GameObject PlayButton;
     public GameObject PauseButton;
 
-    //public void OnMouseDown()
-    //{
-    //    Debug.Log("공격 버튼 down");
-    //    PlayerManager.instance.attackOn = true;
-    //}
-
-    //public void OnMouseUp()
-    //{
-    //    Debug.Log("공격 버튼 up");
-    //    PlayerManager.instance.attackOn = false;
-    //}
-    
+    public void MainScene()
+    {
+        SceneManager.LoadScene("Main");
+        Time.timeScale = 1;
+    }
 
     public void Pause()
     {
-        Time.timeScale = 0;
         PlayButton.SetActive(true);
         PauseButton.SetActive(false);
+        Time.timeScale = 0;
     }
 
     public void Play()
     {
-        Time.timeScale = 1;
         PlayButton.SetActive(false);
         PauseButton.SetActive(true);
+        Time.timeScale = 1;
     }
 }

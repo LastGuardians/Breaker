@@ -13,40 +13,56 @@ using System.Text;
 
 public class GPGSManager : MonoBehaviour {
     
-    public string LoginUrl;
+    string LoginUrl;
 
     public static GPGSManager instance = null;
 
-    public Network nw = new Network();
+    Network nw = new Network();
 
-    public string userdata;
+    string userdata;
 
     private float timer = 0.0f;
 
     public UnityEngine.SocialPlatforms.ILocalUser mainplayeruserdata;
 
 
-    // Use this for initialization
-    void Start () {
-        LoginUrl = "tozha31@tozha31.woobi.co.kr/mobile_php_connect.php";
-
-        StartCoroutine(LoginCor());
-        Login();
-        
-    }
-
     void Awake()
     {
+
+    }
+
+    // Use this for initialization
+    void Start () {
+        DontDestroyOnLoad(this);
+
         if (instance == null)
         {
             instance = this;
+            AudioSource splash_bgm = GameObject.Find("SoundManager").GetComponent<AudioSource>();
+            Destroy(splash_bgm);
+            //instance = new GameObject("GPGSManager").AddComponent<GPGSManager>();
         }
         else if (instance != this)
         {
             //잘못된 인스턴스를 가르키고 있을 경우
             Destroy(gameObject);
         }
+
+        LoginUrl = "tozha31@tozha31.woobi.co.kr/mobile_php_connect.php";
+
+        //StartCoroutine(LoginCor());
+        Login();
+        
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            SceneManager.LoadScene("Main");
+        }
+    }
+
 
     public void Login()
     {
@@ -92,7 +108,7 @@ public class GPGSManager : MonoBehaviour {
                     Debug.LogFormat("SignInCallback MainPlayer Data : {0} ", userdata);
                 }
 
-                StartCoroutine(LoginCor());
+                //StartCoroutine(LoginCor());
                 SceneManager.LoadScene("Main");     // 메인 화면으로 전환
               
             }
@@ -151,6 +167,7 @@ public class GPGSManager : MonoBehaviour {
             if (success)
             {
                 // Report 성공
+                Debug.Log("총 score : " + score);
                 // 그에 따른 처리
             }
             else

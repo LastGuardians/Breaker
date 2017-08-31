@@ -26,6 +26,8 @@ public class BlockGenerator : MonoBehaviour
 
     float span = 10.0f;
     float delta = 0;
+
+    //public List<Block> block_struct;
     
     System.Random r = new System.Random();
     //Random r = new Random();
@@ -36,7 +38,7 @@ public class BlockGenerator : MonoBehaviour
     public static BlockGenerator instance = null;
 
     void Awake()
-    {        
+    {
         if (instance == null)
         {
             instance = this;
