@@ -18,6 +18,11 @@ public class GameUI : MonoBehaviour {
         Time.timeScale = 1;
     }
 
+    public void PlayScene()
+    {
+        SceneManager.LoadScene("GamePlay");
+    }
+
     public void Pause()
     {
         PlayButton.SetActive(true);

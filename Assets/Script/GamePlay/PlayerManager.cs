@@ -120,10 +120,15 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
-        if(life == 3)
+        if(life == 3)   // 게임 오버
         {
             Debug.Log("Game Over");
-            GameObject.Find("GPGSManager").GetComponent<GPGSManager>().ReportScore(score);
+            //ResultManager.instance.score = score;
+            SceneManager.LoadScene("Result");
+            GameObject.Find("ResultManager").GetComponent<ResultManager>().ResultScore(score);
+            GameObject gpgs = GameObject.Find("GPGSManager");
+            if (gpgs != null)
+                gpgs.GetComponent<GPGSManager>().ReportScore(score);
         }
     }
 
