@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class CharacterImageGenerator: MonoBehaviour
 {
-	public GameObject CharacterButton;
+	public GameObject Character;
 	public GameObject Coin;
 	public GameObject Key;
 	public GameObject YesOrNoFrame;
@@ -12,85 +14,114 @@ public class CharacterImageGenerator: MonoBehaviour
 	public GameObject CancelButton;
 	public GameObject Message;
 
-	public UIAtlas CharacterButtonAtlas;
-	public UIAtlas WindowAtlas;
+	public Image CharacterImage;
+	public Image YesOrNoWindowImage;
+	public Image CancelButtonImage;
 
-	public UISprite CharacterButtonSprite;
-	public UISprite YesOrNoWindowSprite;
-	public UISprite CancelButtonSprite;
+	public Button CharacterButton;
 
-	public BoxCollider TargetCollider;
+	public BoxCollider CharacterButtonCollider;
 	public BoxCollider CancelButtonCollider;
 
-	public UILabel CoinLabel;
-	public UILabel KeyLabel;
-	public UILabel MessageLabel;
+	public string CharacterButtonImageName;
 
-	public UIFont MainFont;
+	public int CharacterIndex;
 
 	public static int CoinAmount;
 	public static int KeyAmount;
-	public static string[] CharacterStatusArray = new string[16] { "", "", "", "", "", "", "", "", "", "", "", "", "Locked", "", "", "Locked" };
-	public GameObject[] CharacterButtonArray = new GameObject[16];
+	public static int TargetCharacterIndex;
+
+	public Text CoinText;
+	public Text KeyText;
+	public Text WindowMessage;
+
+	public Font MainFont;
+
+	public Sprite[] OpenedCharacterSpriteArray = new Sprite[12];
+	public Sprite[] LockedCharacterSpriteArray = new Sprite[12];
+	public static string[] CharacterStatusArray = new string[12] { "Cat", "Frog", "Deer", "Monkey", "Locked", "Locked", "Locked", "Locked", "Locked", "Locked", "Locked", "Locked" };
+	public GameObject[] CharacterButtonArray = new GameObject[12];
+
 
 	void Start()
     {
 		GenerateImage();
+		GenerateLabel();
 	}
 
 	public void GenerateImage()
 	{
-		KeyAmount = 10;
-		CoinAmount = 100;
+		OpenedCharacterSpriteArray = Resources.LoadAll<Sprite>("Character/Wanted/Opened");
+		LockedCharacterSpriteArray = Resources.LoadAll<Sprite>("Character/Wanted/Locked");
+
 		for (int i = 1; i <= 4; i++)
 		{
-			for (int j = 1; j <= 4; j++)
+			for (int j = 1; j <= 3; j++)
 			{
-				CharacterButton = new GameObject(string.Format("SelectButton{0}", 4 * (i - 1) + j)); // 버튼 오브젝트 생성
-				CharacterButton.transform.parent = GameObject.Find("UI Root (2D)").transform; // UI Root의 자식으로 이동
-				CharacterButton.layer = 9; //레이어를 GUI로 바꿈
+				CharacterIndex = 3 * (i - 1) + j - 1;
+				if (CharacterStatusArray[CharacterIndex] == "Locked")
+				{
+					Character = new GameObject(string.Format("SelectButton{0}{1}", 3 * (i - 1) + j, "Locked")); // 버튼 오브젝트 생성
+					Character.transform.parent = GameObject.Find("Content").transform; // Content의 자식으로 이동
 
-				CharacterButtonSprite = CharacterButton.AddComponent<UISprite>();
-				TargetCollider = CharacterButton.AddComponent<BoxCollider>();
+					CharacterImage = Character.AddComponent<Image>();
+					CharacterButton = Character.AddComponent<Button>();
 
-				CharacterButtonSprite.atlas = CharacterButtonAtlas;
-				CharacterButtonSprite.spriteName = "select" + (4 * (i - 1) + j).ToString() + CharacterStatusArray[4 * (i - 1) + j - 1];
-				CharacterButtonSprite.depth = 1;
+					CharacterButton.onClick.AddListener(() => LoadWindow());
 
-				System.Type ButtonScript = System.Type.GetType("CharacterButtonManager");
-				CharacterButton.AddComponent(ButtonScript);
+					CharacterImage.sprite = LockedCharacterSpriteArray[CharacterIndex];
+				}
+				else
+				{
+					Character = new GameObject(string.Format("SelectButton{0}", 3 * (i - 1) + j)); // 버튼 오브젝트 생성
+					Character.transform.parent = GameObject.Find("Content").transform; // Content의 자식으로 이동
 
-				CharacterButton.transform.localScale = new Vector3(80, 120, 0);
-				CharacterButton.transform.localPosition = new Vector3(100 * j - 250, 130 * (5 - i) - 300, 0);
+					CharacterImage = Character.AddComponent<Image>();
+					CharacterButton = Character.AddComponent<Button>();
 
-				CharacterButtonArray[4 * (i - 1) + j - 1] = CharacterButton;
+					CharacterButton.onClick.AddListener(() => LoadSelection(CharacterIndex));
+
+					CharacterImage.sprite = OpenedCharacterSpriteArray[CharacterIndex];
+				}
+
+				Character.transform.localScale = new Vector3(2.2f, 3.3f, 0);
+				Character.transform.localPosition = new Vector3(230 * j - 450, 340 * (5 - i) - 1740, 0);
+
+				CharacterButtonArray[3 * (i - 1) + j - 1] = Character;
 			}
 		}
+	}
+
+	public void GenerateLabel()
+	{
+		KeyAmount = 10;
+		CoinAmount = 100;
 
 		//코인 보유량 라벨 생성
-		Coin = new GameObject("CoinAmountLabel");
-		Coin.transform.parent = GameObject.Find("UI Root (2D)").transform;
-		Coin.layer = 9;
+		Coin = new GameObject("CoinAmountText");
+		Coin.transform.parent = GameObject.Find("Canvas").transform;
+		Coin.transform.localPosition = new Vector3(-120, 550, 0);
 
-		CoinLabel = Coin.AddComponent<UILabel>();
-		CoinLabel.depth = 1;
-		CoinLabel.font = MainFont;
+		CoinText = Coin.AddComponent<Text>();
+		CoinText.font = MainFont;
+		CoinText.fontSize = 40;
+		CoinText.text = "COIN\n" + CoinAmount.ToString();
+		CoinText.alignment = TextAnchor.UpperCenter;
 
-		CoinLabel.text = "Coin " + CoinAmount.ToString();
-		Coin.transform.localScale = new Vector3(30, 30, 0);
-		Coin.transform.localPosition = new Vector3(-60, 340, 0);
+		Coin.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
 
 		//키 보유량 라벨 생성
-		Key = new GameObject("KeyAmountLabel");
-		Key.transform.parent = GameObject.Find("UI Root (2D)").transform;
-		Key.layer = 9;
-		KeyLabel = Key.AddComponent<UILabel>();
-		KeyLabel.depth = 1;
-		KeyLabel.font = MainFont;
+		Key = new GameObject("KeyAmountText");
+		Key.transform.parent = GameObject.Find("Canvas").transform;
+		Key.transform.localPosition = new Vector3(120, 550, 0);
 
-		KeyLabel.text = "Key " + KeyAmount.ToString();
-		Key.transform.localScale = new Vector3(30, 30, 0);
-		Key.transform.localPosition = new Vector3(80, 340, 0);
+		KeyText = Key.AddComponent<Text>();
+		KeyText.font = MainFont;
+		KeyText.fontSize = 40;
+		KeyText.text = "KEY\n" + KeyAmount.ToString();
+		KeyText.alignment = TextAnchor.UpperCenter;
+
+		Key.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
 	}
 
 	public void GenerateWindow()
@@ -98,67 +129,71 @@ public class CharacterImageGenerator: MonoBehaviour
 		if (YesOrNoFrame == null)
 		{
 			//선택창의 부모 생성
-			YesOrNoFrame = new GameObject("YesOrNoWindow");
-			YesOrNoFrame.transform.parent = GameObject.Find("UI Root (2D)").transform;
-			YesOrNoFrame.layer = 9;
+			YesOrNoFrame = new GameObject("YesOrNoFrame");
+			YesOrNoFrame.transform.parent = GameObject.Find("Canvas").transform;
 
-			System.Type WindowScript = System.Type.GetType("UIAnimation");
-
-			YesOrNoFrame.transform.localScale = new Vector3(400, 200, 0);
-			YesOrNoFrame.AddComponent(WindowScript);
+			YesOrNoFrame.transform.localPosition = new Vector3(0, 0, 0);
 
 			// 선택창 생성
 			YesOrNoWindow = new GameObject("YesOrNoWindow");
-			YesOrNoWindow.transform.parent = YesOrNoFrame.transform; // UI Root의 자식으로 이동
-			YesOrNoWindow.layer = 9; //레이어를 GUI로 바꿈
+			YesOrNoWindow.transform.parent = YesOrNoFrame.transform;
+			YesOrNoWindowImage = YesOrNoWindow.AddComponent<Image>();
+			YesOrNoWindowImage.sprite = Resources.Load<Sprite>("UI/yesOrNo");
 
-			YesOrNoWindowSprite = YesOrNoWindow.AddComponent<UISprite>();
 
-			YesOrNoWindowSprite.atlas = WindowAtlas;
-			YesOrNoWindowSprite.spriteName = "YesOrNo";
-			YesOrNoWindowSprite.depth = 3;
-
-			YesOrNoWindow.transform.localScale = new Vector3(1f, 1f, 0);
+			YesOrNoWindow.GetComponent<RectTransform>().sizeDelta = new Vector2(700, 300);
 			YesOrNoWindow.transform.localPosition = new Vector3(0, 0, 0);
 
 			// 닫기 버튼 생성
 			CancelButton = new GameObject("CancelButton");
 			CancelButton.transform.parent = YesOrNoFrame.transform;
-			CancelButton.layer = 9; //레이어를 GUI로 바꿈
 
-			CancelButtonSprite = CancelButton.AddComponent<UISprite>();
-			CancelButtonCollider = CancelButton.AddComponent<BoxCollider>();
+			CancelButtonImage = CancelButton.AddComponent<Image>();
+			CancelButtonImage.sprite = Resources.Load<Sprite>("UI/cancelButton");
 
-			CancelButtonSprite.atlas = WindowAtlas;
-			CancelButtonSprite.spriteName = "cancel";
-			CancelButtonSprite.depth = 4;
+			CancelButton.AddComponent<Button>();
+			CancelButton.GetComponent<Button>().onClick.AddListener(() => CancelWindow(YesOrNoFrame));
 
-			System.Type CancelButtonScript = System.Type.GetType("CharacterButtonManager");
-			CancelButton.AddComponent(CancelButtonScript);
-
-			CancelButton.transform.localScale = new Vector3(0.4f, 0.3f, 0);
-			CancelButton.transform.localPosition = new Vector3(0.25f, -0.2f, 0);
+			CancelButton.GetComponent<RectTransform>().sizeDelta = new Vector2(180, 60);
+			CancelButton.transform.localPosition = new Vector3(150, -70, 0);
 
 			YesOrNoFrame.SetActive(true);
 			CharacterButtonController(false);
 
 			// 메시지 생성
-			Message = new GameObject("MessageLabel");
+			Message = new GameObject("MessageText");
 			Message.transform.parent = YesOrNoFrame.transform;
-			Message.layer = 9;
-			MessageLabel = Message.AddComponent<UILabel>();
-			MessageLabel.depth = 5;
-			MessageLabel.font = MainFont;
+			WindowMessage = Message.AddComponent<Text>();
+			WindowMessage.text = "DO YOU WANT TO UNLOCK THE CHARACTER?";
+			WindowMessage.font = MainFont;
+			WindowMessage.fontSize = 35;
 
-			MessageLabel.text = "잠금을 해제하시겠\n습니까?";
-			Message.transform.localScale = new Vector3(0.1f, 0.2f, 0);
-			Message.transform.localPosition = new Vector3(0f, 0.2f, 0f);
+			Message.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 100);
+			Message.transform.localPosition = new Vector3(20, 40, 0);
 		}
 		else
 		{
 			YesOrNoFrame.SetActive(true);
 			CharacterButtonController(false);
 		}
+	}
+
+	public void LoadWindow()
+	{
+		GenerateWindow();
+		CharacterButtonController(false);
+	}
+
+	public void CancelWindow(GameObject TargetObject)
+	{
+		TargetObject.SetActive(false);
+		CharacterButtonController(true);
+	}
+
+	public void LoadSelection(int CharacterIndex)
+	{
+		TargetCharacterIndex = CharacterIndex;
+		SceneManager.LoadScene("SpecificCharacter");
 	}
 
 	public void CharacterButtonController(bool enable)
@@ -167,14 +202,14 @@ public class CharacterImageGenerator: MonoBehaviour
 		{
 			foreach (GameObject button in CharacterButtonArray)
 			{
-				button.AddComponent<BoxCollider>();
+				button.GetComponent<Button>().interactable = true;
 			}
 		}
 		else
 		{
 			foreach (GameObject button in CharacterButtonArray)
 			{
-				Destroy(button.GetComponent<BoxCollider>());
+				button.GetComponent<Button>().interactable = false;
 			}
 		}
 	}

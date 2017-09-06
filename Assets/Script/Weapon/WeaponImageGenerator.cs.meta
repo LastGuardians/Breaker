@@ -1,0 +1,26 @@
+fileFormatVersion: 2
+guid: 8743e32a596694f4ebb40865295a93f1
+timeCreated: 1504561012
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - AbilityGauge: {instanceID: 0}
+  - RedAbilityGauge: {instanceID: 0}
+  - Coin: {instanceID: 0}
+  - Key: {instanceID: 0}
+  - Plus: {instanceID: 0}
+  - Minus: {instanceID: 0}
+  - SaveButton: {instanceID: 0}
+  - CancelButton: {instanceID: 0}
+  - AbilityGaugeImage: {instanceID: 0}
+  - SaveButtonSprite: {instanceID: 0}
+  - CancelButtonSprite: {instanceID: 0}
+  - CoinText: {instanceID: 0}
+  - KeyText: {instanceID: 0}
+  - MainFont: {fileID: 12800000, guid: 039d673f307f2574c91e54383d1bda00, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
