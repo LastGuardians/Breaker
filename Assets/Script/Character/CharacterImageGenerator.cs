@@ -25,8 +25,6 @@ public class CharacterImageGenerator: MonoBehaviour
 
 	public string CharacterButtonImageName;
 
-	public int CharacterIndex;
-
 	public static int CoinAmount;
 	public static int KeyAmount;
 	public static int TargetCharacterIndex;
@@ -58,7 +56,7 @@ public class CharacterImageGenerator: MonoBehaviour
 		{
 			for (int j = 1; j <= 3; j++)
 			{
-				CharacterIndex = 3 * (i - 1) + j - 1;
+				int CharacterIndex = 3 * (i - 1) + j - 1;
 				if (CharacterStatusArray[CharacterIndex] == "Locked")
 				{
 					Character = new GameObject(string.Format("SelectButton{0}{1}", 3 * (i - 1) + j, "Locked")); // 버튼 오브젝트 생성
