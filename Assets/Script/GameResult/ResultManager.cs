@@ -14,6 +14,7 @@ public class ResultManager : MonoBehaviour
 
     private void Start()
     {
+        //Debug.Log("result score : " + score);
         if (instance == null)
         {
             instance = this;
@@ -24,6 +25,12 @@ public class ResultManager : MonoBehaviour
             Destroy(gameObject);
         }
         scoreText = GameObject.Find("Score");
+    }
+
+    private void Update()
+    {
+        
+        ResultScore(score);
     }
 
     public void ResultScore(int score_parm)

@@ -10,6 +10,7 @@ using GooglePlayGames.BasicApi;
 using System.Net;
 using System.IO;
 using System.Text;
+using LitJson;
 
 public class GPGSManager : MonoBehaviour {
     
@@ -24,6 +25,12 @@ public class GPGSManager : MonoBehaviour {
     private float timer = 0.0f;
 
     public UnityEngine.SocialPlatforms.ILocalUser mainplayeruserdata;
+
+
+    public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
+    public string userId = "TestUser";
+    public int coin = 0;
+    public int prisonKey = 0;
 
 
     void Awake()
@@ -48,8 +55,9 @@ public class GPGSManager : MonoBehaviour {
             Destroy(gameObject);
         }
 
-        LoginUrl = "tozha31@tozha31.woobi.co.kr/mobile_php_connect.php";
+        //LoginUrl = "tozha31@tozha31.woobi.co.kr/mobile_php_connect.php";
 
+        //userId = mainplayeruserdata.id;
         //StartCoroutine(LoginCor());
         Login();
         
@@ -57,12 +65,114 @@ public class GPGSManager : MonoBehaviour {
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            SceneManager.LoadScene("Main");
-        }
+        //if (Input.GetKeyDown(KeyCode.A))
+        //{
+        //    SceneManager.LoadScene("Main");
+        //}
     }
 
+    // 서버와 통신할 코루틴 생성
+    public void CreateUser()
+    {
+        StartCoroutine(_CreateUser(userId));
+    }
+
+    public void GetUser()
+    {
+        StartCoroutine(_GetUser(userId));
+    }
+
+    public void SetUser()
+    {
+        StartCoroutine(_SetUser(userId, coin, prisonKey));
+    }
+
+    public void DeleteUser()
+    {
+        StartCoroutine(_DeleteUser(userId));
+    }
+
+
+    /* 유저 생성 */
+    public IEnumerator _CreateUser(string userId)
+    {
+        Debug.Log("_CreateUser 코루틴 시작");
+        string url = baseUrl + "/user/create";
+        WWWForm form = new WWWForm();
+        form.headers["content-type"] = "application/json";
+        form.AddField("userId", userId);
+
+        WWW www = new WWW(url, form);
+        yield return www;
+
+        PrintLog(www.error);
+    }
+
+    /* 유저 조회 */
+    public IEnumerator _GetUser(string userId)
+    {
+        Debug.Log("_GetUser 코루틴 시작");
+        Debug.Log("userId: " + userId);
+        string url = baseUrl + "/user/" + userId;
+        WWW www = new WWW(url);
+        yield return www;
+
+        PrintLog(www.error);
+        try
+        {
+            if (www.error != null)   // 조회한 유저가 없음.
+            {
+                StartCoroutine(_CreateUser(mainplayeruserdata.userName));
+            }
+        }
+        catch(KeyNotFoundException ex)
+        {
+
+        }
+             
+
+        JsonData json = JsonMapper.ToObject(www.text);
+        PrintLog(json["userId"] + " " + json["coin"] + " " + json["prisonKey"]);
+        
+    }
+
+    /* 유저 갱신 */
+    public IEnumerator _SetUser(string userId, int coin, int prisonKey)
+    {
+        string url = baseUrl + "/user/" + userId + "/update";
+        WWWForm form = new WWWForm();
+        form.headers["content-type"] = "application/json";
+        form.AddField("coin", coin);
+        form.AddField("prisonKey", prisonKey);
+
+        WWW www = new WWW(url, form);
+        yield return www;
+
+        PrintLog(www.error);
+    }
+
+
+    /* 유저 삭제 */
+    public IEnumerator _DeleteUser(string userId)
+    {
+        string url = baseUrl + "/user/" + userId + "/delete";
+        WWWForm form = new WWWForm();
+        form.headers["content-type"] = "application/json";
+        form.AddField("padding", 0);
+
+        WWW www = new WWW(url, form);
+        yield return www;
+
+        PrintLog(www.error);
+    }
+
+    void PrintLog(string message)
+    {
+        if (!string.IsNullOrEmpty(message))
+        {
+            Debug.Log(message);
+        }
+    }
 
     public void Login()
     {
@@ -107,9 +217,9 @@ public class GPGSManager : MonoBehaviour {
                         );
                     Debug.LogFormat("SignInCallback MainPlayer Data : {0} ", userdata);
                 }
-
-                //StartCoroutine(LoginCor());
                 SceneManager.LoadScene("Main");     // 메인 화면으로 전환
+                
+                StartCoroutine(_GetUser(mainplayeruserdata.userName));    // 로그인한 유저 조회
               
             }
             else

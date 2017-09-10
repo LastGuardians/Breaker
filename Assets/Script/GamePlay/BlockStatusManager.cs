@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using System.Diagnostics;
 
 public class BlockStatusManager : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class BlockStatusManager : MonoBehaviour
     public int score = 0;           // 블록의 점수
     public int coin = 0;            // 블록 깼을 때 얻는 코인 수
     public int key = 0;             // 블록 깼을 때 얻는 열쇠 수
-
+    
     System.Random r = new System.Random();
     int range = 0;
     //public int type_ratio = 0;    // 블록 타입 비율(기본 or 강화)
@@ -29,11 +30,7 @@ public class BlockStatusManager : MonoBehaviour
 
     void Update()
     {
-        //BlockSetting();
-        //if (BlockGenerator.instance.range == 1)
-        //    BlockUpgrade();
-        //else
-        //    BlockNormal();
+
     }
 
     public void BlockNormal()      // 기본 블럭 셋팅

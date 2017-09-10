@@ -90,10 +90,11 @@ public class PlayerManager : MonoBehaviour {
         BlockDestroy();
 
         // 원본 블록이 파괴되면, 프리팹 블록을 새로 갱신.
-        if (col_parent == null)
+        if (null == col_parent)
+            //col_parent = BlockGenerator.instance.blockParents.GetComponent<Collider2D>();
             col_parent = GameObject.Find("BlockGroup(Clone)").GetComponent<Collider2D>();
-
-        if (blockRg == null)
+        
+        if (null == blockRg)
             blockRg = GameObject.Find("BlockGroup(Clone)").GetComponent<Rigidbody2D>();
 
 
@@ -122,10 +123,15 @@ public class PlayerManager : MonoBehaviour {
 
         if(life == 3)   // 게임 오버
         {
-            Debug.Log("Game Over");
-            //ResultManager.instance.score = score;
-            SceneManager.LoadScene("Result");
-            GameObject.Find("ResultManager").GetComponent<ResultManager>().ResultScore(score);
+            //Debug.Log("Game Over");
+            GameObject game_manage = GameObject.Find("GameManager");
+            if(game_manage != null)
+            {
+                GameManager.instance.game_score = score;
+                SceneManager.LoadScene("Result");
+            }           
+            //GameObject.Find("ResultManager").GetComponent<ResultManager>().ResultScore(1000);
+
             GameObject gpgs = GameObject.Find("GPGSManager");
             if (gpgs != null)
                 gpgs.GetComponent<GPGSManager>().ReportScore(score);
@@ -137,7 +143,6 @@ public class PlayerManager : MonoBehaviour {
         // 땅에 충돌되어있을 때만 점프 가능.
         if(ground_collsion)
             playerRg.AddForce(new Vector2(0, jumpSpeed));
-       
     }
 
     public void Attack()    // pc 테스트용 공격 함수

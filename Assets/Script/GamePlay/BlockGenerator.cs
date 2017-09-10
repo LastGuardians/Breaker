@@ -20,19 +20,19 @@ public class BlockGenerator : MonoBehaviour
     public GameObject blockParents;
     //public GameObject blockGroup;
     public GameObject[] blockArr = new GameObject[5];
-    public Collider2D[] blockColArr = new Collider2D[5];
-    //public Block[] blockData = new Block[5];
+    public Rigidbody2D block_gravity = new Rigidbody2D();
     public bool block_ypos_min = false;
 
-    float span = 10.0f;
-    float delta = 0;
+    float warning_time = 0;  // 경고가 발동될 시간
+    bool warning_start = false; // 경고 발생 확인 변수
 
-    //public List<Block> block_struct;
+    float ypos = 16;
     
     System.Random r = new System.Random();
     //Random r = new Random();
     public int range = 0;      // 확률 범위
     public int grade_range = 0; // 블록 등급 확률 범위
+    public int warning_range = 0; // 경고 발동 확률 범위
     
     BlockStatusManager[] block_stat = new BlockStatusManager[5];
     public static BlockGenerator instance = null;
@@ -54,16 +54,14 @@ public class BlockGenerator : MonoBehaviour
             blockArr[i] = GameObject.Find("BlockGroup").transform.Find("building" + (i + 1).ToString()).gameObject;       
             blockArr[i].AddComponent<BlockStatusManager>();
             
-        }
-        
+        }        
     }
 
 
     void Start()
     {
         BlockDestroy();
-        range = r.Next(0, 5);
-       
+        range = r.Next(0, 5);        
 
         for (int i = 0; i < 5; ++i)
         {
@@ -73,16 +71,37 @@ public class BlockGenerator : MonoBehaviour
             else
                 blockArr[i].GetComponent<BlockStatusManager>().BlockNormal();
         }
+
+        // 블럭 중력 
+        block_gravity = GameObject.Find("BlockGroup").GetComponent<Rigidbody2D>();
+        
     }
 
     void Update()
     {
+     
+        // 경고음 발동시간 측정 시작
+        warning_time += Time.deltaTime;
+        warning_range = r.Next(100, 10000);
+        if (warning_time >= 10 && warning_time < 60)
+        {
+            if (warning_range < 1000)
+            {
+                //Debug.Log("warning_range : " + warning_range);
+                warning_start = true;
+                //WarningStart();
+            }
+            //UnityEngine.Debug.Log("warning_time : " + warning_time);
+        }
+
 
         if (BlockDestroy()) // 블럭이 모두 파괴되었을 때.
         {
             blockParents = Instantiate(Resources.Load("Background/BlockGroup"),
-            new Vector2(transform.position.x, (transform.position.y) + 20), transform.rotation) as GameObject;
-            //blockParents.AddComponent<BlockGenerator>();
+            new Vector2(transform.position.x, (transform.position.y) + ypos), transform.rotation) as GameObject;
+
+            if (null == block_gravity)
+                block_gravity = blockParents.GetComponent<Rigidbody2D>();
 
             range = r.Next(0, 5);
             for (int i = 0; i < 5; ++i)
@@ -103,17 +122,27 @@ public class BlockGenerator : MonoBehaviour
             for (int i = 0; i < 5; ++i)
             {
                 if (blockArr[i] == null)
-                    continue;
+                    continue;                
 
                 if (blockArr[i].transform.position.y < -0.3 &&
                     blockArr[i].transform.position.y >= -1.7)
                 {
                     block_ypos_min = true;
-                }                  
+                }
             }
         }
     }
     
+    // 경고음 발동 함수
+    void WarningStart()
+    {
+        if(warning_start)
+        {
+            block_gravity.gravityScale *= (float)1.3;
+            warning_start = false;
+        }
+    }
+
 
     // 블럭이 모두 파괴되었는지 체크
     public bool BlockDestroy()

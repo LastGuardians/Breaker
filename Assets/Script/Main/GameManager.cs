@@ -5,16 +5,35 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    public int game_score = 0;
+    
+    public static GameManager instance = null;
 
+    // Use this for initialization
+    void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            //잘못된 인스턴스를 가르키고 있을 경우
+            Destroy(gameObject);
+        }
+        DontDestroyOnLoad(this);
         //Debug.Log(GPGSManager.instance.userdata);
-	}
+    }
 
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
+        
+        if (GameObject.Find("ResultManager") != null)
+        {
+            ResultManager.instance.score = game_score;
+        }
     }
 
     public void PlayScene()
