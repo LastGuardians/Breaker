@@ -32,13 +32,14 @@ public class WeaponImageGenerator : MonoBehaviour
 	public Sprite[] AbilityGaugeArray = new Sprite[3];
 	public Sprite[] UpgradeButtonArray = new Sprite[2];
 
-	public string[] WeaponStatusArray = new string[3] { "", "", "Locked" };
+	public string[] WeaponStatusArray = new string[3] { "", "", "" };
 
 	public GameObject[] LockWeaponArray = new GameObject[3];
 	public GameObject[,,] WeaponObjectArray = new GameObject[3, 3, 10];
 
 	public int[,] WeaponAbilityArray = new int[3, 3] {{4, 2, 7}, {3, 9, 4}, {2, 5, 7}};
 	public int[,] TempAbilityArray = new int[3, 3] {{ 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }};
+	public int[] StatusLocationArray = new int[3] { 50, -280, 50 };
 	
 
 	private void Start()
@@ -85,7 +86,7 @@ public class WeaponImageGenerator : MonoBehaviour
 					AbilityGaugeImage = AbilityGauge.AddComponent<Image>();
 
 					AbilityGauge.GetComponent<RectTransform>().sizeDelta = new Vector2(10, 40);
-					AbilityGauge.transform.localPosition = new Vector3(20 * k + 80, - 360 * i - 70 * j + 830, 0);
+					AbilityGauge.transform.localPosition = new Vector3(20 * k + 80 + StatusLocationArray[i - 1], - 330 * i - 70 * j + 690, 0);
 
 					AbilityGaugeImage.sprite = AbilityGaugeArray[0];
 
@@ -167,7 +168,7 @@ public class WeaponImageGenerator : MonoBehaviour
 				Minus.GetComponent<Button>().onClick.AddListener(() => Subtract(TempI, TempJ));
 
 				Minus.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 40);
-				Minus.transform.localPosition = new Vector3(60, -360 * i - 70 * j + 830, 0);
+				Minus.transform.localPosition = new Vector3(60 + StatusLocationArray[i - 1], -330 * i - 70 * j + 690, 0);
 
 				//플러스 버튼 생성
 				Plus = new GameObject("PlusButton" + i.ToString() + j.ToString());
@@ -180,7 +181,7 @@ public class WeaponImageGenerator : MonoBehaviour
 				Plus.GetComponent<Button>().onClick.AddListener(() => Add(TempI, TempJ));
 
 				Plus.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 40);
-				Plus.transform.localPosition = new Vector3(320, -360 * i - 70 * j + 830, 0);
+				Plus.transform.localPosition = new Vector3(320 + StatusLocationArray[i - 1], -330 * i - 70 * j + 690, 0);
 				SetLockLast();
 			}
 		}
@@ -203,7 +204,7 @@ public class WeaponImageGenerator : MonoBehaviour
 			SaveButton.GetComponent<Button>().onClick.AddListener(() => SaveStatus());
 
 			SaveButton.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 40);
-			SaveButton.transform.localPosition = new Vector3(280, -360 * i + 560);
+			SaveButton.transform.localPosition = new Vector3(280 + StatusLocationArray[i - 1], -330 * i + 390);
 
 			//취소 버튼 생성
 			CancelButton = new GameObject("CancelButton" + i.ToString());
@@ -216,7 +217,7 @@ public class WeaponImageGenerator : MonoBehaviour
 			CancelButton.GetComponent<Button>().onClick.AddListener(() => CancelStatus());
 
 			CancelButton.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 40);
-			CancelButton.transform.localPosition = new Vector3(30, -360 * i + 560);
+			CancelButton.transform.localPosition = new Vector3(30 + StatusLocationArray[i - 1], -330 * i + 390);
 			SetLockLast();
 		}
 	}

@@ -46,4 +46,9 @@ public class GameManager : MonoBehaviour {
     {
         SceneManager.LoadScene("Character");
     }
+
+	public void WeaponSelect()
+	{
+		SceneManager.LoadScene("Weapon");
+	}
 }
