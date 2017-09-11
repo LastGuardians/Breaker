@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ResultManager : MonoBehaviour
 {
@@ -37,5 +38,25 @@ public class ResultManager : MonoBehaviour
     {
         scoreText.GetComponent<Text>().text = score_parm.ToString();
        // scoreText = GameObject.Find("Score");
+       
+    }
+
+    public void MainScene()
+    {
+        SceneManager.LoadScene("Main");
+        Time.timeScale = 1;
+
+        Destroy(GameManager.instance);  // 임시방편. 수정 필요.
+    }
+    
+    public void PlayScene()
+    {
+        SceneManager.LoadScene("GamePlay");
+        Time.timeScale = 1;
+    }
+
+    void OnClick()
+    {
+        
     }
 }

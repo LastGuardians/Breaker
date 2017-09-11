@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour {
     public void PlayScene()
     {
         SceneManager.LoadScene("GamePlay");
+        //Debug.Log("GamePlay");
     }
 
     public void CharacterSelect()

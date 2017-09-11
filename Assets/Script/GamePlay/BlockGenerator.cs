@@ -26,7 +26,7 @@ public class BlockGenerator : MonoBehaviour
     float warning_time = 0;  // 경고가 발동될 시간
     bool warning_start = false; // 경고 발생 확인 변수
 
-    float ypos = 16;
+    float ypos = 30;
     
     System.Random r = new System.Random();
     //Random r = new Random();

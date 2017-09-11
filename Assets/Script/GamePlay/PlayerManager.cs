@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class PlayerManager : MonoBehaviour {
     
-    float jumpSpeed = 700f;
+    float jumpSpeed = 1000f;
     Rigidbody2D playerRg;       // 플레이어 리지드바디
     public Rigidbody2D blockRg;        // 블럭 리지드바디
     public Collider2D col_player;   // 플레이어의 컬라이더
@@ -33,6 +33,10 @@ public class PlayerManager : MonoBehaviour {
     GameObject scoreText;   // score UI
     GameObject lifeSlider;  // 생명 UI 
 
+    AudioClip jumping_sound;
+
+    public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
+
     public static PlayerManager instance = null;
 
     void Start () {
@@ -56,6 +60,7 @@ public class PlayerManager : MonoBehaviour {
                 
         playerRg.velocity = Vector2.zero;
         player.AddComponent<PlayerStatusManager>();
+        
     }
 
     void Update()
@@ -107,6 +112,7 @@ public class PlayerManager : MonoBehaviour {
                     tempTouchs = Input.GetTouch(i);
                     if (tempTouchs.phase == TouchPhase.Began)
                     {    //해당 터치가 시작됐다면.
+                        SoundManager.instance.PlayWeaponSwingSound();
                         var touchedPos = Camera.main.ScreenToWorldPoint(tempTouchs.position);
                         attackOn = true;
                         //Debug.Log("attackOn : " + attackOn);
@@ -129,25 +135,49 @@ public class PlayerManager : MonoBehaviour {
             {
                 GameManager.instance.game_score = score;
                 SceneManager.LoadScene("Result");
+
             }           
             //GameObject.Find("ResultManager").GetComponent<ResultManager>().ResultScore(1000);
 
             GameObject gpgs = GameObject.Find("GPGSManager");
             if (gpgs != null)
+            {
                 gpgs.GetComponent<GPGSManager>().ReportScore(score);
+                StartCoroutine(_CreateRank(gpgs.GetComponent<GPGSManager>().mainplayeruserdata.userName,
+                    GameManager.instance.game_score));
+            }
         }
+    }
+
+    /* 랭킹 생성 */
+    public IEnumerator _CreateRank(string userId, int score)
+    {
+        string url = baseUrl + "/rank/create";
+        WWWForm form = new WWWForm();
+        form.headers["content-type"] = "application/json";
+        form.AddField("userId", userId);
+        form.AddField("score", score);
+
+        WWW www = new WWW(url, form);
+        yield return www;
+
+        //PrintLog(www.error);
     }
 
     public void Jump()
     {
         // 땅에 충돌되어있을 때만 점프 가능.
         if(ground_collsion)
+        {
             playerRg.AddForce(new Vector2(0, jumpSpeed));
+            SoundManager.instance.PlayJumpSound();
+        }
     }
 
     public void Attack()    // pc 테스트용 공격 함수
     {      
-        attackOn = true;        
+        attackOn = true;
+        SoundManager.instance.PlayWeaponSwingSound();
     }
 
     public void Shield()    // 방어 버튼
@@ -172,12 +202,14 @@ public class PlayerManager : MonoBehaviour {
                 GameObject parent = destroy_block.transform.parent.gameObject;
                 destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
                 Destroy(parent);
+                SoundManager.instance.PlayDestroySound();
                 score += destroy_block_score;
             }
             else
             {
                 destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
                 Destroy(destroy_block);
+                SoundManager.instance.PlayDestroySound();
                 score += destroy_block_score;
             }
             attackOn = false;
@@ -205,6 +237,7 @@ public class PlayerManager : MonoBehaviour {
             if (attackOn)  // 공격 버튼만 눌렀을 때.
             {
                 Destroy(newObj.gameObject);
+                SoundManager.instance.PlayDestroySound();
                 score += destroy_block_score;
                 attackOn = false;
             }
@@ -254,6 +287,7 @@ public class PlayerManager : MonoBehaviour {
             if (attackOn)  // 공격 버튼만 눌렀을 때.
             {
                 Destroy(newObj.gameObject);
+                SoundManager.instance.PlayDestroySound();
                 score += destroy_block_score;
                // Debug.Log("score : " + score);
                 attackOn = false;

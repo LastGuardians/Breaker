@@ -65,10 +65,10 @@ public class GPGSManager : MonoBehaviour {
 
     private void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.A))
-        //{
-        //    SceneManager.LoadScene("Main");
-        //}
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            SceneManager.LoadScene("Main");
+        }
     }
 
     // 서버와 통신할 코루틴 생성
@@ -129,11 +129,9 @@ public class GPGSManager : MonoBehaviour {
         {
 
         }
-             
 
         JsonData json = JsonMapper.ToObject(www.text);
         PrintLog(json["userId"] + " " + json["coin"] + " " + json["prisonKey"]);
-        
     }
 
     /* 유저 갱신 */
@@ -287,34 +285,7 @@ public class GPGSManager : MonoBehaviour {
             }
         });
 
-    }
-
-    public void ShowLeaderboardUI()     // 리더보드 표시 
-    {
-        // Sign In 이 되어있지 않은 상태라면
-        // Sign In 후 리더보드 UI 표시 요청할 것
-        if (Social.localUser.authenticated == false)
-        {
-            Social.localUser.Authenticate((bool success) =>
-            {
-                if (success)
-                {
-                    // Sign In 성공
-                    // 바로 리더보드 UI 표시 요청
-                    Social.ShowLeaderboardUI();
-                    return;
-                }
-                else
-                {
-                    // Sign In 실패 
-                    // 그에 따른 처리
-                    return;
-                }
-            });
-        }
-        PlayGamesPlatform.Instance.ShowLeaderboardUI("CgkI4L-S66kTEAIQAw");
-    }
-
+    }    
 
     IEnumerator LoginCor()
     {
@@ -333,7 +304,6 @@ public class GPGSManager : MonoBehaviour {
         yield return login;
 
         Debug.Log(login.text);
-
 
     }
 
