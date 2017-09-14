@@ -21,19 +21,17 @@ public class GameManager : MonoBehaviour {
             //잘못된 인스턴스를 가르키고 있을 경우
             Destroy(gameObject);
         }
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);
         //Debug.Log(GPGSManager.instance.userdata);
     }
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-            Application.Quit();
-        
-        if (GameObject.Find("ResultManager") != null)
+        if (SceneManager.GetActiveScene().name == "Main")
         {
-            ResultManager.instance.score = game_score;
-        }
+            if (Input.GetKeyDown(KeyCode.Escape))
+                Application.Quit();
+        }            
     }
 
     public void PlayScene()

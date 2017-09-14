@@ -129,19 +129,11 @@ public class PlayerManager : MonoBehaviour {
 
         if(life == 3)   // 게임 오버
         {
-            //Debug.Log("Game Over");
-            GameObject game_manage = GameObject.Find("GameManager");
-            if(game_manage != null)
-            {
-                GameManager.instance.game_score = score;
-                SceneManager.LoadScene("Result");
-
-            }           
-            //GameObject.Find("ResultManager").GetComponent<ResultManager>().ResultScore(1000);
-
             GameObject gpgs = GameObject.Find("GPGSManager");
             if (gpgs != null)
             {
+                GPGSManager.instance.game_score = score;
+                SceneManager.LoadScene("Result");
                 gpgs.GetComponent<GPGSManager>().ReportScore(score);
                 StartCoroutine(_CreateRank(gpgs.GetComponent<GPGSManager>().mainplayeruserdata.userName,
                     GameManager.instance.game_score));
@@ -203,6 +195,7 @@ public class PlayerManager : MonoBehaviour {
                 destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
                 Destroy(parent);
                 SoundManager.instance.PlayDestroySound();
+                GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;              
                 score += destroy_block_score;
             }
             else
@@ -210,6 +203,7 @@ public class PlayerManager : MonoBehaviour {
                 destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
                 Destroy(destroy_block);
                 SoundManager.instance.PlayDestroySound();
+                GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
                 score += destroy_block_score;
             }
             attackOn = false;
@@ -238,32 +232,12 @@ public class PlayerManager : MonoBehaviour {
             {
                 Destroy(newObj.gameObject);
                 SoundManager.instance.PlayDestroySound();
+                GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
                 score += destroy_block_score;
                 attackOn = false;
             }
 
         }
-
-        //if (shieldOn)
-        //{
-        //    // 컬라이더 활성화
-        //    col_origin.GetComponent<Collider2D>().enabled = true;
-        //    col_origin.transform.Translate(0,
-        //           col_origin.transform.position.y + 3, 0);
-        //    shieldOn = false;
-        //    col_origin.GetComponent<Collider2D>().enabled = false;
-        //}
-
-        //if (collision.collider.tag == "BlockPrefab")
-        //{
-        //    if (shieldOn)    // 방어 누른 채로 블록과 충돌
-        //    {
-        //        //Debug.Log("방어 누른 채로 블록과 충돌");
-        //        collision.collider.transform.Translate(0,
-        //            collision.collider.transform.position.y + 3, 0);
-        //    }
-        //    shieldOn = false;
-        //}
     }
 
     public void OnCollisionStay2D(Collision2D collision)
@@ -288,33 +262,14 @@ public class PlayerManager : MonoBehaviour {
             {
                 Destroy(newObj.gameObject);
                 SoundManager.instance.PlayDestroySound();
+                GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
                 score += destroy_block_score;
                // Debug.Log("score : " + score);
                 attackOn = false;
             }
         }
 
-        //if (shieldOn)
-        //{
-        //    // 컬라이더 활성화
-        //    col_origin.GetComponent<Collider2D>().enabled = true;
-        //    col_origin.transform.Translate(0,
-        //           col_origin.transform.position.y + 3, 0);
-        //    shieldOn = false;
-        //    col_origin.GetComponent<Collider2D>().enabled = false;
-        //}
-
-        //if (collision.collider.tag == "BlockPrefab")
-        //{
-        //    if (shieldOn)    // 방어 누른 채로 블록과 충돌
-        //    {
-        //        //Debug.Log("방어 누른 채로 블록과 충돌");
-        //        collision.collider.transform.Translate(0,
-        //            collision.collider.transform.position.y + 3, 0);
-
-        //    }
-        //    shieldOn = false;
-        //}
+      
     }
 
     public void OnCollisionExit2D(Collision2D collision)

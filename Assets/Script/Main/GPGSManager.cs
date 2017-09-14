@@ -31,7 +31,7 @@ public class GPGSManager : MonoBehaviour {
     public string userId = "TestUser";
     public int coin = 0;
     public int prisonKey = 0;
-
+    public int game_score = 0;
 
     void Awake()
     {
@@ -56,11 +56,8 @@ public class GPGSManager : MonoBehaviour {
         }
 
         //LoginUrl = "tozha31@tozha31.woobi.co.kr/mobile_php_connect.php";
-
-        //userId = mainplayeruserdata.id;
-        //StartCoroutine(LoginCor());
+              
         Login();
-        
     }
 
     private void Update()
@@ -68,6 +65,11 @@ public class GPGSManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.A))
         {
             SceneManager.LoadScene("Main");
+        }
+
+        if (GameObject.Find("ResultManager") != null)
+        {
+            ResultManager.instance.ResultScore(game_score);
         }
     }
 

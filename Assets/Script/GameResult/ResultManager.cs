@@ -26,12 +26,14 @@ public class ResultManager : MonoBehaviour
             Destroy(gameObject);
         }
         scoreText = GameObject.Find("Score");
+
+        BlockGenerator.instance.game_start = false;
     }
 
     private void Update()
     {
         
-        ResultScore(score);
+        //ResultScore(score);
     }
 
     public void ResultScore(int score_parm)
@@ -46,17 +48,13 @@ public class ResultManager : MonoBehaviour
         SceneManager.LoadScene("Main");
         Time.timeScale = 1;
 
-        Destroy(GameManager.instance);  // 임시방편. 수정 필요.
+        //Destroy(GameManager.instance);
+        //Destroy(GameManager.instance.gameObject);  // 임시방편. 수정 필요.
     }
     
     public void PlayScene()
     {
         SceneManager.LoadScene("GamePlay");
         Time.timeScale = 1;
-    }
-
-    void OnClick()
-    {
-        
     }
 }

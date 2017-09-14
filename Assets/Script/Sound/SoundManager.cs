@@ -24,6 +24,7 @@ public class SoundManager : MonoBehaviour
     void Start()
     {
         myAudio = this.gameObject.GetComponent<AudioSource>(); //AudioSource 오브젝트를 변수로 담습니다.
+        
     }
 
     public void PlayJumpSound()

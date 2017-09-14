@@ -21,10 +21,9 @@ public class BlockGenerator : MonoBehaviour
     //public GameObject blockGroup;
     public GameObject[] blockArr = new GameObject[5];
     public Rigidbody2D block_gravity = new Rigidbody2D();
-    public bool block_ypos_min = false;
 
-    float warning_time = 0;  // 경고가 발동될 시간
-    bool warning_start = false; // 경고 발생 확인 변수
+    public bool block_ypos_min = false;
+    public bool game_start = false;
 
     float ypos = 30;
     
@@ -32,7 +31,7 @@ public class BlockGenerator : MonoBehaviour
     //Random r = new Random();
     public int range = 0;      // 확률 범위
     public int grade_range = 0; // 블록 등급 확률 범위
-    public int warning_range = 0; // 경고 발동 확률 범위
+
     
     BlockStatusManager[] block_stat = new BlockStatusManager[5];
     public static BlockGenerator instance = null;
@@ -53,8 +52,9 @@ public class BlockGenerator : MonoBehaviour
         {
             blockArr[i] = GameObject.Find("BlockGroup").transform.Find("building" + (i + 1).ToString()).gameObject;       
             blockArr[i].AddComponent<BlockStatusManager>();
-            
-        }        
+        }
+
+        game_start = true;
     }
 
 
@@ -78,22 +78,7 @@ public class BlockGenerator : MonoBehaviour
     }
 
     void Update()
-    {
-     
-        // 경고음 발동시간 측정 시작
-        warning_time += Time.deltaTime;
-        warning_range = r.Next(100, 10000);
-        if (warning_time >= 10 && warning_time < 60)
-        {
-            if (warning_range < 1000)
-            {
-                //Debug.Log("warning_range : " + warning_range);
-                warning_start = true;
-                //WarningStart();
-            }
-            //UnityEngine.Debug.Log("warning_time : " + warning_time);
-        }
-
+    {           
 
         if (BlockDestroy()) // 블럭이 모두 파괴되었을 때.
         {
@@ -132,17 +117,6 @@ public class BlockGenerator : MonoBehaviour
             }
         }
     }
-    
-    // 경고음 발동 함수
-    void WarningStart()
-    {
-        if(warning_start)
-        {
-            block_gravity.gravityScale *= (float)1.3;
-            warning_start = false;
-        }
-    }
-
 
     // 블럭이 모두 파괴되었는지 체크
     public bool BlockDestroy()
