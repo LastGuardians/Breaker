@@ -79,6 +79,9 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="LitJson">
+      <HintPath>Assets\LitJson.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\GPGSIds.cs" />
@@ -285,11 +288,15 @@
     <Compile Include="Assets\Script\GamePlay\GameStructure.cs" />
     <Compile Include="Assets\Script\GamePlay\PlayerManager.cs" />
     <Compile Include="Assets\Script\GamePlay\PlayerStatusManager.cs" />
+    <Compile Include="Assets\Script\GamePlay\WarningController.cs" />
+    <Compile Include="Assets\Script\GameResult\RankingManager.cs" />
+    <Compile Include="Assets\Script\GameResult\ResultManager.cs" />
     <Compile Include="Assets\Script\Main\GPGSManager.cs" />
     <Compile Include="Assets\Script\Main\GameManager.cs" />
     <Compile Include="Assets\Script\Main\Loading.cs" />
     <Compile Include="Assets\Script\Main\SceneState.cs" />
     <Compile Include="Assets\Script\Network.cs" />
+    <Compile Include="Assets\Script\Sound\SoundManager.cs" />
     <Compile Include="Assets\Script\UI\GameUI.cs" />
     <Compile Include="Assets\Script\UnityAds\UnityAdsHelper.cs" />
     <Compile Include="Assets\Script\Weapon\WeaponButtonManager.cs" />
@@ -299,6 +306,7 @@
     <None Include="Assets\GooglePlayGames\Editor\template-AndroidManifest.txt" />
     <None Include="Assets\GooglePlayGames\Editor\template-Constants.txt" />
     <None Include="Assets\GooglePlayGames\Editor\template-GameInfo.txt" />
+    <None Include="Assets\PlayServicesResolver\Editor\play-services-resolver.txt" />
     <None Include="Assets\PlayServicesResolver\Editor\play-services-resolver_v1.2.31.0.txt" />
     <None Include="Assets\PlayServicesResolver\proguard-messaging-workaround.txt" />
     <None Include="Assets\PlayServicesResolver\proguard-unity.txt" />

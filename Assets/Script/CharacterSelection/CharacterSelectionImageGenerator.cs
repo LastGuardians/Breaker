@@ -34,15 +34,34 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		Character.transform.parent = Canvas.transform; // Canvas의 자식으로 이동
 		Character.AddComponent<Image>();
 
-		Character.transform.localScale = new Vector3(10, 9, 0);
-		Character.transform.localPosition = new Vector3(0, 50, 0);
-
+		Rescale(Character, CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex]);
+		
 		Character.AddComponent<Animator>();
 		AnimatorPath = "Animation/Animator/" + CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] + "Animator";
 		Character.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>(AnimatorPath);
 
 		Character.transform.SetSiblingIndex(2);
 	}
+
+	public void Rescale(GameObject TargetObject, string TargetCharacter)
+	{
+		if(TargetCharacter == "Deer")
+		{
+			TargetObject.transform.localScale = new Vector3(10, 9, 0);
+			TargetObject.transform.localPosition = new Vector3(0, 180, 0);
+		}
+		else if(TargetCharacter == "Monkey")
+		{
+			TargetObject.transform.localScale = new Vector3(12, 18, 0);
+			TargetObject.transform.localPosition = new Vector3(0, 110, 0);
+		}
+		else
+		{
+			TargetObject.transform.localScale = new Vector3(10, 9, 0);
+			TargetObject.transform.localPosition = new Vector3(0, 50, 0);
+		}
+	}
+
 	public void ChangeIndex(string TargetButtonName)
 	{
 		if (TargetButtonName == "Left")
@@ -69,6 +88,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		Character.GetComponent<Animator>().SetBool(ClickedButton, true);
 		AnimatorPath = "Animation/Animator/" + CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] + "Animator";
 		Character.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>(AnimatorPath);
+		Rescale(Character, CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex]);
 	}
 }
 

@@ -83,7 +83,7 @@ public class CharacterImageGenerator: MonoBehaviour
 				}
 
 				Character.transform.localScale = new Vector3(2.2f, 3.3f, 0);
-				Character.transform.localPosition = new Vector3(230 * j - 450, 340 * (5 - i) - 1740, 0);
+				Character.transform.localPosition = new Vector3(230 * j - 450, 340 * (5 - i) - 1550, 0);
 
 				CharacterButtonArray[3 * (i - 1) + j - 1] = Character;
 			}
