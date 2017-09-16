@@ -305,7 +305,8 @@
     <Compile Include="Assets\Script\Main\Loading.cs" />
     <Compile Include="Assets\Script\Main\SceneState.cs" />
     <Compile Include="Assets\Script\Network.cs" />
-    <Compile Include="Assets\Script\Sound\SoundManager.cs" />
+    <Compile Include="Assets\Script\Sound\GlobalBGM.cs" />
+    <Compile Include="Assets\Script\Sound\GlobalSFX.cs" />
     <Compile Include="Assets\Script\UI\Fade.cs" />
     <Compile Include="Assets\Script\UI\GameUI.cs" />
     <Compile Include="Assets\Script\UnityAds\UnityAdsHelper.cs" />

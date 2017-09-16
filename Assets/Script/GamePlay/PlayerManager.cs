@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class PlayerManager : MonoBehaviour {
     
-    float jumpSpeed = 1000f;
+    float jumpSpeed = 800f;
     Rigidbody2D playerRg;       // 플레이어 리지드바디
     public Rigidbody2D blockRg;        // 블럭 리지드바디
     public Collider2D col_player;   // 플레이어의 컬라이더
@@ -112,7 +112,7 @@ public class PlayerManager : MonoBehaviour {
                     tempTouchs = Input.GetTouch(i);
                     if (tempTouchs.phase == TouchPhase.Began)
                     {    //해당 터치가 시작됐다면.
-                        SoundManager.instance.PlayWeaponSwingSound();
+                        GlobalSFX.instance.PlayWeaponSwingSound();
                         var touchedPos = Camera.main.ScreenToWorldPoint(tempTouchs.position);
                         attackOn = true;
                         //Debug.Log("attackOn : " + attackOn);
@@ -162,14 +162,14 @@ public class PlayerManager : MonoBehaviour {
         if(ground_collsion)
         {
             playerRg.AddForce(new Vector2(0, jumpSpeed));
-            SoundManager.instance.PlayJumpSound();
+            GlobalSFX.instance.PlayJumpSound();
         }
     }
 
     public void Attack()    // pc 테스트용 공격 함수
     {      
         attackOn = true;
-        SoundManager.instance.PlayWeaponSwingSound();
+        GlobalSFX.instance.PlayWeaponSwingSound();
     }
 
     public void Shield()    // 방어 버튼
@@ -194,7 +194,7 @@ public class PlayerManager : MonoBehaviour {
                 GameObject parent = destroy_block.transform.parent.gameObject;
                 destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
                 Destroy(parent);
-                SoundManager.instance.PlayDestroySound();
+                GlobalSFX.instance.PlayDestroySound();
                 GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;              
                 score += destroy_block_score;
             }
@@ -202,7 +202,7 @@ public class PlayerManager : MonoBehaviour {
             {
                 destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
                 Destroy(destroy_block);
-                SoundManager.instance.PlayDestroySound();
+                GlobalSFX.instance.PlayDestroySound();
                 GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
                 score += destroy_block_score;
             }
@@ -231,7 +231,7 @@ public class PlayerManager : MonoBehaviour {
             if (attackOn)  // 공격 버튼만 눌렀을 때.
             {
                 Destroy(newObj.gameObject);
-                SoundManager.instance.PlayDestroySound();
+                GlobalSFX.instance.PlayDestroySound();
                 GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
                 score += destroy_block_score;
                 attackOn = false;
@@ -261,7 +261,7 @@ public class PlayerManager : MonoBehaviour {
             if (attackOn)  // 공격 버튼만 눌렀을 때.
             {
                 Destroy(newObj.gameObject);
-                SoundManager.instance.PlayDestroySound();
+                GlobalSFX.instance.PlayDestroySound();
                 GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
                 score += destroy_block_score;
                // Debug.Log("score : " + score);

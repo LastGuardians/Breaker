@@ -16,12 +16,6 @@ public class BlockCollisionManager : MonoBehaviour
 
     private void Update()
     {
-        // 플레이어가 점프했을 때, 땅 collider도 같이 올라간다.
-        //if(player.transform.position.y > 1)
-        //{
-        //    transform.position = new Vector3(transform.position.x,
-        //    player.transform.position.y - 2);
-        //}
         
     }
 
@@ -33,6 +27,7 @@ public class BlockCollisionManager : MonoBehaviour
           || collision.collider.tag == ("block5"))
         {
             PlayerManager.instance.life += 1;
+            GlobalSFX.instance.PlayCollapseSound();
             //PlayerManager.instance.shield_able = false;
         }
     }

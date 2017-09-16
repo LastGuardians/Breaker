@@ -11,12 +11,24 @@ public class FeverTime : MonoBehaviour
     public GameObject feverGauge;   // 피버 게이지
     public float block_destroy_count = 0;    // 파괴된 블럭 개수
 
+    public bool fever_start = false;
     float fever_time = 0;
+    float originGrav = 0.7f;
 
     public static FeverTime instance;
 
     void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            //잘못된 인스턴스를 가르키고 있을 경우
+            Destroy(gameObject);
+        }
+
         feverGauge = GameObject.Find("FeverGauge");
         //StartCoroutine(FeverTimeCheck());
         //Invoke("FeverTimeCheck", 0.1f);
@@ -24,45 +36,42 @@ public class FeverTime : MonoBehaviour
 
     void Update()
     {
-        feverGauge.GetComponent<Slider>().value = block_destroy_count;
-        if (block_destroy_count == 5)
-        {
-            feverGauge.GetComponent<Slider>().value = 0;
-            block_destroy_count = 0;
+        // 피버 발동 중엔 게이지가 차지 않음.
+        if (!fever_start)
+        {            
+            feverGauge.GetComponent<Slider>().value = block_destroy_count;
+            if (block_destroy_count == 20 &&
+                BlockGenerator.instance.block_gravity != null)
+            {
+                //Debug.Log("fever 발동");
+                feverGauge.GetComponent<Slider>().value = 0;
+                block_destroy_count = 0;
+                fever_start = true;
+                StartCoroutine(FeverTimeCheck());
+            }
         }
-        //fever_time += Time.deltaTime;
-        //if (block_destroy_count == 1)
-        //    StartCoroutine(FeverTimeCheck());
     }
 
-    void FeverTimeCheck()    // 피버타임 발동 시간 체크
+    IEnumerator FeverTimeCheck()    // 피버타임 발동 시간 체크
     {
-        Debug.Log("FeverTimeCheck 시작");
-        if (fever_time > 5.0f)
+        //GlobalBGM.instance.FeverBGM();
+        BlockGenerator.instance.block_gravity.gravityScale *= 1.5f;
+       // Debug.Log("block_gravity: " + BlockGenerator.instance.block_gravity.gravityScale);
+
+        while (true)
         {
-            Debug.Log("5.0f 초과");
-            //yield break;
+            yield return new WaitForSeconds(1f);
+            fever_time += 1;
+            //Debug.Log("fever_time: " + fever_time);
+
+            if (fever_time >= 5) 
+            {
+                fever_time = 0;
+                fever_start = false;
+                BlockGenerator.instance.block_gravity.gravityScale = originGrav;
+                //GlobalBGM.instance.PlayBGM();
+                yield break;
+            }
         }
-
-       // yield return new WaitForSeconds(0.001f);
-        Debug.Log("FeverTimeCheck 끝");
-        //if (block_destroy_count == 1)
-        //{
-        //    fever_time += Time.deltaTime;
-        //    Debug.Log("fever_time : " + fever_time);
-
-        //    if (fever_time > 5.0f)
-        //    {
-        //        Debug.Log("5.0f 초과");
-        //        yield break;
-        //    }
-        //    else if (fever_time < 5.0f)
-        //    {
-        //        Debug.Log("5.0f 미만");
-        //        yield return new WaitForSeconds(0.001f);
-        //    }
-        //}
-      
-        //yield return null;
     }
 }

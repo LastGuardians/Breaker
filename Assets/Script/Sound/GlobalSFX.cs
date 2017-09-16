@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class SoundManager : MonoBehaviour
+public class GlobalSFX : MonoBehaviour
 {
     public AudioClip jumpSound; // 점프 사운드.
     public AudioClip destroySound; // 블록 파괴 사운드.
     public AudioClip weaponSwingSound; // 무기 스윙 사운드.
+    public AudioClip collapseSound; // 플레이어 깔리는 사운드.
 
     AudioSource myAudio; //AudioSorce 컴포넌트 변수.
-    public static SoundManager instance;
+    public static GlobalSFX instance;
 
     void Awake()
     {
@@ -23,8 +24,17 @@ public class SoundManager : MonoBehaviour
 
     void Start()
     {
-        myAudio = this.gameObject.GetComponent<AudioSource>(); //AudioSource 오브젝트를 변수로 담습니다.
-        
+        myAudio = this.gameObject.GetComponent<AudioSource>(); //AudioSource 오브젝트를 변수로 담습니다.              
+    }
+
+    public void SFXSoundOn()
+    {
+        myAudio.volume = 1;
+    }
+
+    public void SFXSoundOff()
+    {
+        myAudio.volume = 0;
     }
 
     public void PlayJumpSound()
@@ -40,5 +50,10 @@ public class SoundManager : MonoBehaviour
     public void PlayWeaponSwingSound()
     {
         myAudio.PlayOneShot(weaponSwingSound);
+    }
+
+    public void PlayCollapseSound()
+    {
+        myAudio.PlayOneShot(collapseSound);
     }
 }

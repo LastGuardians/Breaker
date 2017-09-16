@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour {
 
     public int game_score = 0;
+    public GameObject MainBackAni;
     
     public static GameManager instance = null;
 
@@ -49,4 +50,6 @@ public class GameManager : MonoBehaviour {
 	{
 		SceneManager.LoadScene("Weapon");
 	}
+
+
 }

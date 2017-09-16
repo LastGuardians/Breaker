@@ -83,7 +83,7 @@ public class BlockGenerator : MonoBehaviour
         if (BlockDestroy()) // 블럭이 모두 파괴되었을 때.
         {
             blockParents = Instantiate(Resources.Load("Background/BlockGroup"),
-            new Vector2(transform.position.x, (transform.position.y) + ypos), transform.rotation) as GameObject;
+            new Vector2(transform.position.x, (transform.position.y)), transform.rotation) as GameObject;
 
             if (null == block_gravity)
                 block_gravity = blockParents.GetComponent<Rigidbody2D>();
