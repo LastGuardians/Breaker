@@ -54,8 +54,10 @@ public class FeverTime : MonoBehaviour
 
     IEnumerator FeverTimeCheck()    // 피버타임 발동 시간 체크
     {
-        //GlobalBGM.instance.FeverBGM();
-        BlockGenerator.instance.block_gravity.gravityScale *= 1.5f;
+        //Debug.Log("FeverTimeCheck");
+        GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().feverBgmOn = true;
+        GameObject.Find("BlockManager").GetComponent< BlockGenerator >().block_gravity.gravityScale *= 1.5f;
+        //BlockGenerator.instance.block_gravity.gravityScale *= 1.5f;
        // Debug.Log("block_gravity: " + BlockGenerator.instance.block_gravity.gravityScale);
 
         while (true)
@@ -69,7 +71,7 @@ public class FeverTime : MonoBehaviour
                 fever_time = 0;
                 fever_start = false;
                 BlockGenerator.instance.block_gravity.gravityScale = originGrav;
-                //GlobalBGM.instance.PlayBGM();
+                GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().feverBgmOn = false;
                 yield break;
             }
         }

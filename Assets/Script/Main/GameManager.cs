@@ -55,5 +55,23 @@ public class GameManager : MonoBehaviour {
 		SceneManager.LoadScene("Weapon");
 	}
 
+    public void BGMSoundOn()
+    {
+        GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().BGMSoundOn();
+    }
 
+    public void BGMSoundOff()
+    {
+        GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().BGMSoundOff();
+    }
+
+    public void SFXSoundOn()
+    {
+        GameObject.Find("GlobalSFX").GetComponent<GlobalSFX>().SFXSoundOn();
+    }
+
+    public void SFXSoundOff()
+    {
+        GameObject.Find("GlobalSFX").GetComponent<GlobalSFX>().SFXSoundOff();
+    }
 }

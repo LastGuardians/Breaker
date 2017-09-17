@@ -46,15 +46,21 @@ public class GameUI : MonoBehaviour {
 
     public void BGMOn()
     {
-        //GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().bgmOnButton = true;
-
         GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().BGMSoundOn();
     }
 
     public void BGMOff()
     {
-        //GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().bgmOnButton= false;
-
         GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().BGMSoundOff();
+    }
+
+    public void SFXOn()
+    {
+        GameObject.Find("GlobalSFX").GetComponent<GlobalSFX>().SFXSoundOn();
+    }
+
+    public void SFXOff()
+    {
+        GameObject.Find("GlobalSFX").GetComponent<GlobalSFX>().SFXSoundOff();
     }
 }

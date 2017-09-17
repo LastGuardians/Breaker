@@ -21,13 +21,12 @@ public class GlobalBGM : MonoBehaviour
     public AudioClip warningClip;
     public AudioClip feverClip;
 
-    GameObject bgmOnButtonObj;
-
     public bool bgmOnButton = true;
-
+    public bool feverBgmOn = false;
     AudioSource[] myAudio = new AudioSource[3];
 
-    public static GlobalBGM instance;
+    public static GlobalBGM instance = null;
+
 
     void Start()
     {
@@ -40,6 +39,7 @@ public class GlobalBGM : MonoBehaviour
             //잘못된 인스턴스를 가르키고 있을 경우
             Destroy(gameObject);
         }
+
         DontDestroyOnLoad(this);
 
         myAudio[0] = mainBGM;
@@ -47,11 +47,8 @@ public class GlobalBGM : MonoBehaviour
         myAudio[2] = feverBGM;
     }
 
-    
-
     void Update()
     {
-        //bgmOnButtonObj = 
         //Debug.Log("bgmOnButton : " + bgmOnButton);
         if ((SceneManager.GetActiveScene().name == "Main" ||
            SceneManager.GetActiveScene().name == "Weapon" ||
@@ -65,17 +62,25 @@ public class GlobalBGM : MonoBehaviour
 
             if(playBGM.isPlaying)
                 playBGM.Stop();
+
             if(feverBGM.isPlaying)
-                feverBGM.Stop();
+                feverBGM.Stop();         
         }
         else if(SceneManager.GetActiveScene().name == "GamePlay"
             && bgmOnButton)
         {
-            if (!playBGM.isPlaying)
+            if (!playBGM.isPlaying && !feverBgmOn)
                 playBGM.Play();
 
-            if (feverBGM.isPlaying)
+            if (!feverBgmOn)
                 feverBGM.Stop();
+            else if(feverBgmOn && !feverBGM.isPlaying)
+            {
+               // Debug.Log("feverBgmOn: " + feverBgmOn);
+                feverBGM.Play();
+                playBGM.Stop();
+            }
+
             if (mainBGM.isPlaying)
                 mainBGM.Stop();
         }
@@ -84,13 +89,13 @@ public class GlobalBGM : MonoBehaviour
 
     public void BGMSoundOn()
     {
-        Debug.Log("BGMSoundOn");
+        //Debug.Log("BGMSoundOn");
         bgmOnButton = true;
     }
 
     public void BGMSoundOff()
     {
-        Debug.Log("BGMSoundOff");
+        //Debug.Log("BGMSoundOff");
         bgmOnButton = false;
 
         mainBGM.Stop();
@@ -100,27 +105,5 @@ public class GlobalBGM : MonoBehaviour
         //playBGM.mute = true;
         //feverBGM.mute = true;
     }
-
-    public void PlayBGM()
-    {
-        //myAudio[1].Play();
-        //playBGM.PlayOneShot(playClip);
-        //playBGM.Play();
-        //feverBGM.Stop();
-        //warningBGM.Stop();
-    }
-
-    public void WarningBGM()
-    {
-        //playBGM
-        //warningBGM.Play();
-        //playBGM.Stop();
-    }
-
-    public void FeverBGM()
-    {
-        //feverBGM.Play();
-        //playBGM.Stop();
-        //warningBGM.Stop();
-    }
+    
 }
