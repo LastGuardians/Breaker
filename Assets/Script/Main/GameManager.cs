@@ -7,7 +7,8 @@ public class GameManager : MonoBehaviour {
 
     public int game_score = 0;
     public GameObject MainBackAni;
-    
+    public GameObject mainBGM;
+
     public static GameManager instance = null;
 
     // Use this for initialization
@@ -22,6 +23,9 @@ public class GameManager : MonoBehaviour {
             //잘못된 인스턴스를 가르키고 있을 경우
             Destroy(gameObject);
         }
+
+        //mainBGM = GameObject.Find("SoundManager");
+        //DontDestroyOnLoad(mainBGM);
         //DontDestroyOnLoad(this);
         //Debug.Log(GPGSManager.instance.userdata);
     }
@@ -32,7 +36,7 @@ public class GameManager : MonoBehaviour {
         {
             if (Input.GetKeyDown(KeyCode.Escape))
                 Application.Quit();
-        }            
+        }
     }
 
     public void PlayScene()

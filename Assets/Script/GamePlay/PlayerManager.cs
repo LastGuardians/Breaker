@@ -7,27 +7,30 @@ using UnityEngine.EventSystems;
 
 public class PlayerManager : MonoBehaviour {
     
-    float jumpSpeed = 800f;
+    float jumpSpeed = 800f;   
+
+    [Header("Player")]
     Rigidbody2D playerRg;       // 플레이어 리지드바디
-    public Rigidbody2D blockRg;        // 블럭 리지드바디
     public Collider2D col_player;   // 플레이어의 컬라이더
     public GameObject player;       // 플레이어 오브젝트
 
-    public Collider2D col_parent;       // 블럭의 부모 컬라이더(활성/비활성화용)
-
-    public GameObject destroy_block;    // 파괴할 블럭 
-
     //public bool block_drop_min = false; // 블럭이 최소 좌표에 도달했는지 확인하는 변수
 
+    [Header("StateCheck")]
     public bool attackOn = false;    // 공격 버튼이 터치 되었는지 확인하는 변수
     bool shieldOn = false;   // 방어 버튼이 터치 되었는지 확인
-
-    public bool block_destroy = false;   // 블럭이 모두 파괴되었는지 확인하는 변수
     public bool ground_collsion = false;     // 플레이어가 땅과 충돌되었는지 확인하는 변수
     public bool shield_able = false;   // 방어가 가능한 상태인지 판단.
 
+    [Header ("Block")]
+    public bool block_destroy = false;   // 블럭이 모두 파괴되었는지 확인하는 변수
+    public Rigidbody2D blockRg;        // 블럭 리지드바디
+    public Collider2D col_parent;       // 블럭의 부모 컬라이더(활성/비활성화용)
+    public GameObject destroy_block;    // 파괴할 블럭 
+    
     private Touch tempTouchs;
 
+    [Header("UI")]
     public int score = 0;   // test용 score
     public int life = 0;    // test용 life
     GameObject scoreText;   // score UI
@@ -35,6 +38,7 @@ public class PlayerManager : MonoBehaviour {
 
     AudioClip jumping_sound;
 
+    [Header("URL")]
     public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
 
     public static PlayerManager instance = null;
@@ -94,13 +98,13 @@ public class PlayerManager : MonoBehaviour {
 
         BlockDestroy();
 
-        // 원본 블록이 파괴되면, 프리팹 블록을 새로 갱신.
-        if (null == col_parent)
-            //col_parent = BlockGenerator.instance.blockParents.GetComponent<Collider2D>();
-            col_parent = GameObject.Find("BlockGroup(Clone)").GetComponent<Collider2D>();
+        // 원본 블록이 파괴되면, 프리팹 블록을 새로 갱신. -> 수정 필요
+        //if (null == col_parent)
+        //    //col_parent = BlockGenerator.instance.blockParents.GetComponent<Collider2D>();
+        //    col_parent = GameObject.Find("BlockGroup(Clone)").GetComponent<Collider2D>();
         
-        if (null == blockRg)
-            blockRg = GameObject.Find("BlockGroup(Clone)").GetComponent<Rigidbody2D>();
+        //if (null == blockRg)
+        //    blockRg = GameObject.Find("BlockGroup(Clone)").GetComponent<Rigidbody2D>();
 
 
         if (Input.touchCount > 0)

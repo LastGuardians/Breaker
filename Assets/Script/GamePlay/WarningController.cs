@@ -12,10 +12,10 @@ public class WarningController : MonoBehaviour
     public bool warning_start = true;      // 경고 발생 확인 변수
     public int warning_range = 0;   // 경고 발동 확률 범위
 
-    public GameObject NotWarning;       // 경고 상태가 아닐 때의 스프라이트
-    public GameObject Warning;          // 경고 상태일 때 스프라이트
+    public GameObject notWarningSprite;       // 경고 상태가 아닐 때의 스프라이트
+    public GameObject warningSprite;          // 경고 상태일 때 스프라이트
 
-    float originGrav = 0.7f;        // 디폴트 블록 스피드
+    float originGrav = 0.7f;        // 블록 스피드 디폴트값
     System.Random r = new System.Random();
 
     public static WarningController instance;
@@ -33,7 +33,7 @@ public class WarningController : MonoBehaviour
         }
 
         warning_time = 0;
-        NotWarning.SetActive(true);
+        notWarningSprite.SetActive(true);
         StartCoroutine(WarningTimeCheck());       
     }
     
@@ -57,7 +57,7 @@ public class WarningController : MonoBehaviour
                         {
                             warning_start = false;
                             //Debug.Log("warning_range < 1000 만족");
-                            NotWarning.SetActive(false);
+                            notWarningSprite.SetActive(false);
                             StartCoroutine(WarningStart());
                         }
                     }
@@ -70,7 +70,7 @@ public class WarningController : MonoBehaviour
     IEnumerator WarningStart()
     {
         BlockGenerator.instance.block_gravity.gravityScale *= 1.3f;
-        Warning.SetActive(true);
+        warningSprite.SetActive(true);
         //GlobalBGM.instance.WarningBGM();
 
         while (true)
@@ -78,11 +78,11 @@ public class WarningController : MonoBehaviour
             yield return new WaitForSeconds(1f);
             if(FeverTime.instance.fever_start)  // 피버 발동되면 즉시 중지
             {
-                BlockGenerator.instance.block_gravity.gravityScale = 0.7f;
+                BlockGenerator.instance.block_gravity.gravityScale = originGrav;
                 warning_continue_time = 0;
                 warning_start = true;
-                Warning.SetActive(false);
-                NotWarning.SetActive(true);
+                warningSprite.SetActive(false);
+                notWarningSprite.SetActive(true);
                 yield break;
             }
 
@@ -96,8 +96,8 @@ public class WarningController : MonoBehaviour
                 warning_continue_time = 0;
                 //GlobalBGM.instance.PlayBGM();
                 warning_start = true;
-                Warning.SetActive(false);
-                NotWarning.SetActive(true);
+                warningSprite.SetActive(false);
+                notWarningSprite.SetActive(true);
                 yield break;
             }
         }

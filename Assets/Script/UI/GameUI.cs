@@ -12,6 +12,13 @@ public class GameUI : MonoBehaviour {
     public GameObject PlayButton;
     public GameObject PauseButton;
 
+    GameObject bgmObj;
+
+    void Start()
+    {
+        bgmObj = GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().gameObject;
+    }
+
     public void MainScene()
     {
         SceneManager.LoadScene("Main");
@@ -35,5 +42,19 @@ public class GameUI : MonoBehaviour {
         PlayButton.SetActive(false);
         PauseButton.SetActive(true);
         Time.timeScale = 1;
+    }
+
+    public void BGMOn()
+    {
+        //GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().bgmOnButton = true;
+
+        GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().BGMSoundOn();
+    }
+
+    public void BGMOff()
+    {
+        //GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().bgmOnButton= false;
+
+        GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().BGMSoundOff();
     }
 }

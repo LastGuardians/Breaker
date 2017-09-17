@@ -30,9 +30,9 @@ public class ButtonCoolTime : MonoBehaviour
             //Debug.Log("Use Shield");
             shieldFilter.fillAmount = 1; //방어 버튼을 가림
             // 블록을 위로 튕긴다.
-            PlayerManager.instance.col_parent.enabled = true;
-            PlayerManager.instance.blockRg.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
-            PlayerManager.instance.col_parent.enabled = false;
+            //PlayerManager.instance.col_parent.enabled = true;
+            //PlayerManager.instance.blockRg.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
+            //PlayerManager.instance.col_parent.enabled = false;
             StartCoroutine("Cooltime");
 
             currentCoolTime = coolTime;

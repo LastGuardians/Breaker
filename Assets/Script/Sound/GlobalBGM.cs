@@ -1,19 +1,29 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GlobalBGM : MonoBehaviour
 {
-    AudioSource playBGM; //AudioSorce 컴포넌트 변수.
-    AudioSource warningBGM;
-    AudioSource feverBGM;
+    [Header("AudioSource")]
+    public AudioSource mainBGM;
+    public AudioSource playBGM; //AudioSorce 컴포넌트 변수.
+    public AudioSource warningBGM;
+    public AudioSource feverBGM;
 
+    [Header ("AudioClip")]
+    public AudioClip mainClip;
     public AudioClip playClip;
     public AudioClip warningClip;
     public AudioClip feverClip;
+
+    GameObject bgmOnButtonObj;
+
+    public bool bgmOnButton = true;
 
     AudioSource[] myAudio = new AudioSource[3];
 
@@ -30,43 +40,72 @@ public class GlobalBGM : MonoBehaviour
             //잘못된 인스턴스를 가르키고 있을 경우
             Destroy(gameObject);
         }
+        DontDestroyOnLoad(this);
 
-        playBGM = this.gameObject.GetComponent<AudioSource>(); //AudioSource 오브젝트를 변수로 담습니다.              
-        //playBGM.clip = playClip;
-        //warningBGM = gameObject.GetComponent<AudioSource>();
-        //warningBGM.clip = warningClip;
-        //feverBGM = gameObject.GetComponent<AudioSource>();
-        //feverBGM.clip = feverClip;
-
-        PlayBGM();
-
-        myAudio[0] = playBGM;
-        myAudio[1] = warningBGM;
+        myAudio[0] = mainBGM;
+        myAudio[1] = playBGM;
         myAudio[2] = feverBGM;
+    }
+
+    
+
+    void Update()
+    {
+        //bgmOnButtonObj = 
+        //Debug.Log("bgmOnButton : " + bgmOnButton);
+        if ((SceneManager.GetActiveScene().name == "Main" ||
+           SceneManager.GetActiveScene().name == "Weapon" ||
+           SceneManager.GetActiveScene().name == "Character" ||
+           SceneManager.GetActiveScene().name == "SpecificCharacter")
+           && bgmOnButton)
+        {
+            //Debug.Log("메인씬");
+            if(!mainBGM.isPlaying)
+                mainBGM.Play();
+
+            if(playBGM.isPlaying)
+                playBGM.Stop();
+            if(feverBGM.isPlaying)
+                feverBGM.Stop();
+        }
+        else if(SceneManager.GetActiveScene().name == "GamePlay"
+            && bgmOnButton)
+        {
+            if (!playBGM.isPlaying)
+                playBGM.Play();
+
+            if (feverBGM.isPlaying)
+                feverBGM.Stop();
+            if (mainBGM.isPlaying)
+                mainBGM.Stop();
+        }
+
     }
 
     public void BGMSoundOn()
     {
-        //for (int i = 0; i < 3; ++i)
-        //{
-        //    myAudio[i].Play();
-        //}
-        playBGM.Play();
+        Debug.Log("BGMSoundOn");
+        bgmOnButton = true;
     }
 
     public void BGMSoundOff()
     {
-        //for (int i = 0; i < 3; ++i)
-        //{
-        //    myAudio[i].Stop();
-        //}
+        Debug.Log("BGMSoundOff");
+        bgmOnButton = false;
+
+        mainBGM.Stop();
         playBGM.Stop();
+        feverBGM.Stop();
+        //mainBGM.mute = true;
+        //playBGM.mute = true;
+        //feverBGM.mute = true;
     }
 
     public void PlayBGM()
     {
+        //myAudio[1].Play();
         //playBGM.PlayOneShot(playClip);
-        playBGM.Play();
+        //playBGM.Play();
         //feverBGM.Stop();
         //warningBGM.Stop();
     }
