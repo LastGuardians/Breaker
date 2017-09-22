@@ -41,6 +41,7 @@ public class PlayerManager : MonoBehaviour {
 
     AudioClip jumping_sound;
 
+
     [Header("URL")]
     public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
 
@@ -174,6 +175,7 @@ public class PlayerManager : MonoBehaviour {
         // 땅에 충돌되어있을 때만 점프 가능.
         if (ground_collsion)
         {
+            //StartCoroutine(PlayerJumpControll());
             //jumpOn = true;
             jump_effect.SetActive(true);
             playerRg.AddForce(new Vector2(0, jumpSpeed));
@@ -181,6 +183,18 @@ public class PlayerManager : MonoBehaviour {
             CharacterAnimation.instance.CatJumpAniControll();
         }
     }
+
+    //IEnumerator PlayerJumpControll()
+    //{
+    //    float jump_height = transform.position.y;
+    //    while(true)
+    //    {
+    //        yield return new WaitForSeconds(1f);
+    //        jump_height += 0.5f;
+
+    //        transform.position = new Vector2(transform.position.x, jump_height);
+    //    }
+    //}
 
     public void JumpCancle()    // 점프 버튼 뗐을 때
     {
@@ -194,10 +208,7 @@ public class PlayerManager : MonoBehaviour {
     public void Attack()    // pc 테스트용 공격 함수
     {      
         attackOn = true;
-        //GameObject.Find("AnimationManager").GetComponent<CharacterAnimation>().CatAttackAniControll(true);
-        //if(jumpOn)
-        //    CharacterAnimation.instance.CatJumpAttackAniControll();
-        //else
+
         CharacterAnimation.instance.CatAttackAniControll();
         GlobalSFX.instance.PlayWeaponSwingSound();
     }
@@ -358,51 +369,6 @@ public class PlayerManager : MonoBehaviour {
         //Debug.Log("BlockDestroy 호출");
         GameObject newObj = collision.gameObject;
         Destroy(newObj);
-    }
-
-    public void OnTriggerStay2D(Collider2D collision)
-    {
-        //Debug.Log("OnTriggerStay2D");
-        
-        // GameObject newObj = collision.gameObject;
-        //if (collision.tag == ("block1") || collision.tag == ("block2")
-        //    || collision.tag == ("block3") || collision.tag == ("block4")
-        //    || collision.tag == ("block5"))
-        //{
-        //    block_destroy = true;
-        //    // Debug.Log("블록과 충돌중");
-        //    if (attackOn) // 터치된 상태로, 블록과 충돌
-        //    {
-        //        col_new = collision;
-        //        attackOn = false;
-        //        //Destroy(newObj);
-        //    }        
-        //}
-
-        // 방어 버튼 눌릴때만 전체 컬라이더 활성화
-        //if (shieldOn)
-        //{
-        //    // 컬라이더 활성화
-        //   // coll_origin.enabled = true;
-        //    //coll_origin.transform.Translate(0,
-        //    //       coll_origin.transform.position.y + 3, 0);
-
-        //    shieldOn = false;
-        //}
-        //else
-        //{
-        //    coll_origin.enabled = false;
-        //}
-
-        //if (collision.tag == "BlockPrefab")
-        //{
-        //    if (shieldOn)    // 방어 누른 채로 블록과 충돌
-        //    {
-        //        collision.transform.Translate(0,
-        //            collision.transform.position.y + 3, 0);
-        //    }
-        //    shieldOn = false;
-        //}
     }
 
     public void OnTriggerExit2D(Collider2D collision)
