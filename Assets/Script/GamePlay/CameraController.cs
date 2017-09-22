@@ -18,14 +18,17 @@ public class CameraController : MonoBehaviour {
         cameraPos.z = transform.position.z;
 
         // 카메라 이동 보간
-        transform.position = Vector3.Lerp(
-           transform.position, cameraPos, 7 * Time.deltaTime);
+        //transform.position = Vector3.Lerp(
+        //   transform.position, cameraPos, 7 * Time.deltaTime);
+
+        transform.position = new Vector3(
+           transform.position.x, cameraPos.y, transform.position.z);
     }
 
- //   void Update () {
- //       Vector3 playerPos = this.player.transform.position;
- //       transform.position = Vector3.Lerp(
- //           transform.position, cameraPos, 1);
+    //   void Update () {
+    //       Vector3 playerPos = this.player.transform.position;
+    //       transform.position = Vector3.Lerp(
+    //           transform.position, cameraPos, 1);
 
-	//}
+    //}
 }

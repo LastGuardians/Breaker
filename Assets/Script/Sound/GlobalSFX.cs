@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GlobalSFX : MonoBehaviour
 {
+    [Header("Sound")]
     public AudioClip jumpSound; // 점프 사운드.
     public AudioClip destroySound; // 블록 파괴 사운드.
     public AudioClip weaponSwingSound; // 무기 스윙 사운드.
     public AudioClip collapseSound; // 플레이어 깔리는 사운드.
+
+    [Header("Button")]
+    public GameObject SfxOnButton;
+    public GameObject SfxOffButton;
 
     public AudioSource myAudio; //AudioSorce 컴포넌트 변수.
     public static GlobalSFX instance;
@@ -29,13 +35,8 @@ public class GlobalSFX : MonoBehaviour
         DontDestroyOnLoad(this);
 
         myAudio = transform.Find("SFX").GetComponent<AudioSource>();
+        
     }
-    
-
-    //void Start()
-    //{        
-    //    myAudio = this.gameObject.GetComponent<AudioSource>(); //AudioSource 오브젝트를 변수로 담습니다.              
-    //}
 
     public void SFXSoundOn()
     {

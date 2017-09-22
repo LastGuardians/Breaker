@@ -3,7 +3,7 @@ using UnityEngine.Advertisements;
 
 public class UnityAdsHelper : MonoBehaviour
 {
-    private const string android_game_id = "1478836";
+    private const string android_game_id = "1549816";
 
     private const string rewarded_video_id = "rewardedVideo";
 

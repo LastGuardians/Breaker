@@ -21,8 +21,13 @@ public class GlobalBGM : MonoBehaviour
     public AudioClip warningClip;
     public AudioClip feverClip;
 
+    [Header("Button")]
+    public GameObject BgmOnButton;
+    public GameObject BgmOffButton;
+
     public bool bgmOnButton = true;
     public bool feverBgmOn = false;
+    public bool warningBgmOn = false;
     AudioSource[] myAudio = new AudioSource[3];
 
     public static GlobalBGM instance = null;
@@ -42,9 +47,8 @@ public class GlobalBGM : MonoBehaviour
 
         DontDestroyOnLoad(this);
 
-        myAudio[0] = mainBGM;
-        myAudio[1] = playBGM;
-        myAudio[2] = feverBGM;
+        //BgmOnButton = GameObject.Find("SetupUI").transform.Find("BGMOnButton").gameObject;
+        //BgmOffButton = GameObject.Find("Canvas").transform.Find("SetupUI").transform.Find("BGMOffButton").gameObject;
     }
 
     void Update()
@@ -64,8 +68,17 @@ public class GlobalBGM : MonoBehaviour
                 playBGM.Stop();
 
             if(feverBGM.isPlaying)
-                feverBGM.Stop();         
+                feverBGM.Stop();
+
+            if (warningBGM.isPlaying)
+                warningBGM.Stop();
         }
+        //else if(SceneManager.GetActiveScene().name == "Main" &&
+        //    !bgmOnButton)
+        //{
+        //    BgmOnButton.SetActive(true);
+        //    BgmOffButton.SetActive(false);
+        //}
         else if(SceneManager.GetActiveScene().name == "GamePlay"
             && bgmOnButton)
         {
@@ -83,6 +96,14 @@ public class GlobalBGM : MonoBehaviour
 
             if (mainBGM.isPlaying)
                 mainBGM.Stop();
+
+            //if (!warningBGM.isPlaying && warningBgmOn && !feverBgmOn)
+            //{
+            //    playBGM.Stop();
+            //    warningBGM.Play();
+            //}
+            //else
+                warningBGM.Stop();
         }
 
     }
@@ -101,9 +122,7 @@ public class GlobalBGM : MonoBehaviour
         mainBGM.Stop();
         playBGM.Stop();
         feverBGM.Stop();
-        //mainBGM.mute = true;
-        //playBGM.mute = true;
-        //feverBGM.mute = true;
+        warningBGM.Stop();
     }
     
 }

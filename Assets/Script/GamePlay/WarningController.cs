@@ -53,7 +53,7 @@ public class WarningController : MonoBehaviour
                     if (warning_start && !FeverTime.instance.fever_start)
                     {
                         warning_range = r.Next(100, 10000);
-                        if (warning_range < 200)
+                        if (warning_range < 1000)
                         {
                             warning_start = false;
                             //Debug.Log("warning_range < 1000 만족");
@@ -69,6 +69,7 @@ public class WarningController : MonoBehaviour
     // 경고 지속 시간 측정
     IEnumerator WarningStart()
     {
+        GlobalBGM.instance.warningBgmOn = true;
         BlockGenerator.instance.block_gravity.gravityScale *= 1.3f;
         warningSprite.SetActive(true);
         //GlobalBGM.instance.WarningBGM();
@@ -83,6 +84,7 @@ public class WarningController : MonoBehaviour
                 warning_start = true;
                 warningSprite.SetActive(false);
                 notWarningSprite.SetActive(true);
+                GlobalBGM.instance.warningBgmOn = false;
                 yield break;
             }
 
@@ -98,6 +100,7 @@ public class WarningController : MonoBehaviour
                 warning_start = true;
                 warningSprite.SetActive(false);
                 notWarningSprite.SetActive(true);
+                GlobalBGM.instance.warningBgmOn = false;
                 yield break;
             }
         }

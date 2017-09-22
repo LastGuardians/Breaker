@@ -10,9 +10,10 @@ public class PlayerManager : MonoBehaviour {
     float jumpSpeed = 800f;   
 
     [Header("Player")]
-    Rigidbody2D playerRg;       // 플레이어 리지드바디
+    public Rigidbody2D playerRg;       // 플레이어 리지드바디
     public Collider2D col_player;   // 플레이어의 컬라이더
     public GameObject player;       // 플레이어 오브젝트
+    public GameObject jump_effect;
 
     //public bool block_drop_min = false; // 블럭이 최소 좌표에 도달했는지 확인하는 변수
 
@@ -21,6 +22,7 @@ public class PlayerManager : MonoBehaviour {
     bool shieldOn = false;   // 방어 버튼이 터치 되었는지 확인
     public bool ground_collsion = false;     // 플레이어가 땅과 충돌되었는지 확인하는 변수
     public bool shield_able = false;   // 방어가 가능한 상태인지 판단.
+    bool jumpOn = false;
 
     [Header ("Block")]
     public bool block_destroy = false;   // 블럭이 모두 파괴되었는지 확인하는 변수
@@ -33,6 +35,7 @@ public class PlayerManager : MonoBehaviour {
     [Header("UI")]
     public int score = 0;   // test용 score
     public int life = 0;    // test용 life
+    public Button jumpButton;   // 점프 버튼 
     GameObject scoreText;   // score UI
     GameObject lifeSlider;  // 생명 UI 
 
@@ -56,6 +59,8 @@ public class PlayerManager : MonoBehaviour {
 
         scoreText = GameObject.Find("Score");
         lifeSlider = GameObject.Find("Life");
+
+        jumpButton.GetComponent<Button>();
 
         block_destroy = BlockGenerator.instance.BlockDestroy();
 
@@ -95,6 +100,7 @@ public class PlayerManager : MonoBehaviour {
             playerRg.constraints = RigidbodyConstraints2D.FreezePositionX;
         }
 
+        //jumpButton.onClick.AddListener(Jump);
 
         BlockDestroy();
 
@@ -105,7 +111,7 @@ public class PlayerManager : MonoBehaviour {
         
         //if (null == blockRg)
         //    blockRg = GameObject.Find("BlockGroup(Clone)").GetComponent<Rigidbody2D>();
-
+       
 
         if (Input.touchCount > 0)
         {    //터치가 1개 이상이면.
@@ -117,6 +123,7 @@ public class PlayerManager : MonoBehaviour {
                     if (tempTouchs.phase == TouchPhase.Began)
                     {    //해당 터치가 시작됐다면.
                         GlobalSFX.instance.PlayWeaponSwingSound();
+                        CharacterAnimation.instance.CatAttackAniControll();
                         var touchedPos = Camera.main.ScreenToWorldPoint(tempTouchs.position);
                         attackOn = true;
                         //Debug.Log("attackOn : " + attackOn);
@@ -126,6 +133,7 @@ public class PlayerManager : MonoBehaviour {
                     {
                         //Debug.Log("attack 버튼 터치 End");
                         attackOn = false;
+                        //CharacterAnimation.instance.CatAttackAniControll(false);
                     }
                 }
             }
@@ -162,17 +170,35 @@ public class PlayerManager : MonoBehaviour {
 
     public void Jump()
     {
+        //jumpOn = true;
         // 땅에 충돌되어있을 때만 점프 가능.
-        if(ground_collsion)
+        if (ground_collsion)
         {
+            //jumpOn = true;
+            jump_effect.SetActive(true);
             playerRg.AddForce(new Vector2(0, jumpSpeed));
             GlobalSFX.instance.PlayJumpSound();
+            CharacterAnimation.instance.CatJumpAniControll();
+        }
+    }
+
+    public void JumpCancle()    // 점프 버튼 뗐을 때
+    {
+        jump_effect.SetActive(false);
+        if (ground_collsion)
+        {
+            //CharacterAnimation.instance.CatJumpAniControll();    
         }
     }
 
     public void Attack()    // pc 테스트용 공격 함수
     {      
         attackOn = true;
+        //GameObject.Find("AnimationManager").GetComponent<CharacterAnimation>().CatAttackAniControll(true);
+        //if(jumpOn)
+        //    CharacterAnimation.instance.CatJumpAttackAniControll();
+        //else
+        CharacterAnimation.instance.CatAttackAniControll();
         GlobalSFX.instance.PlayWeaponSwingSound();
     }
 
@@ -220,7 +246,10 @@ public class PlayerManager : MonoBehaviour {
 
         // 땅과 충돌
         if (collision.collider.tag == "Collision")
+        {
             ground_collsion = true;
+            //CharacterAnimation.instance.CatJumpAniControll(false);
+        }
 
         // 블럭과 충돌
         if (collision.collider.tag == ("block1") || collision.collider.tag == ("block2")
@@ -250,7 +279,10 @@ public class PlayerManager : MonoBehaviour {
      
         // 땅과 충돌
         if (collision.collider.tag == "Collision")
+        {
             ground_collsion = true;
+            //CharacterAnimation.instance.CatJumpAniControll(false);
+        }
 
         // 블럭과 충돌
         if (collision.collider.tag == ("block1") || collision.collider.tag == ("block2")
@@ -311,14 +343,13 @@ public class PlayerManager : MonoBehaviour {
             || collision.tag == ("block3") || collision.tag == ("block4")
             || collision.tag == ("block5"))
         {
+            //Debug.Log("collision.tag : " + collision.tag);
             shield_able = true;
-            destroy_block = collision.gameObject;
-            //if (attackOn) // 터치된 상태로, 블록과 충돌
-            //{
-            //    //Debug.Log("터치된 상태로 블록과 충돌, OnTriggerEnter2D");
-            //    Destroy(newObj);
-            //    attackOn = false;
-            //}
+            if (destroy_block != null)
+            {
+                return;
+            }
+            destroy_block = collision.gameObject;         
         }
     }
 

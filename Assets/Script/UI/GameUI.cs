@@ -6,17 +6,34 @@ using UnityEngine.SceneManagement;
 
 public class GameUI : MonoBehaviour {
 
+    [Header("Text")]
     private Text Score;
     private Text BestScore;
 
+    [Header("Button")]
     public GameObject PlayButton;
     public GameObject PauseButton;
+    public GameObject BgmOnButton;
+    public GameObject BgmOffButton;
+    public GameObject SfxOnButton;
+    public GameObject SfxOffButton;
 
     GameObject bgmObj;
 
     void Start()
     {
         bgmObj = GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().gameObject;
+
+        if(!GlobalBGM.instance.bgmOnButton) // BGM이 off 되었다면
+        {
+            BgmOnButton.SetActive(true);
+            BgmOffButton.SetActive(false);
+        }
+        if(GlobalSFX.instance.myAudio.volume == 0)  // 효과음이 off 되었다면
+        {
+            SfxOnButton.SetActive(true);
+            SfxOffButton.SetActive(false);
+        }
     }
 
     public void MainScene()

@@ -109,8 +109,8 @@ public class BlockGenerator : MonoBehaviour
                 if (blockArr[i] == null)
                     continue;                
 
-                if (blockArr[i].transform.position.y < -0.3 &&
-                    blockArr[i].transform.position.y >= -1.7)
+                if (blockArr[i].transform.position.y < 1.4 &&
+                    blockArr[i].transform.position.y >= -0.4)
                 {
                     block_ypos_min = true;
                 }

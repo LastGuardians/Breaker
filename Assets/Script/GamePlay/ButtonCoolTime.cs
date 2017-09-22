@@ -33,6 +33,7 @@ public class ButtonCoolTime : MonoBehaviour
             //PlayerManager.instance.col_parent.enabled = true;
             //PlayerManager.instance.blockRg.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
             //PlayerManager.instance.col_parent.enabled = false;
+            //PlayerManager.instance.playerRg.mass = 10;
             StartCoroutine("Cooltime");
 
             currentCoolTime = coolTime;
