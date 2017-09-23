@@ -15,6 +15,9 @@ public class WeaponImageGenerator : MonoBehaviour
 	public GameObject SaveButton;
 	public GameObject CancelButton;
 	public GameObject Lock;
+	public GameObject Window;
+	public GameObject YesButton;
+	public GameObject WindowText;
 
 	public GameObject Light1;
 	public GameObject Light2;
@@ -32,16 +35,14 @@ public class WeaponImageGenerator : MonoBehaviour
 	public Text CoinText;
 	public Text KeyText;
 
-	public int CoinAmount;
-	public int KeyAmount;
-	public int Selected;
+	public int WeaponIndex;
 
 	public Font MainFont;
 	
 	public Sprite[] AbilityGaugeArray = new Sprite[3];
 	public Sprite[] UpgradeButtonArray = new Sprite[2];
 
-	public string[] WeaponStatusArray = new string[3] { "", "", "Locked" };
+	public string[] WeaponStatusArray = new string[3] { "Opened", "Opened", "Locked" };
 
 	public GameObject[] LockArray = new GameObject[3];
 	public GameObject[,,] WeaponObjectArray = new GameObject[3, 3, 10];
@@ -52,35 +53,74 @@ public class WeaponImageGenerator : MonoBehaviour
 	public int[,] WeaponAbilityArray = new int[3, 3] { {4, 2, 7}, {3, 9, 4}, {2, 5, 7} };
 	public int[,] TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 	public int[] StatusLocationArray = new int[3] { 50, -280, 50 };
+	public int[] WeaponPriceArray = new int[3] { 0, 100000, 200000 };
 	
 
 	private void Start()
 	{
+		Window = GameObject.Find("Window");
+		YesButton = GameObject.Find("YesButton");
+		WindowText = GameObject.Find("WindowText");
+
+		Window.SetActive(false);
+
+		LightArray[0] = Light1;
+		LightArray[1] = Light2;
+		LightArray[2] = Light3;
+
 		Canvas = GameObject.Find("Canvas");
-		ShowSelected();
+		ShowSelected(WeaponIndex);
 		LockWeapon();
 		GenerateGauge();
 		GenerateLabel();
 		GenerateAbilityButton();
 		GenerateDecisionButton();
-		LockButton();
+		LockButton(true);
+
+		Window.transform.SetAsLastSibling();
 	}
 
-	public void ShowSelected()
+	public void LoadWindow(int weaponIndex)
 	{
-		LightArray[0] = Light1;
-		LightArray[1] = Light2;
-		LightArray[2] = Light3;
+		Window.SetActive(true);
 
-		if (Selected == 0)
+		YesButton.GetComponent<Button>().onClick.AddListener(() => UnlockWeapon(weaponIndex));
+		LockButton(false);
+	}
+
+	public void UnlockWeapon(int weaponIndex)
+	{
+		if (CharacterImageGenerator.CoinAmount >= WeaponPriceArray[weaponIndex])
 		{
-			Selected++;
+			CancelWindow();
+
+			LockArray[weaponIndex].GetComponent<Animator>().SetBool("Unlock", true);
+			CharacterImageGenerator.CoinAmount -= WeaponPriceArray[weaponIndex];
+			Coin.GetComponent<Text>().text = CharacterImageGenerator.CoinAmount.ToString();
 		}
+		else
+		{
+			WindowText.GetComponent<Text>().text = "Not enough key! It requires " + WeaponPriceArray[weaponIndex].ToString() + " coins";
+			YesButton.SetActive(false);
+		}
+	}
+
+	public void CancelWindow()
+	{
+		Window.SetActive(false);
+		LockButton(true);
+		WindowText.GetComponent<Text>().text = "Would you like to unlock the weapon?";
+		YesButton.SetActive(true);
+	}
+
+	public void ShowSelected(int weaponIndex)
+	{
 		Light1.SetActive(false);
 		Light2.SetActive(false);
 		Light3.SetActive(false);
 
-		LightArray[Selected - 1].SetActive(true);
+		LightArray[weaponIndex].SetActive(true);
+		WeaponIndex = weaponIndex;
 	}
 
 	public void LockWeapon()
@@ -102,7 +142,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		}
 	}
 
-	public void LockButton()
+	public void LockButton(bool status)
 	{
 		for (int i = 0; i < 3; i++)
 		{
@@ -114,6 +154,17 @@ public class WeaponImageGenerator : MonoBehaviour
 					{
 						AbilityButtonArray[i, j, k].GetComponent<Button>().interactable = false;
 						DecisionButtonArray[i, k].GetComponent<Button>().interactable = false;
+					}
+				}
+			}
+			else
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					for (int k = 0; k < 2; k++)
+					{
+						AbilityButtonArray[i, j, k].GetComponent<Button>().interactable = status;
+						DecisionButtonArray[i, k].GetComponent<Button>().interactable = status;
 					}
 				}
 			}
@@ -165,18 +216,15 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	public void GenerateLabel()
 	{
-		CoinAmount = 100;
-		KeyAmount = 10;
-		
 		//코인 보유량 라벨 생성
 		Coin = new GameObject("CoinAmountText");
 		Coin.transform.parent = Canvas.transform;
-		Coin.transform.localPosition = new Vector3(-120, 550, 0);
+		Coin.transform.localPosition = new Vector3(-20, 550, 0);
 
 		CoinText = Coin.AddComponent<Text>();
 		CoinText.font = MainFont;
 		CoinText.fontSize = 40;
-		CoinText.text = "COIN\n" + CoinAmount.ToString();
+		CoinText.text = CharacterImageGenerator.CoinAmount.ToString();
 		CoinText.alignment = TextAnchor.UpperCenter;
 
 		Coin.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
@@ -184,12 +232,12 @@ public class WeaponImageGenerator : MonoBehaviour
 		//키 보유량 라벨 생성
 		Key = new GameObject("KeyAmountText");
 		Key.transform.parent = Canvas.transform;
-		Key.transform.localPosition = new Vector3(120, 550, 0);
+		Key.transform.localPosition = new Vector3(270, 550, 0);
 
 		KeyText = Key.AddComponent<Text>();
 		KeyText.font = MainFont;
 		KeyText.fontSize = 40;
-		KeyText.text = "KEY\n" + KeyAmount.ToString();
+		KeyText.text = CharacterImageGenerator.KeyAmount.ToString();
 		KeyText.alignment = TextAnchor.UpperCenter;
 
 		Key.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);

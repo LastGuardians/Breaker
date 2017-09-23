@@ -23,12 +23,6 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 
 	public void GenerateSelectionImage()
 	{
-
-		if(CharacterImageGenerator.TargetCharacterIndex == null)
-		{
-			CharacterImageGenerator.TargetCharacterIndex = 0;
-		}
-		
 		// 캐릭터 이미지 오브젝트 생성
 		Character = new GameObject("Character");
 		Character.transform.parent = Canvas.transform; // Canvas의 자식으로 이동
@@ -48,12 +42,17 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		if(TargetCharacter == "Deer")
 		{
 			TargetObject.transform.localScale = new Vector3(10, 9, 0);
-			TargetObject.transform.localPosition = new Vector3(0, 180, 0);
+			TargetObject.transform.localPosition = new Vector3(0, 190, 0);
 		}
 		else if(TargetCharacter == "Monkey")
 		{
 			TargetObject.transform.localScale = new Vector3(12, 18, 0);
-			TargetObject.transform.localPosition = new Vector3(0, 110, 0);
+			TargetObject.transform.localPosition = new Vector3(0, 120, 0);
+		}
+		else if(TargetCharacter == "Bear")
+		{
+			TargetObject.transform.localScale = new Vector3(9, 11, 0);
+			TargetObject.transform.localPosition = new Vector3(0, 260, 0);
 		}
 		else
 		{
@@ -70,7 +69,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 			{
 				CharacterImageGenerator.TargetCharacterIndex = ((CharacterImageGenerator.TargetCharacterIndex - 1) % 12 + 12) % 12;
 			}
-			while (CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked");
+			while (CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked" || CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Unveiled");
 		}
 		else if (TargetButtonName == "Right")
 		{
@@ -78,7 +77,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 			{
 				CharacterImageGenerator.TargetCharacterIndex = ((CharacterImageGenerator.TargetCharacterIndex + 1) % 12 + 12) % 12;
 			}
-			while (CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked");
+			while (CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked" || CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Unveiled");
 		}
 		ChangeImage(TargetButtonName);
 	}
