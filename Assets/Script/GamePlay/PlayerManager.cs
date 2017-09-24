@@ -124,7 +124,15 @@ public class PlayerManager : MonoBehaviour {
                     if (tempTouchs.phase == TouchPhase.Began)
                     {    //해당 터치가 시작됐다면.
                         GlobalSFX.instance.PlayWeaponSwingSound();
-                        CharacterAnimation.instance.CatAttackAniControll();
+                        // 점프했을 때 애니메이션.
+                        if (jumpOn)
+                        {
+                            //Debug.Log("jumpOn: " + jumpOn);
+                            CharacterAnimation.instance.CatJumpAttackAniControll();
+                        }
+                        else
+                            CharacterAnimation.instance.CatAttackAniControll();
+
                         var touchedPos = Camera.main.ScreenToWorldPoint(tempTouchs.position);
                         attackOn = true;
                         //Debug.Log("attackOn : " + attackOn);
@@ -152,6 +160,17 @@ public class PlayerManager : MonoBehaviour {
                     GameManager.instance.game_score));
             }
         }
+
+        if (playerRg.velocity.y != 0)
+        {
+            jumpOn = true;
+
+        }
+        if (ground_collsion)
+        {
+            //Debug.Log("jumpOn:" + jumpOn);
+            jumpOn = false;
+        }
     }
 
     /* 랭킹 생성 */
@@ -171,16 +190,15 @@ public class PlayerManager : MonoBehaviour {
 
     public void Jump()
     {
-        //jumpOn = true;
         // 땅에 충돌되어있을 때만 점프 가능.
         if (ground_collsion)
         {
             //StartCoroutine(PlayerJumpControll());
-            //jumpOn = true;
             jump_effect.SetActive(true);
-            playerRg.AddForce(new Vector2(0, jumpSpeed));
+            playerRg.AddForce(new Vector2(0, jumpSpeed));            
             GlobalSFX.instance.PlayJumpSound();
             CharacterAnimation.instance.CatJumpAniControll();
+            //CharacterAnimation.instance.CatJumpAttackAniControll();
         }
     }
 
@@ -199,17 +217,19 @@ public class PlayerManager : MonoBehaviour {
     public void JumpCancle()    // 점프 버튼 뗐을 때
     {
         jump_effect.SetActive(false);
-        if (ground_collsion)
-        {
-            //CharacterAnimation.instance.CatJumpAniControll();    
-        }
     }
 
     public void Attack()    // pc 테스트용 공격 함수
     {      
         attackOn = true;
 
-        CharacterAnimation.instance.CatAttackAniControll();
+        if (jumpOn)
+        {
+            //Debug.Log("jumpOn: " + jumpOn);
+            CharacterAnimation.instance.CatJumpAttackAniControll();
+        }
+        else
+            CharacterAnimation.instance.CatAttackAniControll();
         GlobalSFX.instance.PlayWeaponSwingSound();
     }
 

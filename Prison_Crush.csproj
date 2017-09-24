@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>5.6.2f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -286,8 +284,10 @@
     <Compile Include="Assets\GooglePlayGames\PluginVersion.cs" />
     <Compile Include="Assets\Script\Character\CharacterButtonManager.cs" />
     <Compile Include="Assets\Script\Character\CharacterImageGenerator.cs" />
+    <Compile Include="Assets\Script\Character\UserCharacter.cs" />
     <Compile Include="Assets\Script\CharacterSelection\CharacterSelectionButtonManager.cs" />
     <Compile Include="Assets\Script\CharacterSelection\CharacterSelectionImageGenerator.cs" />
+    <Compile Include="Assets\Script\Credit\CreditManager.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockCollisionManager.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockGenerator.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockStatusManager.cs" />
@@ -296,10 +296,10 @@
     <Compile Include="Assets\Script\GamePlay\CharacterAnimation.cs" />
     <Compile Include="Assets\Script\GamePlay\FeverTime.cs" />
     <Compile Include="Assets\Script\GamePlay\GameStructure.cs" />
+    <Compile Include="Assets\Script\GamePlay\PlayerCollision.cs" />
     <Compile Include="Assets\Script\GamePlay\PlayerManager.cs" />
     <Compile Include="Assets\Script\GamePlay\PlayerStatusManager.cs" />
     <Compile Include="Assets\Script\GamePlay\WarningController.cs" />
-    <Compile Include="Assets\Script\GamePlay\WeaponCollision.cs" />
     <Compile Include="Assets\Script\GameResult\RankingManager.cs" />
     <Compile Include="Assets\Script\GameResult\ResultManager.cs" />
     <Compile Include="Assets\Script\Main\GPGSManager.cs" />
@@ -312,6 +312,7 @@
     <Compile Include="Assets\Script\UI\Fade.cs" />
     <Compile Include="Assets\Script\UI\GameUI.cs" />
     <Compile Include="Assets\Script\UnityAds\UnityAdsHelper.cs" />
+    <Compile Include="Assets\Script\Weapon\UserWeapon.cs" />
     <Compile Include="Assets\Script\Weapon\WeaponButtonManager.cs" />
     <Compile Include="Assets\Script\Weapon\WeaponImageGenerator.cs" />
   </ItemGroup>

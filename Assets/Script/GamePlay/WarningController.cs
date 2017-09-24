@@ -53,7 +53,7 @@ public class WarningController : MonoBehaviour
                     if (warning_start && !FeverTime.instance.fever_start)
                     {
                         warning_range = r.Next(100, 10000);
-                        if (warning_range < 1000)
+                        if (warning_range < 200)  // 2% 확률
                         {
                             warning_start = false;
                             //Debug.Log("warning_range < 1000 만족");

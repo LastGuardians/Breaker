@@ -22,16 +22,12 @@ public class CharacterAnimation : MonoBehaviour
             //잘못된 인스턴스를 가르키고 있을 경우
             Destroy(gameObject);
         }
-
         catAni = gameObject.GetComponent<Animator>();
-       
     }
 
     // idle 상태에서 공격했을 때 애니메이션
     public void CatAttackAniControll()
     {
-       // Debug.Log("attack : " + attack);
-        //catAni.SetBool("IsAttack", attack);
         catAni.SetTrigger("IsAttack");
     }
 
@@ -48,4 +44,6 @@ public class CharacterAnimation : MonoBehaviour
     {
         catAni.SetTrigger("IsJumpAttack");
     }
+
+   
 }

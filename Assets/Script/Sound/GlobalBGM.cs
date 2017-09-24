@@ -57,7 +57,8 @@ public class GlobalBGM : MonoBehaviour
         if ((SceneManager.GetActiveScene().name == "Main" ||
            SceneManager.GetActiveScene().name == "Weapon" ||
            SceneManager.GetActiveScene().name == "Character" ||
-           SceneManager.GetActiveScene().name == "SpecificCharacter")
+           SceneManager.GetActiveScene().name == "SpecificCharacter" ||
+           SceneManager.GetActiveScene().name == "Credit")
            && bgmOnButton)
         {
             //Debug.Log("메인씬");

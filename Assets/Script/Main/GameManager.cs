@@ -55,6 +55,12 @@ public class GameManager : MonoBehaviour {
 		SceneManager.LoadScene("Weapon");
 	}
 
+    public void CreditScene()
+    {
+        SceneManager.LoadScene("Credit");
+    }
+
+    // 사운드 관련
     public void BGMSoundOn()
     {
         GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().BGMSoundOn();
