@@ -281,6 +281,7 @@
     <Compile Include="Assets\Script\Character\UserCharacter.cs" />
     <Compile Include="Assets\Script\CharacterSelection\CharacterSelectionButtonManager.cs" />
     <Compile Include="Assets\Script\CharacterSelection\CharacterSelectionImageGenerator.cs" />
+    <Compile Include="Assets\Script\Credit\CreditManager.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockCollisionManager.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockGenerator.cs" />
     <Compile Include="Assets\Script\GamePlay\BlockStatusManager.cs" />
@@ -305,6 +306,7 @@
     <Compile Include="Assets\Script\UI\Fade.cs" />
     <Compile Include="Assets\Script\UI\GameUI.cs" />
     <Compile Include="Assets\Script\UnityAds\UnityAdsHelper.cs" />
+    <Compile Include="Assets\Script\Weapon\UserWeapon.cs" />
     <Compile Include="Assets\Script\Weapon\WeaponButtonManager.cs" />
     <Compile Include="Assets\Script\Weapon\WeaponImageGenerator.cs" />
   </ItemGroup>

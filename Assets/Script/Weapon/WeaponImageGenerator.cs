@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using LitJson;
 
 public class WeaponImageGenerator : MonoBehaviour
 {
@@ -54,13 +55,19 @@ public class WeaponImageGenerator : MonoBehaviour
 	public int[,] TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 	public int[] StatusLocationArray = new int[3] { 50, -280, 50 };
 	public int[] WeaponPriceArray = new int[3] { 0, 100000, 200000 };
-	
+
+	public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
+
+	public string UserId;
+	public string WeaponId;
+	public int DamageLevel;
+	public int CriticalLevel;
+	public int ProbabilityLevel;
+
 
 	private void Start()
 	{
-		Window = GameObject.Find("Window");
-		YesButton = GameObject.Find("YesButton");
-		WindowText = GameObject.Find("WindowText");
+		UserId = Social.localUser.id;
 
 		Window.SetActive(false);
 
@@ -68,8 +75,8 @@ public class WeaponImageGenerator : MonoBehaviour
 		LightArray[1] = Light2;
 		LightArray[2] = Light3;
 
-		Canvas = GameObject.Find("Canvas");
 		ShowSelected(WeaponIndex);
+		WeaponServer();
 		LockWeapon();
 		GenerateGauge();
 		GenerateLabel();
@@ -78,6 +85,10 @@ public class WeaponImageGenerator : MonoBehaviour
 		LockButton(true);
 
 		Window.transform.SetAsLastSibling();
+	}
+
+	public void WeaponServer()
+	{
 	}
 
 	public void LoadWindow(int weaponIndex)
@@ -219,7 +230,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		//코인 보유량 라벨 생성
 		Coin = new GameObject("CoinAmountText");
 		Coin.transform.parent = Canvas.transform;
-		Coin.transform.localPosition = new Vector3(-20, 550, 0);
+		Coin.transform.localPosition = new Vector3(-20, 530, 0);
 
 		CoinText = Coin.AddComponent<Text>();
 		CoinText.font = MainFont;
@@ -232,7 +243,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		//키 보유량 라벨 생성
 		Key = new GameObject("KeyAmountText");
 		Key.transform.parent = Canvas.transform;
-		Key.transform.localPosition = new Vector3(270, 550, 0);
+		Key.transform.localPosition = new Vector3(270, 530, 0);
 
 		KeyText = Key.AddComponent<Text>();
 		KeyText.font = MainFont;
@@ -384,6 +395,74 @@ public class WeaponImageGenerator : MonoBehaviour
 			{
 				Locked.transform.SetAsLastSibling();
 			}
+		}
+	}
+
+	//서버 파트
+	public void CreateUserWeapon()
+	{
+		StartCoroutine(_CreateUserWeapon(UserId, WeaponId));
+	}
+
+	public IEnumerator _CreateUserWeapon(string userId, string weaponId)
+	{
+		string url = baseUrl + "/user/" + userId + "/weapons/create";
+		WWWForm form = new WWWForm();
+		form.headers["content-type"] = "application/json";
+		form.AddField("weaponId", weaponId);
+
+		WWW www = new WWW(url, form);
+		yield return www;
+
+		PrintLog(www.error);
+	}
+
+	public void GetUserWeapons()
+	{
+		StartCoroutine(_GetUserWeapons(UserId));
+	}
+
+	public IEnumerator _GetUserWeapons(string userId)
+	{
+		string url = baseUrl + "/user/" + userId + "/weapons";
+		WWW www = new WWW(url);
+		yield return www;
+
+		PrintLog(www.error);
+		PrintLog(www.text);
+
+		JsonData json = JsonMapper.ToObject(www.text);
+		for (int i = 0; i < json.Count; i++)
+		{
+			PrintLog(json[i]["userId"] + " " + json[i]["weaponId"] + " " + json[i]["damageLevel"] + " " + json[i]["criticalLevel"] + " " + json[i]["probabilityLevel"]);
+		}
+	}
+
+	public void SetUserWeapon()
+	{
+		StartCoroutine(_SetUserWeapon(UserId, WeaponId, DamageLevel, CriticalLevel, ProbabilityLevel));
+	}
+
+	public IEnumerator _SetUserWeapon(string userId, string weaponId, int damageLevel, int criticalLevel, int probabilityLevel)
+	{
+		string url = baseUrl + "/user/" + userId + "/weapons/" + weaponId + "/update";
+		WWWForm form = new WWWForm();
+		form.headers["content-type"] = "application/json";
+		form.AddField("damageLevel", damageLevel);
+		form.AddField("criticalLevel", criticalLevel);
+		form.AddField("probabilityLevel", probabilityLevel);
+
+		WWW www = new WWW(url, form);
+		yield return www;
+
+		PrintLog(www.error);
+	}
+
+	void PrintLog(string message)
+	{
+		if (!string.IsNullOrEmpty(message))
+		{
+			Debug.Log(message);
 		}
 	}
 }

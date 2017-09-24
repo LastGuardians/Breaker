@@ -20,7 +20,7 @@ public class CharacterImageGenerator: MonoBehaviour
 
 	public string CharacterButtonImageName;
 
-	public static int CoinAmount = 100000000;
+	public static int CoinAmount = 1000000;
 	public static int KeyAmount = 500;
 	public static int TargetCharacterIndex;
 
@@ -40,10 +40,6 @@ public class CharacterImageGenerator: MonoBehaviour
 
 	void Start()
     {
-		Window = GameObject.Find("Window");
-		YesButton = GameObject.Find("YesButton");
-		WindowText = GameObject.Find("WindowText");
-
 		Window.SetActive(false);
 
 		GenerateImage();
@@ -102,7 +98,6 @@ public class CharacterImageGenerator: MonoBehaviour
 				Character.transform.localPosition = new Vector3(230 * j - 450, 340 * (5 - i) - 1550, 0);
 
 				CharacterButtonArray[CharacterIndex] = Character;
-				Debug.Log(CharacterButtonArray[CharacterIndex]);
 			}
 		}
 	}
@@ -180,7 +175,7 @@ public class CharacterImageGenerator: MonoBehaviour
 		//코인 보유량 라벨 생성
 		Coin = new GameObject("CoinAmountText");
 		Coin.transform.parent = GameObject.Find("Canvas").transform;
-		Coin.transform.localPosition = new Vector3(-20, 540, 0);
+		Coin.transform.localPosition = new Vector3(-20, 530, 0);
 
 		CoinText = Coin.AddComponent<Text>();
 		CoinText.font = MainFont;
@@ -193,7 +188,7 @@ public class CharacterImageGenerator: MonoBehaviour
 		//키 보유량 라벨 생성
 		Key = new GameObject("KeyAmountText");
 		Key.transform.parent = GameObject.Find("Canvas").transform;
-		Key.transform.localPosition = new Vector3(270, 540, 0);
+		Key.transform.localPosition = new Vector3(270, 530, 0);
 
 		KeyText = Key.AddComponent<Text>();
 		KeyText.font = MainFont;
