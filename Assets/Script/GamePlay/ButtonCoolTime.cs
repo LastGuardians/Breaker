@@ -13,7 +13,7 @@ public class ButtonCoolTime : MonoBehaviour
 
     private float currentCoolTime; //남은 쿨타임을 추적 할 변수
 
-    private bool canUseShield = true; // 방어를 사용할 수 있는지 확인하는 변수
+    public bool canUseShield = true; // 방어를 사용할 수 있는지 확인하는 변수
 
     public static ButtonCoolTime instance = null;
 
@@ -29,6 +29,7 @@ public class ButtonCoolTime : MonoBehaviour
         {
             //Debug.Log("Use Shield");
             shieldFilter.fillAmount = 1; //방어 버튼을 가림
+            //PlayerManager.instance.playerRg.AddForce(new Vector2(0, -400f));
             // 블록을 위로 튕긴다.
             //PlayerManager.instance.col_parent.enabled = true;
             //PlayerManager.instance.blockRg.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);

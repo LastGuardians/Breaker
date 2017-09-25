@@ -32,8 +32,8 @@ public class BlockGenerator : MonoBehaviour
     public int range = 0;      // 확률 범위
     public int grade_range = 0; // 블록 등급 확률 범위
 
-    public Object[] jail_normal = new Object[5];  // 교도소 내부 기본 건물 리소스
-    public Object[] jail_upgrade = new Object[5];  // 교도소 내부 강화 건물 리소스
+    public Sprite[] jail_normal = new Sprite[5];  // 교도소 내부 기본 건물 리소스
+    public Sprite[] jail_upgrade = new Sprite[5];  // 교도소 내부 강화 건물 리소스
 
     BlockStatusManager[] block_stat = new BlockStatusManager[5];
     public static BlockGenerator instance = null;
@@ -69,14 +69,15 @@ public class BlockGenerator : MonoBehaviour
 
     void Start()
     {
-        BlockDestroy();
+        StartCoroutine(BlockGenerate());
+        StartCoroutine(BlockTranslate());
         range = r.Next(0, 5);
 
         for (int i = 0; i < 5; ++i)
         {
             // 리소스 셋팅
-            jail_normal[i] = Resources.Load("Background/Building/prison_inside/jail" + (i + 1).ToString());
-            jail_upgrade[i] = Resources.Load("Background/Building/prison_inside/upgrade/jail_upgrade" + (i + 1).ToString());
+            jail_normal[i] = Resources.Load<Sprite>("Background/Building/prison_inside/jail" + (i + 1).ToString());
+            jail_upgrade[i] = Resources.Load<Sprite>("Background/Building/prison_inside/upgrade/jail_upgrade" + (i + 1).ToString());
         }
 
         for (int i = 0; i < 5; ++i)
@@ -85,73 +86,55 @@ public class BlockGenerator : MonoBehaviour
             if (i == range)      // 랜덤한 한 블럭을 강화블럭으로 셋팅
             {
                 Debug.Log("range : " + range);
-                //if (i == 0)
-                //{
-                //    blockArr[i] = jail_upgrade[0] as GameObject;
-                //    blockArr[i].AddComponent<BlockStatusManager>();
-                //    blockArr[i].GetComponent<BlockStatusManager>().BlockUpgrade();
-                //}
-                //if (i == 1)
-                //{
-                //    blockArr[i] = jail_upgrade[1] as GameObject;
-                //    blockArr[i].AddComponent<BlockStatusManager>();
-                //    blockArr[i].GetComponent<BlockStatusManager>().BlockUpgrade();
-                //}
-                //if (i == 2)
-                //{
-                //    blockArr[i] = jail_upgrade[2] as GameObject;
-                //    blockArr[i].AddComponent<BlockStatusManager>();
-                //    blockArr[i].GetComponent<BlockStatusManager>().BlockUpgrade();
-                //}
-                //if (i == 3)
-                //{
-                //    blockArr[i] = jail_upgrade[3] as GameObject;
-                //    blockArr[i].AddComponent<BlockStatusManager>();
-                //    blockArr[i].GetComponent<BlockStatusManager>().BlockUpgrade();
-                //}
-                //if (i == 4)
-                //{
-                //    blockArr[i] = jail_upgrade[4] as GameObject;
-                //    blockArr[i].AddComponent<BlockStatusManager>();
-                //    blockArr[i].GetComponent<BlockStatusManager>().BlockUpgrade();
-                //}
-                blockArr[i].AddComponent<BlockStatusManager>();
+                if (i == 0)
+                {
+                    blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_upgrade[0];                   
+                }
+                if (i == 1)
+                {
+                    blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_upgrade[1];
+                }
+                if (i == 2)
+                {
+                    blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_upgrade[2];
+                }
+                if (i == 3)
+                {
+                    blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_upgrade[3];
+                }
+                if (i == 4)
+                {
+                    blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_upgrade[4];
+                }
+                //blockArr[i].AddComponent<BlockStatusManager>();
+                blockArr[i].GetComponent<BlockStatusManager>().BlockUpgrade();
 
             }
             else
             {
-                //if (i == range)
-                //    continue;
+                if (i == range)
+                {
+                    //Debug.Log("range : " + range);
+                    continue;
+                }
                 //blockArr[i] = jail_normal[i] as GameObject;
                 //blockArr[i].AddComponent<BlockStatusManager>();
+                blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_normal[i];
                 blockArr[i].GetComponent<BlockStatusManager>().BlockNormal();
             }
         }
 
-        //for (int i = 0; i < 5; ++i)
-        //{
-        //    Debug.Log("range : " + range);
-        //    if (i == range)
-        //        continue;
-
-        //    blockArr[i] = jail_normal[i] as GameObject;
-        //    //blockArr[i].AddComponent<BlockStatusManager>();
-        //    //blockArr[i].AddComponent<BlockStatusManager>();
-        //    blockArr[i].GetComponent<BlockStatusManager>().BlockNormal();
-        //}
-
         // 블럭 중력 
         block_gravity = GameObject.Find("BlockGroup").GetComponent<Rigidbody2D>();
-
-
-        //Object prison_inside = Resources.Load("Background/Building/prison_inside");
     }
 
     void Update()
     {
-        //Object obj = Resources.Load("Background/BlockGroup");
+        BlockDestroy();
+
         if (BlockDestroy()) // 블럭이 모두 파괴되었을 때.
         {
+            Debug.Log("블럭 모두 파괴");
             //for (int i = 0; i < 5; ++i)
             //{
             //    blockArr[i] = Instantiate(jail_normal[i], new Vector2(transform.position.x, (transform.position.y+(i+2))), transform.rotation) as GameObject;
@@ -212,14 +195,27 @@ public class BlockGenerator : MonoBehaviour
     // 블럭 생성 코루틴
     IEnumerator BlockGenerate()
     {
-        yield return new WaitUntil(BlockDestroy);   // 함수 리턴값이 true면 아래 코드 실행
-        Debug.Log("BlockDestroy 리턴 값 : " + BlockDestroy());
+        while (true)
+        {
+            yield return new WaitUntil(BlockDestroy);   // 함수 리턴값이 true면 아래 코드 실행
+            Debug.Log("BlockDestroy 리턴 값 : " + BlockDestroy());
 
-        blockParents = Instantiate(Resources.Load("Background/BlockGroup"),
-        new Vector2(transform.position.x, (transform.position.y) + 20), transform.rotation) as GameObject;
+            //blockParents = Instantiate(Resources.Load("Prefabs/BlockGroup"),
+            //     new Vector2(transform.position.x, (transform.position.y)), transform.rotation) as GameObject;
 
+            //if (null == block_gravity)
+            //    block_gravity = blockParents.GetComponent<Rigidbody2D>();
+        }
         //blockParents = Instantiate(blockGroup, new Vector2(transform.position.x, (transform.position.y) + 50)
-        //    , transform.rotation) as GameObject;                    
+        //    , transform.rotation) as GameObject;
+    }
 
+    IEnumerator BlockTranslate()
+    {
+        while (true)
+        {
+            yield return new WaitWhile(BlockDestroy);   // false면 아래 코드 실행
+            //Debug.Log("BlockDestroy false");
+        }
     }
 }
