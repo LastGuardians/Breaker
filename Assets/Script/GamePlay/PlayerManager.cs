@@ -42,6 +42,7 @@ public class PlayerManager : MonoBehaviour {
     public Button jumpButton;   // 점프 버튼 
     GameObject scoreText;   // score UI
     GameObject lifeSlider;  // 생명 UI 
+    GameObject buttonCool;  // 쿨타임 오브젝트
 
     AudioClip jumping_sound;
 
@@ -74,7 +75,8 @@ public class PlayerManager : MonoBehaviour {
                 
         playerRg.velocity = Vector2.zero;
         player.AddComponent<PlayerStatusManager>();
-        
+
+        buttonCool = GameObject.Find("ShieldButton");
     }
 
     void Update()
@@ -160,6 +162,19 @@ public class PlayerManager : MonoBehaviour {
             //Debug.Log("jumpOn:" + jumpOn);
             jumpOn = false;
         }
+
+        // 트리거 켜졌을 때 방어버튼 누르면.(조건: 블럭과 충돌했을때 && 방어버튼 눌렸을때 && 트리거 켜졌을때)
+        if (shield_able)
+        {
+            if (shieldOn)
+            {
+                //Debug.Log("shieldOn: " + shieldOn);
+                if (blockRg == null)
+                    blockRg = GameObject.Find("BlockGroup(Clone)").GetComponent<Rigidbody2D>();
+                blockRg.AddForce(new Vector2(0, shieldForcetoBlock));
+                shieldOn = false;
+            }
+        }
     }
 
     /* 랭킹 생성 */
@@ -191,18 +206,6 @@ public class PlayerManager : MonoBehaviour {
         }
     }
 
-    //IEnumerator PlayerJumpControll()
-    //{
-    //    float jump_height = transform.position.y;
-    //    while(true)
-    //    {
-    //        yield return new WaitForSeconds(1f);
-    //        jump_height += 0.5f;
-
-    //        transform.position = new Vector2(transform.position.x, jump_height);
-    //    }
-    //}
-
     public void JumpCancle()    // 점프 버튼 뗐을 때
     {
         jump_effect.SetActive(false);
@@ -225,12 +228,16 @@ public class PlayerManager : MonoBehaviour {
     public void Shield()    // 방어 버튼
     {
         // 쿨타임 시작
-        GameObject.Find("ShieldButton").GetComponent<ButtonCoolTime>().UseShield();
-        shieldOn = true;
+        if (buttonCool.GetComponent<ButtonCoolTime>().canUseShield)
+        {
+            buttonCool.GetComponent<ButtonCoolTime>().UseShield();
+            shieldOn = true;
+        }
     }
 
     public void ShieldCancle()
     {
+        //if(!buttonCool.GetComponent<ButtonCoolTime>().canUseShield)
         shieldOn = false;
     }
 
@@ -417,17 +424,10 @@ public class PlayerManager : MonoBehaviour {
             {
                 return;
             }
-            destroy_block = collision.gameObject;         
+            destroy_block = collision.gameObject;
         }
     }
-
-    void BlockDestroy(Collider2D collision)
-    {
-        //Debug.Log("BlockDestroy 호출");
-        GameObject newObj = collision.gameObject;
-        Destroy(newObj);
-    }
-
+    
     public void OnTriggerExit2D(Collider2D collision)
     {
         shield_able = false;

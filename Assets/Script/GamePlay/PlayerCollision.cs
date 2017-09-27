@@ -25,7 +25,7 @@ public class PlayerCollision : MonoBehaviour
         
         if(hit.collider.tag == "block1")
         {
-            Debug.Log("블럭과 충돌");
+            //Debug.Log("블럭과 충돌");
         }
 
         if (Physics.Raycast(ray_position, ray_direction_R, out hit_0, 1f)) // 0.5거리가 떨어져있는 위치에 닿는 다면.{

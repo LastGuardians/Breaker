@@ -7,9 +7,11 @@ using System.Text;
 public struct Block   // 블록
 {
     public int hp;              // 블록 hp
-    public int level;           // 블록 level
-    public int blockType;       // 블록 타입(기본=0 / 은=1 / 금=2)
-    public int buildingType;    // 건물 타입(리소스에 따라 달라진다.)
+    public int grade;           // 블록 등급
+    public int blockType;       // 블록 타입(기본 =0 / 강화 =1)
+    public int score;           // 블록의 점수
+    public int coin;            // 블록 깼을 때 얻는 코인 수
+    public int key;             // 블록 깼을 때 얻는 열쇠 수
 }
 
 public struct Character     // 캐릭터

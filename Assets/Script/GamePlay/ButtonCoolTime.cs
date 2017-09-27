@@ -15,12 +15,13 @@ public class ButtonCoolTime : MonoBehaviour
 
     public bool canUseShield = true; // 방어를 사용할 수 있는지 확인하는 변수
 
+    GameObject shieldCollider;
     public static ButtonCoolTime instance = null;
 
     void start()
     {
         shieldFilter.fillAmount = 0; //처음에 방어 버튼을 가리지 않음
-
+        //shieldCollider = GameObject.Find("shield_collider");
     }
 
     public void UseShield()
@@ -28,13 +29,7 @@ public class ButtonCoolTime : MonoBehaviour
         if (canUseShield)
         {
             //Debug.Log("Use Shield");
-            shieldFilter.fillAmount = 1; //방어 버튼을 가림
-            //PlayerManager.instance.playerRg.AddForce(new Vector2(0, -400f));
-            // 블록을 위로 튕긴다.
-            //PlayerManager.instance.col_parent.enabled = true;
-            //PlayerManager.instance.blockRg.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
-            //PlayerManager.instance.col_parent.enabled = false;
-            //PlayerManager.instance.playerRg.mass = 10;
+            shieldFilter.fillAmount = 1; //방어 버튼을 가림            
             StartCoroutine("Cooltime");
 
             currentCoolTime = coolTime;
@@ -59,6 +54,7 @@ public class ButtonCoolTime : MonoBehaviour
         }
 
         canUseShield = true; //방어 쿨타임이 끝나면 방어를 사용할 수 있는 상태로 바꿈
+        GameObject.Find("shield_collider").SetActive(false);
 
         yield break;
     }
