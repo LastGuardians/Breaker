@@ -115,6 +115,7 @@ public class PlayerManager : MonoBehaviour {
                     if (tempTouchs.phase == TouchPhase.Began)
                     {    //해당 터치가 시작됐다면.
                         GlobalSFX.instance.PlayWeaponSwingSound();
+                        transform.Find("swing").gameObject.SetActive(true);
                         // 점프했을 때 애니메이션.
                         if (jumpOn)
                         {
@@ -133,6 +134,7 @@ public class PlayerManager : MonoBehaviour {
                     {
                         //Debug.Log("attack 버튼 터치 End");
                         attackOn = false;
+                        transform.Find("swing").gameObject.SetActive(false);
                         //CharacterAnimation.instance.CatAttackAniControll(false);
                     }
                 }
@@ -175,6 +177,32 @@ public class PlayerManager : MonoBehaviour {
                 shieldOn = false;
             }
         }
+
+        if (attackOn && col_player.isTrigger == false)
+        {            
+            if (PlayerCollision.instance.rayCollider != null)
+            {
+                int destroy_block_score = 0;
+                GameObject newObj = PlayerCollision.instance.rayCollider.gameObject;
+                destroy_block_score = newObj.GetComponent<BlockStatusManager>().score;
+
+                if (PlayerCollision.instance.rayCollider.tag == "block5")
+                {
+                    parent = PlayerCollision.instance.rayCollider.transform.parent.gameObject;
+                    GlobalSFX.instance.PlayDestroySound();
+                    score += destroy_block_score;
+                    GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
+                    Destroy(parent);
+                }
+                else
+                {
+                    GlobalSFX.instance.PlayDestroySound();
+                    score += destroy_block_score;
+                    GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
+                    Destroy(PlayerCollision.instance.rayCollider);
+                }
+            }
+        }
     }
 
     /* 랭킹 생성 */
@@ -214,6 +242,7 @@ public class PlayerManager : MonoBehaviour {
     public void Attack()    // pc 테스트용 공격 함수
     {      
         attackOn = true;
+        transform.Find("swing").gameObject.SetActive(true);
 
         if (jumpOn)
         {
@@ -223,6 +252,12 @@ public class PlayerManager : MonoBehaviour {
         else
             CharacterAnimation.instance.CatAttackAniControll();
         GlobalSFX.instance.PlayWeaponSwingSound();
+    }
+
+    public void AttackCancle()
+    {
+        attackOn = false;
+        transform.Find("swing").gameObject.SetActive(false);
     }
 
     public void Shield()    // 방어 버튼
@@ -295,7 +330,7 @@ public class PlayerManager : MonoBehaviour {
             GameObject newObj = collision.collider.gameObject;
             destroy_block_score = newObj.GetComponent<BlockStatusManager>().score;
             if (attackOn)  // 공격 버튼만 눌렀을 때.
-            {
+            {                
                 if (collision.collider.tag == "block5")   // 마지막 블럭일 때, 부모 삭제
                 {
                     parent = newObj.transform.parent.gameObject;

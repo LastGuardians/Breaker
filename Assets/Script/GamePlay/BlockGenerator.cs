@@ -34,8 +34,8 @@ public class BlockGenerator : MonoBehaviour
     public int grade_range = 0; // 블록 등급 확률 범위
 
     // 건물 리소스
-    Sprite[] jail_normal = new Sprite[5];  // 교도소 내부(철창) 기본 건물 리소스
-    Sprite[] jail_upgrade = new Sprite[5];  // 교도소 내부(철창) 강화 건물 리소스
+    Sprite[] jail_normal = new Sprite[5];  // 교도소 내부(철창) 기본
+    Sprite[] jail_upgrade = new Sprite[5];  // 교도소 내부(철창) 강화
 
     Sprite[] door_normal = new Sprite[5];   // 교도소 내부(철문) 기본
     Sprite[] door_upgrade = new Sprite[5];   // 교도소 내부(철문) 강화
@@ -104,19 +104,16 @@ public class BlockGenerator : MonoBehaviour
 
         for (int i = 0; i < 5; ++i)
         {
-            //grade_range = r.Next(0, 100);
             if (i == range)      // 랜덤한 한 블럭을 강화블럭으로 셋팅
             {
-                //Debug.Log("range : " + range);
                 blockArr[range].GetComponent<SpriteRenderer>().sprite = jail_upgrade[range];
-                blockArr[range].GetComponent<BlockStatusManager>().BlockUpgrade();
+                blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(1);
 
             }
             else
             {
-                //Debug.Log("i : " + i);
                 blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_normal[i];
-                blockArr[i].GetComponent<BlockStatusManager>().BlockNormal();
+                blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(1);
             }
         }
 
@@ -176,7 +173,7 @@ public class BlockGenerator : MonoBehaviour
             
             /// 단계별 공통 작업 ///
             blockParents = Instantiate(Resources.Load("Prefabs/BlockGroup"),
-                  new Vector2(transform.position.x, (transform.position.y + 15)), transform.rotation) as GameObject;
+                  new Vector2(transform.position.x, (transform.position.y + 10)), transform.rotation) as GameObject;
 
             if (null == block_gravity)
                 block_gravity = blockParents.GetComponent<Rigidbody2D>();

@@ -17,18 +17,11 @@ public class BlockStatusManager : MonoBehaviour
 
     public int stage = 1;   // 블럭 단계
 
-    // 건물 리소스
-    Sprite[] jail_normal = new Sprite[5];  // 교도소 내부(철창) 기본 건물 리소스
-    Sprite[] jail_upgrade = new Sprite[5];  // 교도소 내부(철창) 강화 건물 리소스
-
     System.Random r = new System.Random();
     int range = 0;
 
     static Block[] BlockStatNormal = new Block[5];
     static Block[] BlockStatUpgrade = new Block[5];
-
-    int playerScore = 0;
-    int gradeRange = 0;
 
     public static BlockStatusManager instance = null;
 
@@ -37,15 +30,6 @@ public class BlockStatusManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(BlockStageCheck());
-        //UserStat = GameObject.Find("Player");
-        for (int i = 0; i < 5; ++i)
-        {
-            // 리소스 셋팅
-            jail_normal[i] = Resources.Load<Sprite>("Building/1.Jail/jail" + (i + 1).ToString());
-            jail_upgrade[i] = Resources.Load<Sprite>("Building/1.Jail/upgrade/jail_upgrade" + (i + 1).ToString());
-        }
-        playerScore = PlayerManager.instance.score;
-        gradeRange = BlockGenerator.instance.grade_range;
 
         // 1단계 기본 블럭
         BlockStatNormal[0].hp = 15;
@@ -221,146 +205,146 @@ public class BlockStatusManager : MonoBehaviour
     }
 
 
-    public void BlockNormal()      // 기본 블럭 셋팅
-    {
-        range = r.Next(0, 100);
-        if (stage == 1)     // 700점 미만(1단계)
-        {
-            //Debug.Log("stage : "+ stage);
-            SetBlockNormal(stage);
-        }
-        else if(stage == 2)    // 2단계
-        {
-            Debug.Log("stage : " + stage);
-            if (range < 30)    // 1단계 블럭 확률 30%
-            {
-                //Debug.Log("1단계 블럭");
-                SetBlockNormal(stage - 1);
-            }
-            else        // 2단계 블럭 확률 70%
-            {
-               // Debug.Log("2단계 블럭");
-                SetBlockNormal(stage);
-            }
+    //public void BlockNormal()      // 기본 블럭 셋팅
+    //{
+    //    range = r.Next(0, 100);
+    //    if (stage == 1)     // 700점 미만(1단계)
+    //    {
+    //        //Debug.Log("stage : "+ stage);
+    //        SetBlockNormal(stage);
+    //    }
+    //    else if(stage == 2)    // 2단계
+    //    {
+    //        //Debug.Log("stage : " + stage);
+    //        if (range < 30)    // 1단계 블럭 확률 30%
+    //        {
+    //            //Debug.Log("1단계 블럭");
+    //            SetBlockNormal(stage - 1);
+    //        }
+    //        else        // 2단계 블럭 확률 70%
+    //        {
+    //           // Debug.Log("2단계 블럭");
+    //            SetBlockNormal(stage);
+    //        }
         
-        }
-        else if (stage == 3)    // 3단계
-        {
-            if (gradeRange < 10)    // 1단계 블럭 확률 10%
-            {
-                SetBlockNormal(stage - 2);
-            }
-            else if(gradeRange < 40)  // 2단계 블럭 확률 30%
-            {
-                SetBlockNormal(stage - 1);
-            }
-            else if (gradeRange < 70) // 3단계 블럭 확률 30%
-            {
-                SetBlockNormal(stage);
-            }
-            else if (gradeRange < 90) // 수갑/밧줄 확률 20%
-            {
-                hp = 10000;
-                score = 150;
-            }
-            else if (gradeRange < 100) // 폭탄 확률 10%
-            {
-                hp = 10000;
-                score = 150;
-            }
-        }
-        else if (stage == 4)    // 4단계
-        {
-            if (gradeRange < 5)    // 1단계 블럭 확률 5%
-            {
-                SetBlockNormal(stage - 3);
-            }
-            else if (gradeRange < 10)  // 2단계 블럭 확률 5%
-            {
-                SetBlockNormal(stage-2);
-            }
-            else if (gradeRange < 40) // 3단계 블럭 확률 30%
-            {
-                SetBlockNormal(stage-1);
-            }
-            else if (gradeRange < 70) // 4단계 블럭 확률 30%
-            {
-                SetBlockNormal(stage);
-            }
-            else if (gradeRange < 90) // 수갑/밧줄 확률 20%
-            {
-                hp = 10000;
-                score = 150;
-            }
-            else if (gradeRange < 100) // 폭탄 확률 10%
-            {
-                hp = 10000;
-                score = 150;
-            }
-        }
-        else if (stage == 5)    // 5단계
-        {
-            if (gradeRange < 2)    // 1단계 블럭 확률 2%
-            {
-                SetBlockNormal(stage-4);
-            }
-            else if (gradeRange < 5)  // 2단계 블럭 확률 3%
-            {
-                SetBlockNormal(stage-3);
-            }
-            else if (gradeRange < 10) // 3단계 블럭 확률 5%
-            {
-                SetBlockNormal(stage-2);
-            }
-            else if (gradeRange < 40) // 4단계 블럭 확률 30%
-            {
-                SetBlockNormal(stage-1);
-            }
-            else if (gradeRange < 70) // 5단계 블럭 확률 30%
-            {
-                SetBlockNormal(stage);
-            }
-            else if (gradeRange < 90) // 수갑/밧줄 확률 20%
-            {
-                hp = 10000;
-                score = 150;
-            }
-            else if (gradeRange < 100) // 폭탄 확률 10%
-            {
-                hp = 10000;
-                score = 150;
-            }
-        }
-    }
+    //    }
+    //    else if (stage == 3)    // 3단계
+    //    {
+    //        if (gradeRange < 10)    // 1단계 블럭 확률 10%
+    //        {
+    //            SetBlockNormal(stage - 2);
+    //        }
+    //        else if(gradeRange < 40)  // 2단계 블럭 확률 30%
+    //        {
+    //            SetBlockNormal(stage - 1);
+    //        }
+    //        else if (gradeRange < 70) // 3단계 블럭 확률 30%
+    //        {
+    //            SetBlockNormal(stage);
+    //        }
+    //        else if (gradeRange < 90) // 수갑/밧줄 확률 20%
+    //        {
+    //            hp = 10000;
+    //            score = 150;
+    //        }
+    //        else if (gradeRange < 100) // 폭탄 확률 10%
+    //        {
+    //            hp = 10000;
+    //            score = 150;
+    //        }
+    //    }
+    //    else if (stage == 4)    // 4단계
+    //    {
+    //        if (gradeRange < 5)    // 1단계 블럭 확률 5%
+    //        {
+    //            SetBlockNormal(stage - 3);
+    //        }
+    //        else if (gradeRange < 10)  // 2단계 블럭 확률 5%
+    //        {
+    //            SetBlockNormal(stage-2);
+    //        }
+    //        else if (gradeRange < 40) // 3단계 블럭 확률 30%
+    //        {
+    //            SetBlockNormal(stage-1);
+    //        }
+    //        else if (gradeRange < 70) // 4단계 블럭 확률 30%
+    //        {
+    //            SetBlockNormal(stage);
+    //        }
+    //        else if (gradeRange < 90) // 수갑/밧줄 확률 20%
+    //        {
+    //            hp = 10000;
+    //            score = 150;
+    //        }
+    //        else if (gradeRange < 100) // 폭탄 확률 10%
+    //        {
+    //            hp = 10000;
+    //            score = 150;
+    //        }
+    //    }
+    //    else if (stage == 5)    // 5단계
+    //    {
+    //        if (gradeRange < 2)    // 1단계 블럭 확률 2%
+    //        {
+    //            SetBlockNormal(stage-4);
+    //        }
+    //        else if (gradeRange < 5)  // 2단계 블럭 확률 3%
+    //        {
+    //            SetBlockNormal(stage-3);
+    //        }
+    //        else if (gradeRange < 10) // 3단계 블럭 확률 5%
+    //        {
+    //            SetBlockNormal(stage-2);
+    //        }
+    //        else if (gradeRange < 40) // 4단계 블럭 확률 30%
+    //        {
+    //            SetBlockNormal(stage-1);
+    //        }
+    //        else if (gradeRange < 70) // 5단계 블럭 확률 30%
+    //        {
+    //            SetBlockNormal(stage);
+    //        }
+    //        else if (gradeRange < 90) // 수갑/밧줄 확률 20%
+    //        {
+    //            hp = 10000;
+    //            score = 150;
+    //        }
+    //        else if (gradeRange < 100) // 폭탄 확률 10%
+    //        {
+    //            hp = 10000;
+    //            score = 150;
+    //        }
+    //    }
+    //}
 
-    public void BlockUpgrade()  // 강화 블럭 셋팅
-    {
-        if(gradeRange < 50)   // 50% 확률로 열쇠 드롭
-        {
-            key = 1;
-        }
+    //public void BlockUpgrade()  // 강화 블럭 셋팅
+    //{
+    //    if(gradeRange < 50)   // 50% 확률로 열쇠 드롭
+    //    {
+    //        key = 1;
+    //    }
 
-        if (stage == 1)     // 1단계
-        {
-            SetBlockUpgrade(stage);
-        }
-        else if (stage == 2)   // 2단계
-        {
-            SetBlockUpgrade(stage);
-        }
-        else if (stage == 3)   // 3단계
-        {
-            SetBlockUpgrade(stage);
-        }
-        else if (stage == 4)   // 4단계
-        {
-            SetBlockUpgrade(stage);
-        }
-        else if (stage == 5)   // 5단계
-        {
-            SetBlockUpgrade(stage);
-        }
-    }
+    //    if (stage == 1)     // 1단계
+    //    {
+    //        SetBlockUpgrade(stage);
+    //    }
+    //    else if (stage == 2)   // 2단계
+    //    {
+    //        SetBlockUpgrade(stage);
+    //    }
+    //    else if (stage == 3)   // 3단계
+    //    {
+    //        SetBlockUpgrade(stage);
+    //    }
+    //    else if (stage == 4)   // 4단계
+    //    {
+    //        SetBlockUpgrade(stage);
+    //    }
+    //    else if (stage == 5)   // 5단계
+    //    {
+    //        SetBlockUpgrade(stage);
+    //    }
+    //}
 
     // 블럭 단계 설정
     IEnumerator BlockStageCheck()

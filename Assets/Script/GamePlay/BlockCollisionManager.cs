@@ -21,13 +21,14 @@ public class BlockCollisionManager : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // 블럭이 땅에 충돌하면 플레이어 생명 감소, 방어 불가능 상태
+        // 블럭이 땅에 충돌하면 플레이어 생명 감소
         if (collision.collider.tag == ("block1") || collision.collider.tag == ("block2")
           || collision.collider.tag == ("block3") || collision.collider.tag == ("block4")
           || collision.collider.tag == ("block5"))
         {
             PlayerManager.instance.life += 1;
             GlobalSFX.instance.PlayCollapseSound();
+            Handheld.Vibrate();     // 진동
             //PlayerManager.instance.shield_able = false;
         }
     }

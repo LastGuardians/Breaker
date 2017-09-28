@@ -13,7 +13,7 @@ public class FeverTime : MonoBehaviour
 
     public bool fever_start = false;
     float fever_time = 0;
-    float originGrav = 0.7f;
+    float originGrav = 0.8f;
 
     public static FeverTime instance;
 
