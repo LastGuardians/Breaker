@@ -185,7 +185,7 @@ public class PlayerManager : MonoBehaviour {
                 int destroy_block_score = 0;
                 GameObject newObj = PlayerCollision.instance.rayCollider.gameObject;
                 destroy_block_score = newObj.GetComponent<BlockStatusManager>().score;
-
+                Debug.Log("destroy_block_score: " + destroy_block_score);
                 if (PlayerCollision.instance.rayCollider.tag == "block5")
                 {
                     parent = PlayerCollision.instance.rayCollider.transform.parent.gameObject;

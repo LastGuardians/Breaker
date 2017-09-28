@@ -13,7 +13,8 @@ public class FeverTime : MonoBehaviour
 
     public bool fever_start = false;
     float fever_time = 0;
-    float originGrav = 0.8f;
+    float originGrav = 0.8f;    // 디폴트 중력값
+    int fever_cnt = 1;      // 피버타임 발동 횟수
 
     public static FeverTime instance;
 
@@ -40,7 +41,7 @@ public class FeverTime : MonoBehaviour
         if (!fever_start)
         {            
             feverGauge.GetComponent<Slider>().value = block_destroy_count;
-            if (block_destroy_count == 20 &&
+            if (block_destroy_count == (20 * fever_cnt) &&
                 BlockGenerator.instance.block_gravity != null)
             {
                 //Debug.Log("fever 발동");
@@ -72,6 +73,10 @@ public class FeverTime : MonoBehaviour
                 fever_start = false;
                 BlockGenerator.instance.block_gravity.gravityScale = originGrav;
                 GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().feverBgmOn = false;
+                block_destroy_count = 0;
+                fever_cnt += 1;
+                feverGauge.GetComponent<Slider>().maxValue = 20 * fever_cnt;
+                Debug.Log("maxValue : " + feverGauge.GetComponent<Slider>().maxValue);
                 yield break;
             }
         }

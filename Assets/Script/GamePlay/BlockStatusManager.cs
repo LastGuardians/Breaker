@@ -39,7 +39,7 @@ public class BlockStatusManager : MonoBehaviour
         BlockStatNormal[0].blockType = 0;
         // 2단계 기본 블럭
         BlockStatNormal[1].hp = 40;
-        BlockStatNormal[1].score = 20;
+        BlockStatNormal[1].score = 50;
         BlockStatNormal[1].coin = 9;
         BlockStatNormal[1].grade = 2;
         BlockStatNormal[1].blockType = 0;
@@ -70,25 +70,25 @@ public class BlockStatusManager : MonoBehaviour
         BlockStatUpgrade[0].blockType = 1;
         // 2단계 강화 블럭
         BlockStatUpgrade[1].hp = 60;
-        BlockStatUpgrade[1].score = 20;
+        BlockStatUpgrade[1].score = 50;
         BlockStatUpgrade[1].coin = 18;
         BlockStatUpgrade[1].grade = 2;
         BlockStatUpgrade[1].blockType = 1;
         // 3단계 강화 블럭
         BlockStatUpgrade[2].hp = 150;
-        BlockStatUpgrade[2].score = 20;
+        BlockStatUpgrade[2].score = 120;
         BlockStatUpgrade[2].coin = 25;
         BlockStatUpgrade[2].grade = 3;
         BlockStatUpgrade[2].blockType = 1;
         // 4단계 강화 블럭
         BlockStatUpgrade[3].hp = 225;
-        BlockStatUpgrade[3].score = 20;
+        BlockStatUpgrade[3].score = 180;
         BlockStatUpgrade[3].coin = 45;
         BlockStatUpgrade[3].grade = 4;
         BlockStatUpgrade[3].blockType = 1;
         // 5단계 강화 블럭
         BlockStatUpgrade[4].hp = 360;
-        BlockStatUpgrade[4].score = 20;
+        BlockStatUpgrade[4].score = 280;
         BlockStatUpgrade[4].coin = 75;
         BlockStatUpgrade[4].grade = 5;
         BlockStatUpgrade[4].blockType = 1;
