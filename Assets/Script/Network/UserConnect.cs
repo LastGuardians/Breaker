@@ -6,9 +6,9 @@ using LitJson;
 public class UserConnect : MonoBehaviour
 {
     public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
-    public string userId = "TestUser";
-    public int coin = 0;
-    public int prisonKey = 0;
+	private string userId = "TestUser";
+    private int coin = 0;
+    private int prisonKey = 0;
 
     void Start()
     {

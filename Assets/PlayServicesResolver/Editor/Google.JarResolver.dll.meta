@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 456c9e6730ff4345a7c7a75fe65a0fd8
+guid: 5eab49d1cb65c9c42830d5d639f42c6a
 labels:
 - gvh
 - gvh_teditor
@@ -7,23 +7,32 @@ labels:
 timeCreated: 1500643797
 licenseType: Free
 PluginImporter:
-  serializedVersion: 1
+  serializedVersion: 2
   iconMap: {}
   executionOrder: {}
   isPreloaded: 0
   isOverridable: 0
   platformData:
-    Editor:
-      enabled: 1
-      settings:
-        DefaultValueInitialized: true
-    WindowsStoreApps:
-      enabled: 0
-      settings:
-        CPU: AnyCPU
     data:
-      enabled: 0
-      settings: {}
+      first:
+        '': data
+      second:
+        enabled: 0
+        settings: {}
+    data:
+      first:
+        Editor: Editor
+      second:
+        enabled: 1
+        settings:
+          DefaultValueInitialized: true
+    data:
+      first:
+        Windows Store Apps: WindowsStoreApps
+      second:
+        enabled: 0
+        settings:
+          CPU: AnyCPU
   userData: 
   assetBundleName: 
   assetBundleVariant: 

@@ -28,10 +28,10 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		Character.transform.parent = Canvas.transform; // Canvas의 자식으로 이동
 		Character.AddComponent<Image>();
 
-		Rescale(Character, CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex]);
+		Rescale(Character, CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex]);
 		
 		Character.AddComponent<Animator>();
-		AnimatorPath = "Animation/Animator/" + CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] + "Animator";
+		AnimatorPath = "Animation/Animator/" + CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex] + "Animator";
 		Character.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>(AnimatorPath);
 
 		Character.transform.SetSiblingIndex(2);
@@ -69,7 +69,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 			{
 				CharacterImageGenerator.TargetCharacterIndex = ((CharacterImageGenerator.TargetCharacterIndex - 1) % 12 + 12) % 12;
 			}
-			while (CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked" || CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Unveiled");
+			while (CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked" || CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex] == "Unveiled");
 		}
 		else if (TargetButtonName == "Right")
 		{
@@ -77,7 +77,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 			{
 				CharacterImageGenerator.TargetCharacterIndex = ((CharacterImageGenerator.TargetCharacterIndex + 1) % 12 + 12) % 12;
 			}
-			while (CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked" || CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Unveiled");
+			while (CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked" || CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex] == "Unveiled");
 		}
 		ChangeImage(TargetButtonName);
 	}
@@ -85,9 +85,9 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 	public void ChangeImage(string ClickedButton)
 	{
 		Character.GetComponent<Animator>().SetBool(ClickedButton, true);
-		AnimatorPath = "Animation/Animator/" + CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] + "Animator";
+		AnimatorPath = "Animation/Animator/" + CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex] + "Animator";
 		Character.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>(AnimatorPath);
-		Rescale(Character, CharacterImageGenerator.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex]);
+		Rescale(Character, CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex]);
 	}
 }
 

@@ -4,16 +4,19 @@ using LitJson;
 
 public class UserCharacter : MonoBehaviour
 {
-    public string userId = "TestUser";
-    public string characterId = "TestCharacter2";
-    public string skillId = "TestSkill";
+    private string userId = "TestUser";
+    private string characterId = "Character1";
+    private string skillId = "TestSkill";
     public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
 
-    void Start()
+	public static string[] CharacterStatusArray = new string[12] { "Locked", "Locked", "Locked", "Locked", "Locked", "Locked", "Unveiled", "Unveiled", "Unveiled", "Unveiled", "Unveiled", "Unveiled" };
+
+	void Start()
     {
         DontDestroyOnLoad(this);
-        CreateUserCharacter();
-		GetUserCharacters();
+		CreateUserCharacter();
+		//DeleteUserCharacter();
+		//GetUserCharacters();
     }
 
     public void CreateUserCharacter()
@@ -53,7 +56,9 @@ public class UserCharacter : MonoBehaviour
         yield return www;
 
         PrintLog(www.error);
-    }
+
+		GetUserCharacters();
+	}
 
     /* 캐릭터 조회 */
     public IEnumerator _GetUserCharacters(string userId)
@@ -68,12 +73,8 @@ public class UserCharacter : MonoBehaviour
         JsonData json = JsonMapper.ToObject(www.text);
         for (int i = 0; i < json.Count; i++)
         {
-            PrintLog(json[i]["userId"] + " " + json[i]["characterId"]);
-            JsonData item = json[i]["skills"];
-            for (int j = 0; j < item.Count; j++)
-            {
-                PrintLog(item[j].ToString());
-            }
+            int OpenedCharacterIndex = int.Parse(json[i]["characterId"].ToString().Substring(9)) - 1;
+			CharacterStatusArray[OpenedCharacterIndex] = "Opened";
         }
     }
 

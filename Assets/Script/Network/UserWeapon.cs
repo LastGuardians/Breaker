@@ -5,8 +5,8 @@ using LitJson;
 public class UserWeapon : MonoBehaviour
 {
     public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
-    public string userId = "TestUser";
-    public string weaponId = "TestWeapon";
+    private string userId = "TestUser";
+    private string weaponId = "TestWeapon";
     int damageLevel = 1;
     int criticalLevel = 1;
     int probabilityLevel = 1;
@@ -14,6 +14,8 @@ public class UserWeapon : MonoBehaviour
     void Start()
     {
         DontDestroyOnLoad(this);
+		DeleteUserWeapon();
+		GetUserWeapons();
     }
 
     public void CreateUserWeapon()

@@ -19,6 +19,7 @@ public class WeaponImageGenerator : MonoBehaviour
 	public GameObject Window;
 	public GameObject YesButton;
 	public GameObject WindowText;
+	public GameObject UpgradeLabel;
 
 	public GameObject Light1;
 	public GameObject Light2;
@@ -30,31 +31,34 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	public Image AbilityGaugeImage;
 
-	public Sprite SaveButtonSprite;
-	public Sprite CancelButtonSprite;
-
 	public Text CoinText;
 	public Text KeyText;
 
 	public int WeaponIndex;
+	public int UpgradePrice;
 
 	public Font MainFont;
-	
+
 	public Sprite[] AbilityGaugeArray = new Sprite[3];
 	public Sprite[] UpgradeButtonArray = new Sprite[2];
 
-	public string[] WeaponStatusArray = new string[3] { "Opened", "Opened", "Locked" };
+	public string[] WeaponStatusArray = new string[3] { "Opened", "Locked", "Locked" };
 
 	public GameObject[] LockArray = new GameObject[3];
 	public GameObject[,,] WeaponObjectArray = new GameObject[3, 3, 10];
 	public GameObject[] LightArray = new GameObject[3];
 	public GameObject[,,] AbilityButtonArray = new GameObject[3, 3, 2];
-	public GameObject[,] DecisionButtonArray = new GameObject[3, 2];
+	public GameObject[] DecisionButtonArray = new GameObject[2];
 
-	public int[,] WeaponAbilityArray = new int[3, 3] { {4, 2, 7}, {3, 9, 4}, {2, 5, 7} };
+	public int[,] WeaponAbilityArray = new int[3, 3] { { 4, 2, 7 }, { 3, 9, 4 }, { 2, 5, 7 } };
 	public int[,] TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 	public int[] StatusLocationArray = new int[3] { 50, -280, 50 };
 	public int[] WeaponPriceArray = new int[3] { 0, 100000, 200000 };
+	public int[,] UpgradePriceArray = new int[3, 10]
+	{ {200, 400, 800, 1500, 3000, 6000, 12000, 20000, 30000, 40000},
+	  {400, 800, 1500, 3000, 6000, 12000, 20000, 30000, 40000, 60000 },
+	  {1500, 3000, 6000, 12000, 20000, 30000, 40000, 60000, 80000, 100000 }
+	};
 
 	public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
 
@@ -76,7 +80,6 @@ public class WeaponImageGenerator : MonoBehaviour
 		LightArray[2] = Light3;
 
 		ShowSelected(WeaponIndex);
-		WeaponServer();
 		LockWeapon();
 		GenerateGauge();
 		GenerateLabel();
@@ -85,10 +88,6 @@ public class WeaponImageGenerator : MonoBehaviour
 		LockButton(true);
 
 		Window.transform.SetAsLastSibling();
-	}
-
-	public void WeaponServer()
-	{
 	}
 
 	public void LoadWindow(int weaponIndex)
@@ -144,9 +143,9 @@ public class WeaponImageGenerator : MonoBehaviour
 		Lock2.SetActive(false);
 		Lock3.SetActive(false);
 
-		for(int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
-			if(WeaponStatusArray[i] == "Locked")
+			if (WeaponStatusArray[i] == "Locked")
 			{
 				LockArray[i].SetActive(true);
 			}
@@ -159,12 +158,11 @@ public class WeaponImageGenerator : MonoBehaviour
 		{
 			if (WeaponStatusArray[i] == "Locked")
 			{
-				for(int j = 0; j < 3; j++)
+				for (int j = 0; j < 3; j++)
 				{
-					for(int k = 0; k < 2; k ++)
+					for (int k = 0; k < 2; k++)
 					{
 						AbilityButtonArray[i, j, k].GetComponent<Button>().interactable = false;
-						DecisionButtonArray[i, k].GetComponent<Button>().interactable = false;
 					}
 				}
 			}
@@ -175,7 +173,6 @@ public class WeaponImageGenerator : MonoBehaviour
 					for (int k = 0; k < 2; k++)
 					{
 						AbilityButtonArray[i, j, k].GetComponent<Button>().interactable = status;
-						DecisionButtonArray[i, k].GetComponent<Button>().interactable = status;
 					}
 				}
 			}
@@ -196,7 +193,7 @@ public class WeaponImageGenerator : MonoBehaviour
 					AbilityGaugeImage = AbilityGauge.AddComponent<Image>();
 
 					AbilityGauge.GetComponent<RectTransform>().sizeDelta = new Vector2(10, 40);
-					AbilityGauge.transform.localPosition = new Vector3(20 * k + 80 + StatusLocationArray[i - 1], - 330 * i - 70 * j + 690, 0);
+					AbilityGauge.transform.localPosition = new Vector3(20 * k + 80 + StatusLocationArray[i - 1], -330 * i - 70 * j + 690, 0);
 
 					AbilityGaugeImage.sprite = AbilityGaugeArray[0];
 
@@ -230,7 +227,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		//코인 보유량 라벨 생성
 		Coin = new GameObject("CoinAmountText");
 		Coin.transform.parent = Canvas.transform;
-		Coin.transform.localPosition = new Vector3(-20, 530, 0);
+		Coin.transform.localPosition = new Vector3(-20, 620, 0);
 
 		CoinText = Coin.AddComponent<Text>();
 		CoinText.font = MainFont;
@@ -243,7 +240,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		//키 보유량 라벨 생성
 		Key = new GameObject("KeyAmountText");
 		Key.transform.parent = Canvas.transform;
-		Key.transform.localPosition = new Vector3(270, 530, 0);
+		Key.transform.localPosition = new Vector3(270, 620, 0);
 
 		KeyText = Key.AddComponent<Text>();
 		KeyText.font = MainFont;
@@ -252,14 +249,28 @@ public class WeaponImageGenerator : MonoBehaviour
 		KeyText.alignment = TextAnchor.UpperCenter;
 
 		Key.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
+
+		//업그레이드 금액 라벨 생성
+
+		UpgradeLabel = new GameObject("UpgradeLabel");
+		UpgradeLabel.transform.parent = Canvas.transform;
+		UpgradeLabel.transform.localPosition = new Vector3(-200, -700, 0);
+
+		UpgradeLabel.AddComponent<Text>();
+		UpgradeLabel.GetComponent<Text>().font = MainFont;
+		UpgradeLabel.GetComponent<Text>().fontSize = 40;
+		UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
+		UpgradeLabel.GetComponent<Text>().alignment = TextAnchor.UpperCenter;
+
+		UpgradeLabel.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
 	}
 
 	public void GenerateAbilityButton()
 	{
 		UpgradeButtonArray = Resources.LoadAll<Sprite>("UI/UpgradeButtons");
-		for(int i = 1; i <= 3; i++)
+		for (int i = 1; i <= 3; i++)
 		{
-			for(int j = 1; j <= 3; j++)
+			for (int j = 1; j <= 3; j++)
 			{
 				int TempI = i;
 				int TempJ = j;
@@ -299,75 +310,80 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	public void GenerateDecisionButton()
 	{
-		SaveButtonSprite = Resources.Load<Sprite>("UI/saveButton");
-		CancelButtonSprite = Resources.Load<Sprite>("UI/cancelButton");
-		for (int i = 1; i <= 3; i++)
-		{
-			//저장 버튼 생성
-			SaveButton = new GameObject("SaveButton" + i.ToString());
-			SaveButton.transform.parent = Canvas.transform;
+		//저장 버튼 생성
+		SaveButton = new GameObject("SaveButton");
+		SaveButton.transform.parent = Canvas.transform;
 
-			SaveButton.AddComponent<Image>();
-			SaveButton.GetComponent<Image>().sprite = SaveButtonSprite;
+		SaveButton.AddComponent<Text>();
+		SaveButton.GetComponent<Text>().text = "SAVE";
+		SaveButton.GetComponent<Text>().font = MainFont;
+		SaveButton.GetComponent<Text>().fontSize = 30;
 
-			SaveButton.AddComponent<Button>();
-			SaveButton.GetComponent<Button>().onClick.AddListener(() => SaveStatus());
+		SaveButton.AddComponent<Button>();
+		SaveButton.GetComponent<Button>().onClick.AddListener(() => SaveStatus());
 
-			SaveButton.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 40);
-			SaveButton.transform.localPosition = new Vector3(280 + StatusLocationArray[i - 1], -330 * i + 390);
+		SaveButton.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 40);
+		SaveButton.transform.localPosition = new Vector3(100, -680);
 
-			DecisionButtonArray[i - 1, 0] = SaveButton;
+		DecisionButtonArray[0] = SaveButton;
 
-			//취소 버튼 생성
-			CancelButton = new GameObject("CancelButton" + i.ToString());
-			CancelButton.transform.parent = Canvas.transform;
+		//취소 버튼 생성
+		CancelButton = new GameObject("CancelButton");
+		CancelButton.transform.parent = Canvas.transform;
 
-			CancelButton.AddComponent<Image>();
-			CancelButton.GetComponent<Image>().sprite = CancelButtonSprite;
+		CancelButton.AddComponent<Text>();
+		CancelButton.GetComponent<Text>().text = "CANCEL";
+		CancelButton.GetComponent<Text>().font = MainFont;
+		CancelButton.GetComponent<Text>().fontSize = 30;
 
-			CancelButton.AddComponent<Button>();
-			CancelButton.GetComponent<Button>().onClick.AddListener(() => CancelStatus());
+		CancelButton.AddComponent<Button>();
+		CancelButton.GetComponent<Button>().onClick.AddListener(() => CancelStatus());
 
-			CancelButton.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 40);
-			CancelButton.transform.localPosition = new Vector3(30 + StatusLocationArray[i - 1], -330 * i + 390);
+		CancelButton.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 40);
+		CancelButton.transform.localPosition = new Vector3(300, - 680);
 
-			DecisionButtonArray[i - 1, 1] = CancelButton;
+		DecisionButtonArray[1] = CancelButton;
 
-			SetLockLast();
-		}
+		SetLockLast();
 	}
 
 	public void Subtract(int i, int j)
 	{
-		if(TempAbilityArray[i - 1, j - 1] > 0)
+		if (TempAbilityArray[i - 1, j - 1] > 0)
 		{
 			TempAbilityArray[i - 1, j - 1]--;
 			WeaponObjectArray[i - 1, j - 1, WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]].GetComponent<Image>().sprite = AbilityGaugeArray[0];
+			UpgradePrice -= UpgradePriceArray[i - 1, WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]];
 		}
+		UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
 	}
 
 	public void Add(int i, int j)
 	{
-		if(TempAbilityArray[i - 1, j - 1] < 10 - WeaponAbilityArray[i - 1, j - 1])
+		if (TempAbilityArray[i - 1, j - 1] < 10 - WeaponAbilityArray[i - 1, j - 1])
 		{
 			TempAbilityArray[i - 1, j - 1]++;
 			WeaponObjectArray[i - 1, j - 1, WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1] - 1].GetComponent<Image>().sprite = AbilityGaugeArray[2];
+			UpgradePrice += UpgradePriceArray[i - 1, WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1] - 1];
 		}
+		UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
 	}
 
 	public void SaveStatus()
 	{
-		for(int i = 1; i <= 3; i++)
+		for (int i = 1; i <= 3; i++)
 		{
-			for(int j = 1; j <= 3; j++)
+			for (int j = 1; j <= 3; j++)
 			{
-				for(int k = WeaponAbilityArray[i - 1, j - 1] + 1; k <= WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]; k++)
+				for (int k = WeaponAbilityArray[i - 1, j - 1] + 1; k <= WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]; k++)
 				{
 					WeaponObjectArray[i - 1, j - 1, k - 1].GetComponent<Image>().sprite = AbilityGaugeArray[1];
 				}
 				WeaponAbilityArray[i - 1, j - 1] += TempAbilityArray[i - 1, j - 1];
 			}
 		}
+		CharacterImageGenerator.CoinAmount -= UpgradePrice;
+		CoinText.text = CharacterImageGenerator.CoinAmount.ToString();
 
 		TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 	}
@@ -384,86 +400,20 @@ public class WeaponImageGenerator : MonoBehaviour
 				}
 			}
 		}
-		TempAbilityArray = new int[3, 3] {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+		TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
+		UpgradePrice = 0;
+		UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
+		
 	}
 
 	public void SetLockLast()
 	{
-		foreach(GameObject Locked in LockArray)
+		foreach (GameObject Locked in LockArray)
 		{
-			if(Locked != null)
+			if (Locked != null)
 			{
 				Locked.transform.SetAsLastSibling();
 			}
 		}
 	}
-
-	//서버 파트
-	public void CreateUserWeapon()
-	{
-		StartCoroutine(_CreateUserWeapon(UserId, WeaponId));
-	}
-
-	public IEnumerator _CreateUserWeapon(string userId, string weaponId)
-	{
-		string url = baseUrl + "/user/" + userId + "/weapons/create";
-		WWWForm form = new WWWForm();
-		form.headers["content-type"] = "application/json";
-		form.AddField("weaponId", weaponId);
-
-		WWW www = new WWW(url, form);
-		yield return www;
-
-		PrintLog(www.error);
-	}
-
-	public void GetUserWeapons()
-	{
-		StartCoroutine(_GetUserWeapons(UserId));
-	}
-
-	public IEnumerator _GetUserWeapons(string userId)
-	{
-		string url = baseUrl + "/user/" + userId + "/weapons";
-		WWW www = new WWW(url);
-		yield return www;
-
-		PrintLog(www.error);
-		PrintLog(www.text);
-
-		JsonData json = JsonMapper.ToObject(www.text);
-		for (int i = 0; i < json.Count; i++)
-		{
-			PrintLog(json[i]["userId"] + " " + json[i]["weaponId"] + " " + json[i]["damageLevel"] + " " + json[i]["criticalLevel"] + " " + json[i]["probabilityLevel"]);
-		}
-	}
-
-	public void SetUserWeapon()
-	{
-		StartCoroutine(_SetUserWeapon(UserId, WeaponId, DamageLevel, CriticalLevel, ProbabilityLevel));
-	}
-
-	public IEnumerator _SetUserWeapon(string userId, string weaponId, int damageLevel, int criticalLevel, int probabilityLevel)
-	{
-		string url = baseUrl + "/user/" + userId + "/weapons/" + weaponId + "/update";
-		WWWForm form = new WWWForm();
-		form.headers["content-type"] = "application/json";
-		form.AddField("damageLevel", damageLevel);
-		form.AddField("criticalLevel", criticalLevel);
-		form.AddField("probabilityLevel", probabilityLevel);
-
-		WWW www = new WWW(url, form);
-		yield return www;
-
-		PrintLog(www.error);
-	}
-
-	void PrintLog(string message)
-	{
-		if (!string.IsNullOrEmpty(message))
-		{
-			Debug.Log(message);
-		}
-	}
 }
-
