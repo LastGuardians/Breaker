@@ -69,7 +69,8 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 			{
 				CharacterImageGenerator.TargetCharacterIndex = ((CharacterImageGenerator.TargetCharacterIndex - 1) % 12 + 12) % 12;
 			}
-			while (CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked" || CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex] == "Unveiled");
+			while (UserCharacter.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked" || UserCharacter.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Unveiled");
+			Debug.Log(CharacterImageGenerator.TargetCharacterIndex);
 		}
 		else if (TargetButtonName == "Right")
 		{
@@ -77,7 +78,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 			{
 				CharacterImageGenerator.TargetCharacterIndex = ((CharacterImageGenerator.TargetCharacterIndex + 1) % 12 + 12) % 12;
 			}
-			while (CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked" || CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex] == "Unveiled");
+			while (UserCharacter.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked" || UserCharacter.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Unveiled");
 		}
 		ChangeImage(TargetButtonName);
 	}

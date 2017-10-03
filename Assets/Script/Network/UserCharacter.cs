@@ -15,8 +15,6 @@ public class UserCharacter : MonoBehaviour
     {
         DontDestroyOnLoad(this);
 		CreateUserCharacter();
-		//DeleteUserCharacter();
-		//GetUserCharacters();
     }
 
     public void CreateUserCharacter()

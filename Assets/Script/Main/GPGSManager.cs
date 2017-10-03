@@ -39,7 +39,8 @@ public class GPGSManager : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start () {
+    void Start ()
+	{
         DontDestroyOnLoad(this);
 
         if (instance == null)

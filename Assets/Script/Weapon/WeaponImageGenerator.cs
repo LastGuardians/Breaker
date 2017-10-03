@@ -42,37 +42,34 @@ public class WeaponImageGenerator : MonoBehaviour
 	public Sprite[] AbilityGaugeArray = new Sprite[3];
 	public Sprite[] UpgradeButtonArray = new Sprite[2];
 
-	public string[] WeaponStatusArray = new string[3] { "Opened", "Locked", "Locked" };
-
 	public GameObject[] LockArray = new GameObject[3];
 	public GameObject[,,] WeaponObjectArray = new GameObject[3, 3, 10];
 	public GameObject[] LightArray = new GameObject[3];
 	public GameObject[,,] AbilityButtonArray = new GameObject[3, 3, 2];
 	public GameObject[] DecisionButtonArray = new GameObject[2];
 
-	public int[,] WeaponAbilityArray = new int[3, 3] { { 4, 2, 7 }, { 3, 9, 4 }, { 2, 5, 7 } };
 	public int[,] TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 	public int[] StatusLocationArray = new int[3] { 50, -280, 50 };
 	public int[] WeaponPriceArray = new int[3] { 0, 100000, 200000 };
 	public int[,] UpgradePriceArray = new int[3, 10]
-	{ {200, 400, 800, 1500, 3000, 6000, 12000, 20000, 30000, 40000},
-	  {400, 800, 1500, 3000, 6000, 12000, 20000, 30000, 40000, 60000 },
-	  {1500, 3000, 6000, 12000, 20000, 30000, 40000, 60000, 80000, 100000 }
+	{ 
+		{200, 400, 800, 1500, 3000, 6000, 12000, 20000, 30000, 40000},
+		{400, 800, 1500, 3000, 6000, 12000, 20000, 30000, 40000, 60000 },
+		{1500, 3000, 6000, 12000, 20000, 30000, 40000, 60000, 80000, 100000 }
 	};
 
 	public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
 
-	public string UserId;
-	public string WeaponId;
-	public int DamageLevel;
-	public int CriticalLevel;
-	public int ProbabilityLevel;
+	private string userId = "TestUser";
+	private string weaponId;
+	private int OpenedWeaponIndex;
+	private int damageLevel;
+	private int criticalLevel;
+	private int probabilityLevel;
 
 
 	private void Start()
 	{
-		UserId = Social.localUser.id;
-
 		Window.SetActive(false);
 
 		LightArray[0] = Light1;
@@ -93,7 +90,7 @@ public class WeaponImageGenerator : MonoBehaviour
 	public void LoadWindow(int weaponIndex)
 	{
 		Window.SetActive(true);
-
+		WindowText.GetComponent<Text>().text = "\t\t\tX\t" + WeaponPriceArray[weaponIndex].ToString();
 		YesButton.GetComponent<Button>().onClick.AddListener(() => UnlockWeapon(weaponIndex));
 		LockButton(false);
 	}
@@ -107,6 +104,12 @@ public class WeaponImageGenerator : MonoBehaviour
 			LockArray[weaponIndex].GetComponent<Animator>().SetBool("Unlock", true);
 			CharacterImageGenerator.CoinAmount -= WeaponPriceArray[weaponIndex];
 			Coin.GetComponent<Text>().text = CharacterImageGenerator.CoinAmount.ToString();
+			UserWeapon.WeaponStatusArray[weaponIndex] = "Opened";
+
+			weaponId = "Weapon" + (weaponIndex + 1).ToString();
+			CreateUserWeapon();
+
+			LockButton(true);
 		}
 		else
 		{
@@ -145,7 +148,7 @@ public class WeaponImageGenerator : MonoBehaviour
 
 		for (int i = 0; i < 3; i++)
 		{
-			if (WeaponStatusArray[i] == "Locked")
+			if (UserWeapon.WeaponStatusArray[i] == "Locked")
 			{
 				LockArray[i].SetActive(true);
 			}
@@ -156,7 +159,7 @@ public class WeaponImageGenerator : MonoBehaviour
 	{
 		for (int i = 0; i < 3; i++)
 		{
-			if (WeaponStatusArray[i] == "Locked")
+			if (UserWeapon.WeaponStatusArray[i] == "Locked")
 			{
 				for (int j = 0; j < 3; j++)
 				{
@@ -213,7 +216,7 @@ public class WeaponImageGenerator : MonoBehaviour
 			{
 				for (int i = 1; i <= 3; i++)
 				{
-					if (k <= WeaponAbilityArray[i - 1, j - 1])
+					if (k <= UserWeapon.WeaponAbilityArray[i - 1, j - 1])
 					{
 						WeaponObjectArray[i - 1, j - 1, k - 1].GetComponent<Image>().sprite = AbilityGaugeArray[1];
 					}
@@ -352,40 +355,45 @@ public class WeaponImageGenerator : MonoBehaviour
 		if (TempAbilityArray[i - 1, j - 1] > 0)
 		{
 			TempAbilityArray[i - 1, j - 1]--;
-			WeaponObjectArray[i - 1, j - 1, WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]].GetComponent<Image>().sprite = AbilityGaugeArray[0];
-			UpgradePrice -= UpgradePriceArray[i - 1, WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]];
+			WeaponObjectArray[i - 1, j - 1, UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]].GetComponent<Image>().sprite = AbilityGaugeArray[0];
+			UpgradePrice -= UpgradePriceArray[i - 1, UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]];
 		}
 		UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
 	}
 
 	public void Add(int i, int j)
 	{
-		if (TempAbilityArray[i - 1, j - 1] < 10 - WeaponAbilityArray[i - 1, j - 1])
+		if (TempAbilityArray[i - 1, j - 1] < 10 - UserWeapon.WeaponAbilityArray[i - 1, j - 1])
 		{
 			TempAbilityArray[i - 1, j - 1]++;
-			WeaponObjectArray[i - 1, j - 1, WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1] - 1].GetComponent<Image>().sprite = AbilityGaugeArray[2];
-			UpgradePrice += UpgradePriceArray[i - 1, WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1] - 1];
+			WeaponObjectArray[i - 1, j - 1, UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1] - 1].GetComponent<Image>().sprite = AbilityGaugeArray[2];
+			UpgradePrice += UpgradePriceArray[i - 1, UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1] - 1];
 		}
 		UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
 	}
 
 	public void SaveStatus()
 	{
-		for (int i = 1; i <= 3; i++)
+		if(UpgradePrice <= CharacterImageGenerator.CoinAmount)
 		{
-			for (int j = 1; j <= 3; j++)
+			for (int i = 1; i <= 3; i++)
 			{
-				for (int k = WeaponAbilityArray[i - 1, j - 1] + 1; k <= WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]; k++)
+				for (int j = 1; j <= 3; j++)
 				{
-					WeaponObjectArray[i - 1, j - 1, k - 1].GetComponent<Image>().sprite = AbilityGaugeArray[1];
+					for (int k = UserWeapon.WeaponAbilityArray[i - 1, j - 1] + 1; k <= UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]; k++)
+					{
+						WeaponObjectArray[i - 1, j - 1, k - 1].GetComponent<Image>().sprite = AbilityGaugeArray[1];
+					}
+					UserWeapon.WeaponAbilityArray[i - 1, j - 1] += TempAbilityArray[i - 1, j - 1];
 				}
-				WeaponAbilityArray[i - 1, j - 1] += TempAbilityArray[i - 1, j - 1];
 			}
+			CharacterImageGenerator.CoinAmount -= UpgradePrice;
+			CoinText.text = CharacterImageGenerator.CoinAmount.ToString();
+			TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
+			SetStatus();
+			UpgradePrice = 0;
+			UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
 		}
-		CharacterImageGenerator.CoinAmount -= UpgradePrice;
-		CoinText.text = CharacterImageGenerator.CoinAmount.ToString();
-
-		TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 	}
 
 	public void CancelStatus()
@@ -394,7 +402,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		{
 			for (int j = 1; j <= 3; j++)
 			{
-				for (int k = WeaponAbilityArray[i - 1, j - 1] + 1; k <= WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]; k++)
+				for (int k = UserWeapon.WeaponAbilityArray[i - 1, j - 1] + 1; k <= UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]; k++)
 				{
 					WeaponObjectArray[i - 1, j - 1, k - 1].GetComponent<Image>().sprite = AbilityGaugeArray[0];
 				}
@@ -406,6 +414,21 @@ public class WeaponImageGenerator : MonoBehaviour
 		
 	}
 
+	public void SetStatus()
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			if (UserWeapon.WeaponStatusArray[i] == "Opened")
+			{
+				weaponId = "Weapon" + (i + 1).ToString();
+				damageLevel = UserWeapon.WeaponAbilityArray[i, 0];
+				criticalLevel = UserWeapon.WeaponAbilityArray[i, 1];
+				probabilityLevel = UserWeapon.WeaponAbilityArray[i, 2];
+				SetUserWeapon();
+			}
+		}
+	}
+
 	public void SetLockLast()
 	{
 		foreach (GameObject Locked in LockArray)
@@ -414,6 +437,88 @@ public class WeaponImageGenerator : MonoBehaviour
 			{
 				Locked.transform.SetAsLastSibling();
 			}
+		}
+	}
+
+	//서버 함수
+	public void CreateUserWeapon()
+	{
+		StartCoroutine(_CreateUserWeapon(userId, weaponId));
+	}
+
+	public void GetUserWeapons()
+	{
+		StartCoroutine(_GetUserWeapons(userId));
+	}
+
+	public void SetUserWeapon()
+	{
+		StartCoroutine(_SetUserWeapon(userId, weaponId, damageLevel, criticalLevel, probabilityLevel));
+	}
+
+	public IEnumerator _CreateUserWeapon(string userId, string weaponId)
+	{
+		string url = baseUrl + "/user/" + userId + "/weapons/create";
+		WWWForm form = new WWWForm();
+		form.headers["content-type"] = "application/json";
+		form.AddField("weaponId", weaponId);
+
+		WWW www = new WWW(url, form);
+		yield return www;
+
+		PrintLog(www.error);
+	}
+
+	public IEnumerator _GetUserWeapons(string userId)
+	{
+		string url = baseUrl + "/user/" + userId + "/weapons";
+		WWW www = new WWW(url);
+		yield return www;
+
+		PrintLog(www.error);
+		PrintLog(www.text);
+
+		JsonData json = JsonMapper.ToObject(www.text);
+		for (int i = 0; i < json.Count; i++)
+		{
+			OpenedWeaponIndex = int.Parse(json[i]["weaponId"].ToString().Substring(6)) - 1;
+			damageLevel = int.Parse(json[i]["damageLevel"].ToString());
+			criticalLevel = int.Parse(json[i]["criticalLevel"].ToString());
+			probabilityLevel = int.Parse(json[i]["probabilityLevel"].ToString());
+
+			UserWeapon.WeaponStatusArray[OpenedWeaponIndex] = "Opened";
+			UserWeapon.WeaponAbilityArray[OpenedWeaponIndex, 0] = damageLevel;
+			UserWeapon.WeaponAbilityArray[OpenedWeaponIndex, 1] = criticalLevel;
+			UserWeapon.WeaponAbilityArray[OpenedWeaponIndex, 2] = probabilityLevel;
+		}
+	}
+
+	public IEnumerator _SetUserWeapon(string userId, string weaponId, int damageLevel, int criticalLevel, int probabilityLevel)
+	{
+		Debug.Log(userId);
+		Debug.Log(weaponId);
+		Debug.Log(damageLevel);
+		Debug.Log(criticalLevel);
+		Debug.Log(probabilityLevel);
+		string url = baseUrl + "/user/" + userId + "/weapons/" + weaponId + "/update";
+		WWWForm form = new WWWForm();
+		form.headers["content-type"] = "application/json";
+		form.AddField("damageLevel", damageLevel);
+		form.AddField("criticalLevel", criticalLevel);
+		form.AddField("probabilityLevel", probabilityLevel);
+
+		WWW www = new WWW(url, form);
+		yield return www;
+
+		PrintLog(www.error);
+		Debug.Log("Set");
+	}
+
+	void PrintLog(string message)
+	{
+		if (!string.IsNullOrEmpty(message))
+		{
+			Debug.Log(message);
 		}
 	}
 }

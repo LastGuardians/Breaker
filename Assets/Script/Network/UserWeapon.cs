@@ -6,16 +6,18 @@ public class UserWeapon : MonoBehaviour
 {
     public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
     private string userId = "TestUser";
-    private string weaponId = "TestWeapon";
-    int damageLevel = 1;
-    int criticalLevel = 1;
-    int probabilityLevel = 1;
+    private string weaponId = "Weapon1";
+    private int damageLevel = 0;
+    private int criticalLevel = 0;
+    private int probabilityLevel = 0;
 
-    void Start()
+	public static string[] WeaponStatusArray = new string[3] { "Locked", "Locked", "Locked" };
+	public static int[,] WeaponAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
+
+	void Start()
     {
         DontDestroyOnLoad(this);
-		DeleteUserWeapon();
-		GetUserWeapons();
+		CreateUserWeapon();
     }
 
     public void CreateUserWeapon()
@@ -50,6 +52,7 @@ public class UserWeapon : MonoBehaviour
         yield return www;
 
         PrintLog(www.error);
+		GetUserWeapons();
     }
 
     /* 무기 조회 */
@@ -65,8 +68,16 @@ public class UserWeapon : MonoBehaviour
         JsonData json = JsonMapper.ToObject(www.text);
         for (int i = 0; i < json.Count; i++)
         {
-            PrintLog(json[i]["userId"] + " " + json[i]["weaponId"] + " " + json[i]["damageLevel"] + " " + json[i]["criticalLevel"] + " " + json[i]["probabilityLevel"]);
-        }
+			int OpenedWeaponIndex = int.Parse(json[i]["weaponId"].ToString().Substring(6)) - 1;
+			damageLevel = int.Parse(json[i]["damageLevel"].ToString());
+			criticalLevel = int.Parse(json[i]["criticalLevel"].ToString());
+			probabilityLevel = int.Parse(json[i]["probabilityLevel"].ToString());
+
+			WeaponStatusArray[OpenedWeaponIndex] = "Opened";
+			WeaponAbilityArray[OpenedWeaponIndex, 0] = damageLevel;
+			WeaponAbilityArray[OpenedWeaponIndex, 1] = criticalLevel;
+			WeaponAbilityArray[OpenedWeaponIndex, 2] = probabilityLevel;
+		}
     }
 
     /* 무기 갱신 */
@@ -83,10 +94,10 @@ public class UserWeapon : MonoBehaviour
         yield return www;
 
         PrintLog(www.error);
+		GetUserWeapons();
     }
 
-
-    /* 무기 삭제 */
+	/* 무기 삭제 */
     public IEnumerator _DeleteUserWeapon(string userId, string weaponId)
     {
         string url = baseUrl + "/user/" + userId + "/weapons/" + weaponId + "/delete";

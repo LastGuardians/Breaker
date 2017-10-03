@@ -22,7 +22,7 @@ public class CharacterImageGenerator: MonoBehaviour
 	public string CharacterButtonImageName;
 
 	public static int CoinAmount = 1000000;
-	public static int KeyAmount = 500;
+	public static int KeyAmount = 50;
 	public static int TargetCharacterIndex;
 
 	public Text CoinText;
@@ -39,14 +39,12 @@ public class CharacterImageGenerator: MonoBehaviour
 	
 	//서버 변수
 	public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
-	private string userId;
+	private string userId = "TestUser";
 	private string characterId;
-
 
 	void Start()
     {
 		Window.SetActive(false);
-
 		GenerateImage();
 		GenerateLabel();
 	}
@@ -110,7 +108,7 @@ public class CharacterImageGenerator: MonoBehaviour
 	public void LoadWindow(int characterIndex)
 	{
 		Window.SetActive(true);
-
+		WindowText.GetComponent<Text>().text = "\t\tX\t" + CharacterPriceArray[characterIndex].ToString();
 		YesButton.GetComponent<Button>().onClick.AddListener(() => UnlockCharacter(characterIndex));
 		CharacterButtonController(false);
 	}
@@ -119,7 +117,6 @@ public class CharacterImageGenerator: MonoBehaviour
 	{
 		Window.SetActive(false);
 		CharacterButtonController(true);
-		WindowText.GetComponent<Text>().text = "Would you like to unlock the character?";
 		YesButton.SetActive(true);
 	}
 
@@ -141,7 +138,6 @@ public class CharacterImageGenerator: MonoBehaviour
 			KeyAmount -= CharacterPriceArray[characterIndex];
 			Key.GetComponent<Text>().text = KeyAmount.ToString();
 
-			userId = "TestUser";
 			characterId = "Character" + (characterIndex + 1).ToString();
 			CreateUserCharacter();
 		}
