@@ -6,18 +6,20 @@ using LitJson;
 public class UserConnect : MonoBehaviour
 {
     public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
-	private string userId = "TestUser";
-    private int coin = 0;
+	private string userId;
+	private int coin = 0;
     private int prisonKey = 0;
 
     void Start()
     {
-        DontDestroyOnLoad(this);
-    }
+		DontDestroyOnLoad(this);
+		userId = GPGSManager.mainId;
+		CreateUser();
+	}
 
     public void CreateUser()
     {
-        StartCoroutine(_CreateUser(userId));
+		StartCoroutine(_CreateUser(userId));
     }
 
     public void GetUser()
@@ -48,11 +50,13 @@ public class UserConnect : MonoBehaviour
 
         Debug.Log(www.isDone);
         PrintLog(www.error);
+		GetUser();
     }
 
     /* 유저 조회 */
     public IEnumerator _GetUser(string userId)
     {
+		Debug.Log(userId);
         string url = baseUrl + "/user/" + userId;
         WWW www = new WWW(url);
         yield return www;

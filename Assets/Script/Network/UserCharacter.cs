@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using LitJson;
+using UnityEngine.UI;
 
 public class UserCharacter : MonoBehaviour
 {
-    private string userId = "TestUser";
-    private string characterId = "Character1";
+	private string userId;
+	private string characterId = "Character1";
     private string skillId = "TestSkill";
     public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
 
@@ -13,13 +14,14 @@ public class UserCharacter : MonoBehaviour
 
 	void Start()
     {
-        DontDestroyOnLoad(this);
+		DontDestroyOnLoad(this);
+		userId = GPGSManager.mainId;
 		CreateUserCharacter();
     }
 
-    public void CreateUserCharacter()
+	public void CreateUserCharacter()
     {
-        StartCoroutine(_CreateUserCharacter(userId, characterId));
+		StartCoroutine(_CreateUserCharacter(userId, characterId));
     }
 
     public void GetUserCharacters()

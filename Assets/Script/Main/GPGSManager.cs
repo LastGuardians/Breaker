@@ -24,14 +24,12 @@ public class GPGSManager : MonoBehaviour {
 
     private float timer = 0.0f;
 
-    public UnityEngine.SocialPlatforms.ILocalUser mainplayeruserdata;
+    public static UnityEngine.SocialPlatforms.ILocalUser mainplayeruserdata;
 
-
-    public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
-    public string userId = "TestUser";
-    public int coin = 0;
-    public int prisonKey = 0;
+	public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
     public int game_score = 0;
+
+	public static string mainId;
 
     void Awake()
     {
@@ -41,7 +39,7 @@ public class GPGSManager : MonoBehaviour {
     // Use this for initialization
     void Start ()
 	{
-        DontDestroyOnLoad(this);
+		DontDestroyOnLoad(this);
 
         if (instance == null)
         {
@@ -59,9 +57,9 @@ public class GPGSManager : MonoBehaviour {
         //LoginUrl = "tozha31@tozha31.woobi.co.kr/mobile_php_connect.php";
               
         Login();
-    }
+	}
 
-    private void Update()
+	private void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -116,20 +114,31 @@ public class GPGSManager : MonoBehaviour {
                         , mainplayeruserdata.friends
                         );
                     Debug.LogFormat("SignInCallback MainPlayer Data : {0} ", userdata);
-                }
-                SceneManager.LoadScene("Main");     // 메인 화면으로 전환
-
-                StartCoroutine(GameObject.Find("NetworkManager").GetComponent<UserConnect>()._GetUser(mainplayeruserdata.userName));
-                //StartCoroutine(_GetUser(mainplayeruserdata.userName));    // 로그인한 유저 조회
-              
-            }
+				}
+				//StartCoroutine(GameObject.Find("NetworkManager").GetComponent<UserConnect>()._GetUser(mainplayeruserdata.userName));
+				//StartCoroutine(_GetUser(mainplayeruserdata.userName));    // 로그인한 유저 조회
+				while (true)
+				{
+					if (Social.localUser.id != "")
+					{
+						mainId = Social.localUser.id;
+						GameObject NetworkManagerPrefab = Resources.Load("Prefabs/NetworkManager") as GameObject;
+						GameObject NetworkManager = MonoBehaviour.Instantiate(NetworkManagerPrefab) as GameObject;
+						SceneManager.LoadScene("Main");// 메인 화면으로 전환
+						break;
+					}
+				}
+			}
             else
             {
                 // 로그인 실패 처리
                 Debug.Log("Login Fail...");
-            }
+				mainId = "TestUser";
+				GameObject NetworkManagerPrefab = Resources.Load("Prefabs/NetworkManager") as GameObject;
+				GameObject NetworkManager = MonoBehaviour.Instantiate(NetworkManagerPrefab) as GameObject;
+			}
         });
-    }
+	}
 
     public void LogOut()
     {

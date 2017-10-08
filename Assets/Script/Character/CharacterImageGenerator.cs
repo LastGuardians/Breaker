@@ -39,7 +39,7 @@ public class CharacterImageGenerator: MonoBehaviour
 	
 	//서버 변수
 	public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
-	private string userId = "TestUser";
+	private string userId = GPGSManager.mainId;
 	private string characterId;
 
 	void Start()
