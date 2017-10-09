@@ -133,17 +133,11 @@
     <Reference Include="Google.IOSResolver">
       <HintPath>Assets\PlayServicesResolver\Editor\Google.IOSResolver.dll</HintPath>
     </Reference>
-    <Reference Include="Google.IOSResolver_v1.2.31.0">
-      <HintPath>Assets\PlayServicesResolver\Editor\Google.IOSResolver_v1.2.31.0.dll</HintPath>
-    </Reference>
     <Reference Include="Google.JarResolver">
       <HintPath>Assets\PlayServicesResolver\Editor\Google.JarResolver.dll</HintPath>
     </Reference>
-    <Reference Include="Google.JarResolver_v1.2.31.0">
-      <HintPath>Assets\PlayServicesResolver\Editor\Google.JarResolver_v1.2.31.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.VersionHandler_v1.2.31.0">
-      <HintPath>Assets\PlayServicesResolver\Editor\Google.VersionHandler_v1.2.31.0.dll</HintPath>
+    <Reference Include="Google.VersionHandler">
+      <HintPath>Assets\PlayServicesResolver\Editor\Google.VersionHandler.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -179,7 +173,6 @@
     <None Include="Assets\GooglePlayGames\Editor\template-Constants.txt" />
     <None Include="Assets\GooglePlayGames\Editor\template-GameInfo.txt" />
     <None Include="Assets\PlayServicesResolver\Editor\play-services-resolver.txt" />
-    <None Include="Assets\PlayServicesResolver\Editor\play-services-resolver_v1.2.31.0.txt" />
     <None Include="Assets\PlayServicesResolver\proguard-messaging-workaround.txt" />
     <None Include="Assets\PlayServicesResolver\proguard-unity.txt" />
     <None Include="Assets\Plugins\Android\GoogleMobileAdsPlugin\AndroidManifest.xml" />

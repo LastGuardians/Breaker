@@ -6,11 +6,11 @@ using System.Text;
 [Serializable]
 public struct Block   // 블록
 {
-    public int hp;              // 블록 hp
+    public double hp;              // 블록 hp
     public int grade;           // 블록 등급
     public int blockType;       // 블록 타입(기본 =0 / 강화 =1)
     public int score;           // 블록의 점수
-    public int coin;            // 블록 깼을 때 얻는 코인 수
+    public double coin;            // 블록 깼을 때 얻는 코인 수
     public int key;             // 블록 깼을 때 얻는 열쇠 수
 }
 

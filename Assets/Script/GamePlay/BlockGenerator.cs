@@ -27,11 +27,13 @@ public class BlockGenerator : MonoBehaviour
     public bool game_start = false;
 
     float ypos = 30;
+    static double[] blockHp = new double[5];
     
     System.Random r = new System.Random();
     //Random r = new Random();
-    public int range = 0;      // 확률 범위
+    public int range = 0;      //  블록 리소스 확률 범위
     public int grade_range = 0; // 블록 등급 확률 범위
+    public int upgrade_range = 0;   // 강화 블록 확률
 
     // 건물 리소스
     Sprite[] jail_normal = new Sprite[5];  // 교도소 내부(철창) 기본
@@ -48,8 +50,8 @@ public class BlockGenerator : MonoBehaviour
 
     Sprite[] wall_normal = new Sprite[5];    // 담장 기본
     Sprite[] wall_upgrade = new Sprite[5];   // 담장 강화
-
-    //BlockStatusManager[] block_stat = new BlockStatusManager[5];
+    
+    
     public static BlockGenerator instance = null;
 
     void Awake()
@@ -77,7 +79,7 @@ public class BlockGenerator : MonoBehaviour
     void Start()
     {
         StartCoroutine(BlockTranslate());
-        StartCoroutine(BlockStageCheck());
+        StartCoroutine(BlockStageCheck());       
 
         blockManager = GameObject.Find("BlockManager");
         range = r.Next(0, 5);   // 강화블럭 확률 범위
@@ -99,7 +101,8 @@ public class BlockGenerator : MonoBehaviour
 
             wall_normal[i] = Resources.Load<Sprite>("Building/5.Wall/wall" + (i + 1).ToString());
             wall_upgrade[i] = Resources.Load<Sprite>("Building/5.Wall/upgrade/wall_upgrade" + (i + 1).ToString());
-            
+                    
+
         }
 
         for (int i = 0; i < 5; ++i)
@@ -107,7 +110,7 @@ public class BlockGenerator : MonoBehaviour
             if (i == range)      // 랜덤한 한 블럭을 강화블럭으로 셋팅
             {
                 blockArr[range].GetComponent<SpriteRenderer>().sprite = jail_upgrade[range];
-                blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(1);
+                blockArr[range].GetComponent<BlockStatusManager>().SetBlockUpgrade(1);
 
             }
             else
@@ -116,7 +119,7 @@ public class BlockGenerator : MonoBehaviour
                 blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(1);
             }
         }
-
+        StartCoroutine(BlockHPCheck());
         // 블럭 중력 
         block_gravity = GameObject.Find("BlockGroup").GetComponent<Rigidbody2D>();
     }
@@ -125,7 +128,15 @@ public class BlockGenerator : MonoBehaviour
     {
         BlockDestroy();
         //grade_range = r.Next(0, 100);
-      
+
+
+        //for (int i = 0; i < 5; ++i)
+        //{
+            //if (blockArr[0].GetComponent<BlockStatusManager>().hp < 2)
+            //{
+            //    EffectAnimation.instance.Crack1();
+            //}
+        //}
     }
 
     // 블럭이 모두 파괴되었는지 체크
@@ -173,273 +184,354 @@ public class BlockGenerator : MonoBehaviour
             
             /// 단계별 공통 작업 ///
             blockParents = Instantiate(Resources.Load("Prefabs/BlockGroup"),
-                  new Vector2(transform.position.x, (transform.position.y + 10)), transform.rotation) as GameObject;
+                  new Vector2(transform.position.x, (transform.position.y + 20)), transform.rotation) as GameObject;
 
             if (null == block_gravity)
                 block_gravity = blockParents.GetComponent<Rigidbody2D>();
 
             range = r.Next(0, 5);
+            upgrade_range = r.Next(0, 5);
+            grade_range = r.Next(0, 101);
 
             for (int i = 0; i < 5; ++i)
             {
                 blockArr[i] = GameObject.Find("BlockGroup(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
                 blockArr[i].AddComponent<BlockStatusManager>();
+                // 리소스 랜덤
+                if (range == 0)
+                {
+                    blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_normal[i];
+                    if (i == upgrade_range)
+                        blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_upgrade[i];
+                }
+                else if (range == 1)
+                {
+                    blockArr[i].GetComponent<SpriteRenderer>().sprite = door_normal[i];
+                    if (i == upgrade_range)
+                        blockArr[i].GetComponent<SpriteRenderer>().sprite = door_upgrade[i];
+                }
+                else if (range == 2)
+                {
+                    blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_normal[i];
+                    if (i == upgrade_range)
+                        blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_upgrade[i];
+                }
+                else if (range == 3)
+                {
+                    blockArr[i].GetComponent<SpriteRenderer>().sprite = watch_normal[i];
+                    if (i == upgrade_range)
+                        blockArr[i].GetComponent<SpriteRenderer>().sprite = watch_upgrade[i];
+                }
+                else if (range == 4)
+                {
+                    blockArr[i].GetComponent<SpriteRenderer>().sprite = wall_normal[i];
+                    if (i == upgrade_range)
+                        blockArr[i].GetComponent<SpriteRenderer>().sprite = wall_upgrade[i];
+                }
             }
+            
             //////////////////////////
 
             if (blockManager.GetComponent<BlockStatusManager>().stage == 1)  // 1단계
-            {             
-                for (int i = 0; i < 5; ++i)
-                {
-                  
-                    if (i == range)      // 랜덤한 한 블럭을 강화블럭으로 셋팅
-                    {
-                        blockArr[range].GetComponent<SpriteRenderer>().sprite = jail_upgrade[range];
-                        blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(1);
-
-                    }
-                    else
-                    {
-                        blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_normal[i];
-                        blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(1);
-                    }
-                }
+            {
+                SetBlock(1);
+                StartCoroutine(BlockHPCheck());
             }
 
-            else if(blockManager.GetComponent<BlockStatusManager>().stage == 2)     // 2단계
-            {              
-                grade_range = r.Next(0, 100);
-
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 2)     // 2단계
+            {
                 for (int i = 0; i < 5; ++i)
-                {                    
-                   
+                {
                     if (grade_range < 30)   // 1단계 건물 확률 30%
                     {
-                        if (i == range)      // 랜덤한 한 블럭을 강화블럭으로 셋팅
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = jail_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(1);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(1);
-                        }
+                        SetBlock(1);
                     }
                     else    // 2단계 건물 확률 70%
                     {
-                        if (i == range)      // 랜덤한 한 블럭을 강화블럭으로 셋팅
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = door_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(2);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = door_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(2);
-                        }
+                        SetBlock(2);
                     }
                 }
+                StartCoroutine(BlockHPCheck());
             }
 
             else if (blockManager.GetComponent<BlockStatusManager>().stage == 3)     // 3단계
-            {               
-                grade_range = r.Next(0, 100);
-
+            {
                 for (int i = 0; i < 5; ++i)
                 {
-                  
-                    if (grade_range < 10)   // 1단계 건물 확률 10%
-                    {
-                        if (i == range)
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = jail_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(1);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(1);
-                        }
-                    }
-                    else if(grade_range < 40)    // 2단계 건물 확률 70%
-                    {
-                        if (i == range)
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = door_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(2);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = door_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(2);
-                        }
-                    }
-                    else if (grade_range < 100)    // 3단계 건물 확률 30%
-                    {
-                        if (i == range)
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = prison_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(3);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(3);
-                        }
-                    }
+                    if (grade_range < 5)   // 1단계 건물 확률 5%
+                        SetBlock(1);
+                    else if (grade_range < 20)    // 2단계 건물 확률 15%
+                        SetBlock(2);
+                    else if (grade_range < 70)    // 3단계 건물 확률 50%
+                        SetBlock(3);
+                    else if (grade_range < 80)    // 밧줄 확률 10%
+                        SetBlock(3);
+                    else if (grade_range < 90)    // 수갑 확률 10%
+                        SetBlock(3);
+                    else if (grade_range < 99)    // 폭탄 확률 9%
+                        SetBlock(3);
+                    else if (grade_range < 101)    // 포션 확률 1%
+                        SetBlock(3);
                 }
+                StartCoroutine(BlockHPCheck());
             }
 
             else if (blockManager.GetComponent<BlockStatusManager>().stage == 4)     // 4단계
-            {               
-                grade_range = r.Next(0, 100);
-
+            {
                 for (int i = 0; i < 5; ++i)
                 {
-                 
-                    if (grade_range < 5)   // 1단계 건물 확률 5%
-                    {
-                        if (i == range)
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = jail_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(1);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(1);
-                        }
-                    }
-                    else if (grade_range < 10)    // 2단계 건물 확률 5%
-                    {
-                        if (i == range)
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = door_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(2);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = door_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(2);
-                        }
-                    }
-                    else if (grade_range < 40)    // 3단계 건물 확률 30%
-                    {
-                        if (i == range)
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = prison_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(3);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(3);
-                        }
-                    }
-                    else if (grade_range < 100)    // 4단계 건물 확률 30%
-                    {
-                        if (i == range)
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = watch_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(4);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = watch_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(4);
-                        }
-                    }
+                    if (grade_range < 1)   // 1단계 건물 확률 1%
+                        SetBlock(1);
+                    else if (grade_range < 10)    // 2단계 건물 확률 9%
+                        SetBlock(2);
+                    else if (grade_range < 30)    // 3단계 건물 확률 20%
+                        SetBlock(3);
+                    else if (grade_range < 70)    // 4단계 건물 확률 40%
+                        SetBlock(4);
+                    else if (grade_range < 80)    // 밧줄 확률 10%
+                        SetBlock(4);
+                    else if (grade_range < 90)    // 수갑 확률 10%
+                        SetBlock(4);
+                    else if (grade_range < 99)    // 폭탄 확률 9%
+                        SetBlock(4);
+                    else if (grade_range < 101)    // 포션 확률 1%
+                        SetBlock(4);
                 }
+                StartCoroutine(BlockHPCheck());
             }
 
             else if (blockManager.GetComponent<BlockStatusManager>().stage == 5)     // 5단계
-            {               
-                grade_range = r.Next(0, 100);
-
+            {
                 for (int i = 0; i < 5; ++i)
                 {
-                  
-                    if (grade_range < 2)   // 1단계 건물 확률 2%
+                    if (grade_range < 1)   // 1단계 건물 확률 1%
+                        SetBlock(1);
+                    else if (grade_range < 2)    // 2단계 건물 확률 1%
+                        SetBlock(2);
+                    else if (grade_range < 10)    // 3단계 건물 확률 8%
+                        SetBlock(3);
+                    else if (grade_range < 30)    // 4단계 건물 확률 20%
+                        SetBlock(4);
+                    else if (grade_range < 70)    // 5단계 건물 확률 40%
+                        SetBlock(5);
+                    else if (grade_range < 80)    // 밧줄 확률 10%
+                        SetBlock(5);
+                    else if (grade_range < 90)    // 수갑 확률 10%
+                        SetBlock(5);
+                    else if (grade_range < 99)    // 폭탄 확률 9%
+                        SetBlock(5);
+                    else if (grade_range < 101)    // 포션 확률 1%
+                        SetBlock(5);
+                }
+            }
+
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 6)     // 6단계
+            {
+                for (int i = 0; i < 5; ++i)
+                {
+                    if (grade_range < 1)   // 1단계 건물 확률 1%
+                        SetBlock(1);
+                    else if (grade_range < 2)    // 2단계 건물 확률 1%
+                        SetBlock(2);
+                    else if (grade_range < 3)    // 3단계 건물 확률 1%
+                        SetBlock(3);
+                    else if (grade_range < 10)    // 4단계 건물 확률 7%
+                        SetBlock(4);
+                    else if (grade_range < 30)    // 5단계 건물 확률 20%
+                        SetBlock(5);
+                    else if (grade_range < 70)    // 6단계 건물 확률 40%
+                        SetBlock(6);
+                    else if (grade_range < 80)    // 밧줄 확률 10%
+                        SetBlock(6);
+                    else if (grade_range < 90)    // 수갑 확률 10%
+                        SetBlock(6);
+                    else if (grade_range < 99)    // 폭탄 확률 9%
+                        SetBlock(6);
+                    else if (grade_range < 101)    // 포션 확률 1%
+                        SetBlock(6);
+                }
+            }
+
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 7)     // 7단계
+            {
+                for (int i = 0; i < 5; ++i)
+                {
+                    if (grade_range < 1)   // 1단계 건물 확률 1%
+                        SetBlock(1);
+                    else if (grade_range < 2)    // 2단계 건물 확률 1%
+                        SetBlock(2);
+                    else if (grade_range < 3)    // 3단계 건물 확률 1%
+                        SetBlock(3);
+                    else if (grade_range < 4)    // 4단계 건물 확률 1%
+                        SetBlock(4);
+                    else if (grade_range < 10)    // 5단계 건물 확률 6%
+                        SetBlock(5);
+                    else if (grade_range < 30)    // 6단계 건물 확률 20%
+                        SetBlock(6);
+                    else if (grade_range < 70)    // 7단계 건물 확률 40%
+                        SetBlock(7);
+                    else if (grade_range < 80)    // 밧줄 확률 10%
+                        SetBlock(7);
+                    else if (grade_range < 90)    // 수갑 확률 10%
+                        SetBlock(7);
+                    else if (grade_range < 99)    // 폭탄 확률 9%
+                        SetBlock(7);
+                    else if (grade_range < 101)    // 포션 확률 1%
+                        SetBlock(7);
+                }
+            }
+
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 8)     // 8단계
+            {
+                for (int i = 0; i < 5; ++i)
+                {
+                    if (grade_range < 1)   // 1단계 건물 확률 1%
+                        SetBlock(1);
+                    else if (grade_range < 2)    // 2단계 건물 확률 1%
+                        SetBlock(2);
+                    else if (grade_range < 3)    // 3단계 건물 확률 1%
+                        SetBlock(3);
+                    else if (grade_range < 4)    // 4단계 건물 확률 1%
+                        SetBlock(4);
+                    else if (grade_range < 5)    // 5단계 건물 확률 1%
+                        SetBlock(5);
+                    else if (grade_range < 10)    // 6단계 건물 확률 5%
+                        SetBlock(6);
+                    else if (grade_range < 30)    // 7단계 건물 확률 20%
+                        SetBlock(7);
+                    else if (grade_range < 70)    // 8단계 건물 확률 40%
+                        SetBlock(8);
+                    else if (grade_range < 80)    // 밧줄 확률 10%
+                        SetBlock(8);
+                    else if (grade_range < 90)    // 수갑 확률 10%
+                        SetBlock(8);
+                    else if (grade_range < 99)    // 폭탄 확률 9%
+                        SetBlock(8);
+                    else if (grade_range < 101)    // 포션 확률 1%
+                        SetBlock(8);
+                }
+            }
+
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 9)     // 9단계
+            {
+                for (int i = 0; i < 5; ++i)
+                {
+                    if (grade_range < 1)   // 1단계 건물 확률 1%
+                        SetBlock(1);
+                    else if (grade_range < 2)    // 2단계 건물 확률 1%
+                        SetBlock(2);
+                    else if (grade_range < 3)    // 3단계 건물 확률 1%
+                        SetBlock(3);
+                    else if (grade_range < 4)    // 4단계 건물 확률 1%
+                        SetBlock(4);
+                    else if (grade_range < 5)    // 5단계 건물 확률 1%
+                        SetBlock(5);
+                    else if (grade_range < 6)    // 6단계 건물 확률 1%
+                        SetBlock(6);
+                    else if (grade_range < 10)    // 7단계 건물 확률 4%
+                        SetBlock(7);
+                    else if (grade_range < 30)    // 8단계 건물 확률 20%
+                        SetBlock(8);
+                    else if (grade_range < 70)    // 9단계 건물 확률 40%
+                        SetBlock(9);
+                    else if (grade_range < 80)    // 밧줄 확률 10%
+                        SetBlock(9);
+                    else if (grade_range < 90)    // 수갑 확률 10%
+                        SetBlock(9);
+                    else if (grade_range < 99)    // 폭탄 확률 9%
+                        SetBlock(9);
+                    else if (grade_range < 101)    // 포션 확률 1%
+                        SetBlock(9);
+                }
+            }
+
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 10)     // 10단계
+            {
+                for (int i = 0; i < 5; ++i)
+                {
+                    if (grade_range < 1)   // 1단계 건물 확률 1%
+                        SetBlock(1);
+                    else if (grade_range < 2)    // 2단계 건물 확률 1%
+                        SetBlock(2);
+                    else if (grade_range < 3)    // 3단계 건물 확률 1%
+                        SetBlock(3);
+                    else if (grade_range < 4)    // 4단계 건물 확률 1%
+                        SetBlock(4);
+                    else if (grade_range < 5)    // 5단계 건물 확률 1%
+                        SetBlock(5);
+                    else if (grade_range < 6)    // 6단계 건물 확률 1%
+                        SetBlock(6);
+                    else if (grade_range < 7)    // 7단계 건물 확률 1%
+                        SetBlock(7);
+                    else if (grade_range < 10)    // 8단계 건물 확률 3%
+                        SetBlock(8);
+                    else if (grade_range < 30)    // 9단계 건물 확률 20%
+                        SetBlock(9);
+                    else if (grade_range < 70)    // 10단계 건물 확률 40%
+                        SetBlock(10);
+                    else if (grade_range < 80)    // 밧줄 확률 10%
+                        SetBlock(10);
+                    else if (grade_range < 90)    // 수갑 확률 10%
+                        SetBlock(10);
+                    else if (grade_range < 99)    // 폭탄 확률 9%
+                        SetBlock(10);
+                    else if (grade_range < 101)    // 포션 확률 1%
+                        SetBlock(10);
+                }
+            }
+        }
+    }
+
+    public void SetBlock(int num)
+    {
+        range = r.Next(0, 5);
+
+        for (int i = 0; i < 5; ++i)
+        {
+            if (i == upgrade_range)
+            {
+                blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(num);
+            }
+            else
+            {
+                blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(num);
+               // Debug.Log("hp : " + blockArr[i].GetComponent<BlockStatusManager>().hp);
+            }
+        }
+    }
+
+    IEnumerator BlockHPCheck()
+    {
+        for (int i = 0; i < 5; ++i)
+        {
+            if (blockArr[i] == null)
+                continue;
+            else
+                blockHp[i] = blockArr[i].GetComponent<BlockStatusManager>().hp;
+        }
+
+        while (true)
+        {         
+            yield return new WaitForSeconds(0.1f);
+            for (int i = 0; i < 5; ++i)
+            {
+                if (blockArr[i] == null)
+                    continue;
+                else
+                {
+                    //Debug.Log(blockHp[i] / 1.5);
+                    if (blockArr[i].GetComponent<BlockStatusManager>().hp <= blockHp[i] / 1.5)
                     {
-                        if (i == range)
+                        //Debug.Log("hp / 1.5 이하");
+                        blockArr[i].GetComponent<EffectAnimation>().Crack1();
+                        if (blockArr[i].GetComponent<BlockStatusManager>().hp <= blockHp[i] / 4)
                         {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = jail_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(1);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(1);
-                        }
-                    }
-                    else if (grade_range < 5)    // 2단계 건물 확률 3%
-                    {
-                        if (i == range)
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = door_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(2);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = door_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(2);
-                        }
-                    }
-                    else if (grade_range < 10)    // 3단계 건물 확률 5%
-                    {
-                        if (i == range)
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = prison_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(3);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(3);
-                        }
-                    }
-                    else if (grade_range < 40)    // 4단계 건물 확률 30%
-                    {
-                        if (i == range)
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = watch_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(4);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = watch_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(4);
-                        }
-                    }
-                    else if (grade_range < 100)    // 5단계 건물 확률 30%
-                    {
-                        if (i == range)
-                        {
-                            //Debug.Log("range : " + range);
-                            blockArr[range].GetComponent<SpriteRenderer>().sprite = wall_upgrade[range];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(5);
-                        }
-                        else
-                        {
-                            blockArr[i].GetComponent<SpriteRenderer>().sprite = wall_normal[i];
-                            blockArr[i].GetComponent<BlockStatusManager>().SetBlockNormal(5);
+                            //Debug.Log("hp / 4 이하");
+                            blockArr[i].GetComponent<EffectAnimation>().Crack2();
                         }
                     }
                 }
+
             }
         }
     }

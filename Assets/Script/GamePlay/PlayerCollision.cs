@@ -45,7 +45,7 @@ public class PlayerCollision : MonoBehaviour
         // raycast
         Vector2 currentPos = new Vector2(transform.position.x, transform.position.y + 1f);
         Ray ray = new Ray(transform.position, Vector2.up);
-        RaycastHit2D hit = Physics2D.Raycast(currentPos, transform.TransformDirection(0, 2, 0), 3);
+        RaycastHit2D hit = Physics2D.Raycast(currentPos, transform.TransformDirection(0, 2, 0), 2.5f);
         //Debug.Log("currentPos : " + currentPos.y);
         if (hit.collider != null)
         {

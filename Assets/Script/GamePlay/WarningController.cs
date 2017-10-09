@@ -15,7 +15,7 @@ public class WarningController : MonoBehaviour
     public GameObject notWarningSprite;       // 경고 상태가 아닐 때의 스프라이트
     public GameObject warningSprite;          // 경고 상태일 때 스프라이트
 
-    float originGrav = 0.8f;        // 블록 스피드 디폴트값
+    float originGrav = 1f;        // 블록 스피드 디폴트값
     System.Random r = new System.Random();
 
     public static WarningController instance;

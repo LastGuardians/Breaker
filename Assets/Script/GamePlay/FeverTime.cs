@@ -13,7 +13,7 @@ public class FeverTime : MonoBehaviour
 
     public bool fever_start = false;
     float fever_time = 0;
-    float originGrav = 0.8f;    // 디폴트 중력값
+    float originGrav = 1f;    // 디폴트 중력값
     int fever_cnt = 1;      // 피버타임 발동 횟수
 
     public static FeverTime instance;
