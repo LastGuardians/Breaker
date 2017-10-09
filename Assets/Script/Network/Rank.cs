@@ -5,7 +5,7 @@ using LitJson;
 public class Rank : MonoBehaviour
 {
     public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
-    public string userId = "TestUser";
+    private string userId;
     public int score = 100;
     public int offset = 0;
     public int limit = 5;
@@ -13,9 +13,9 @@ public class Rank : MonoBehaviour
     void Start()
     {
         DontDestroyOnLoad(this);
-    }
-
-    public void CreateRank()
+		userId = GPGSManager.mainId;
+	}
+	public void CreateRank()
     {
         StartCoroutine(_CreateRank(userId, score));
     }

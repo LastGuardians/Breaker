@@ -164,7 +164,7 @@ public class PlayerManager : MonoBehaviour {
                 GPGSManager.instance.game_score = score;
                 SceneManager.LoadScene("Result");
                 gpgs.GetComponent<GPGSManager>().ReportScore(score);
-                StartCoroutine(_CreateRank(gpgs.GetComponent<GPGSManager>().mainplayeruserdata.userName,
+                StartCoroutine(_CreateRank(GPGSManager.mainplayeruserdata.userName,
                     GameManager.instance.game_score));
             }
         }

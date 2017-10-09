@@ -5,8 +5,8 @@ using LitJson;
 public class UserWeapon : MonoBehaviour
 {
     public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
-    private string userId = "TestUser";
-    private string weaponId = "Weapon1";
+    private string userId;
+	private string weaponId = "Weapon1";
     private int damageLevel = 0;
     private int criticalLevel = 0;
     private int probabilityLevel = 0;
@@ -16,11 +16,12 @@ public class UserWeapon : MonoBehaviour
 
 	void Start()
     {
-        DontDestroyOnLoad(this);
+		DontDestroyOnLoad(this);
+		userId = GPGSManager.mainId;
 		CreateUserWeapon();
     }
 
-    public void CreateUserWeapon()
+	public void CreateUserWeapon()
     {
         StartCoroutine(_CreateUserWeapon(userId, weaponId));
     }
