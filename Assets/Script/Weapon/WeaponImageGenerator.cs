@@ -60,7 +60,7 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
 
-	private string userId = GPGSManager.mainplayeruserdata.id;
+	private string userId;
 	private string weaponId;
 	private int OpenedWeaponIndex;
 	private int damageLevel;
@@ -70,6 +70,7 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	private void Start()
 	{
+		userId = GPGSManager.mainplayeruserdata.id;
 		Window.SetActive(false);
 
 		LightArray[0] = Light1;

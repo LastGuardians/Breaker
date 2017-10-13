@@ -8,17 +8,21 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 {
 	public GameObject Character;
 	public GameObject Canvas;
+	public GameObject Explanation;
 
 	public RuntimeAnimatorController CharacterAnimatorController;
 
-	public Sprite[] CharacterImageArray = new Sprite[12];
+	//public Sprite[] CharacterImageArray = new Sprite[12];
+	public Sprite[] ExplanationArray = new Sprite[6];
 
 	public string AnimatorPath;
 
 	public void Start()
 	{
+		ExplanationArray = Resources.LoadAll<Sprite>("Character/Explanation");
 		Canvas = GameObject.Find("Canvas");
 		GenerateSelectionImage();
+		SetExplanation();
 	}
 
 	public void GenerateSelectionImage()
@@ -89,6 +93,12 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		AnimatorPath = "Animation/Animator/" + CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex] + "Animator";
 		Character.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>(AnimatorPath);
 		Rescale(Character, CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex]);
+		SetExplanation();
+	}
+
+	public void SetExplanation()
+	{
+		Explanation.GetComponent<Image>().sprite = ExplanationArray[CharacterImageGenerator.TargetCharacterIndex];
 	}
 }
 
