@@ -14,6 +14,7 @@ public class WarningController : MonoBehaviour
 
     public GameObject notWarningSprite;       // 경고 상태가 아닐 때의 스프라이트
     public GameObject warningSprite;          // 경고 상태일 때 스프라이트
+    public GameObject warningPanel;     // 경고 패널
 
     float originGrav = 1f;        // 블록 스피드 디폴트값
     System.Random r = new System.Random();
@@ -72,6 +73,7 @@ public class WarningController : MonoBehaviour
         GlobalBGM.instance.warningBgmOn = true;
         BlockGenerator.instance.block_gravity.gravityScale *= 1.3f;
         warningSprite.SetActive(true);
+        warningPanel.SetActive(true);
         //GlobalBGM.instance.WarningBGM();
 
         while (true)
@@ -84,22 +86,21 @@ public class WarningController : MonoBehaviour
                 warning_start = true;
                 warningSprite.SetActive(false);
                 notWarningSprite.SetActive(true);
+                warningPanel.SetActive(false);
                 GlobalBGM.instance.warningBgmOn = false;
                 yield break;
             }
-
             warning_continue_time += 1;
-            //Debug.Log("warning_continue_time : " + warning_continue_time);
 
             if (warning_continue_time >= 5)
             {
-                //Debug.Log("warning_continue_time 5초 넘음");
                 BlockGenerator.instance.block_gravity.gravityScale = originGrav;
                 warning_continue_time = 0;
                 //GlobalBGM.instance.PlayBGM();
                 warning_start = true;
                 warningSprite.SetActive(false);
                 notWarningSprite.SetActive(true);
+                warningPanel.SetActive(false);
                 GlobalBGM.instance.warningBgmOn = false;
                 yield break;
             }

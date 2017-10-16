@@ -5,6 +5,7 @@ using UnityEngine;
 public class EffectAnimation : MonoBehaviour {
 
     public Animator crack1;
+    public Animator attack;
 
     //public static EffectAnimation instance = null;
 
@@ -20,6 +21,7 @@ public class EffectAnimation : MonoBehaviour {
         //    Destroy(gameObject);
         //}
         crack1 = gameObject.GetComponent<Animator>();
+        attack = gameObject.GetComponent<Animator>();
     }
 	
 	public void Crack1()
@@ -30,5 +32,10 @@ public class EffectAnimation : MonoBehaviour {
     public void Crack2()
     {
         crack1.SetTrigger("crack2");
+    }
+
+    public void Attack()
+    {
+        attack.SetTrigger("AttackOn");
     }
 }

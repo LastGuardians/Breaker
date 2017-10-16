@@ -49,7 +49,7 @@ public class PlayerCollision : MonoBehaviour
         //Debug.Log("currentPos : " + currentPos.y);
         if (hit.collider != null)
         {
-            Debug.DrawRay(currentPos, transform.TransformDirection(0, 2, 0), Color.green);
+            //Debug.DrawRay(currentPos, transform.TransformDirection(0, 2, 0), Color.green);
             //Debug.Log("hit.transform.position.y = " + hit.transform.position.y);
             if (hit.collider.tag == "block1" || hit.collider.tag == "block2" ||
                 hit.collider.tag == "block3" || hit.collider.tag == "block4" ||

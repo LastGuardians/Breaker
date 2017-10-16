@@ -7,8 +7,8 @@ using UnityEngine.EventSystems;
 
 public class PlayerManager : MonoBehaviour {
     
-    float jumpSpeed = 1200f;   // 점프 버튼 눌렀을 때 적용되는 힘
-    float jumpSpeedCollision = 200f;    // 공중에서 블럭 파괴했을 때 적용되는 힘
+    float jumpSpeed = 1600f;   // 점프 버튼 눌렀을 때 적용되는 힘
+    float jumpSpeedCollision = 100f;    // 공중에서 블럭 파괴했을 때 적용되는 힘
     float shieldForcetoPlayer = -400f;  // 방어했을 때 플레이어에 적용되는 힘
     float shieldForcetoBlock = 1200f;    // 방어했을 때 블럭에 적용되는 힘
 
@@ -18,6 +18,8 @@ public class PlayerManager : MonoBehaviour {
     public GameObject player;       // 플레이어 오브젝트
     public GameObject jump_effect;
     public int damage = 10;  // test용 데미지    
+    public GameObject ShieldCollider;  // 쉴드 콜라이더
+    public GameObject AttackEffect;
 
     //public bool block_drop_min = false; // 블럭이 최소 좌표에 도달했는지 확인하는 변수
 
@@ -27,6 +29,7 @@ public class PlayerManager : MonoBehaviour {
     public bool ground_collsion = false;     // 플레이어가 땅과 충돌되었는지 확인하는 변수
     public bool shield_able = false;   // 방어가 가능한 상태인지 판단.
     bool jumpOn = false;
+    public int blockCnt = 0;   // 파괴된 블럭 개수
 
     [Header ("Block")]
     public bool block_destroy = false;   // 블럭이 모두 파괴되었는지 확인하는 변수
@@ -35,6 +38,8 @@ public class PlayerManager : MonoBehaviour {
     public GameObject destroy_block;    // 파괴할 블럭 
     public GameObject parent;
     public GameObject DestroyParticle;  // 파괴 파티클
+    public GameObject CoinParticle;  // 코인 파티클
+    public GameObject ShieldEffect; 
 
     private Touch tempTouchs;
 
@@ -79,11 +84,14 @@ public class PlayerManager : MonoBehaviour {
         player.AddComponent<PlayerStatusManager>();
 
         buttonCool = GameObject.Find("ShieldButton");
+        StartCoroutine(LifeCheck());
+        //ShieldCollider = transform.Find("ShieldCollider").GetComponent<Collider2D>().gameObject;
+
+        //AttackEffect = transform.Find("AttackEffect").gameObject;
     }
 
     void Update()
-    {
-        
+    {        
         // UI 갱신
         scoreText.GetComponent<Text>().text = this.score.ToString();    // UI에 점수 갱신
         lifeSlider.GetComponent<Slider>().value = life;
@@ -156,19 +164,6 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
-        if(life == 3)   // 게임 오버
-        {
-            GameObject gpgs = GameObject.Find("GPGSManager");
-            if (gpgs != null)
-            {
-                GPGSManager.instance.game_score = score;
-                SceneManager.LoadScene("Result");
-                gpgs.GetComponent<GPGSManager>().ReportScore(score);
-                StartCoroutine(_CreateRank(GPGSManager.mainplayeruserdata.userName,
-                    GameManager.instance.game_score));
-            }
-        }
-
         if (playerRg.velocity.y != 0)
         {
             jumpOn = true;
@@ -191,39 +186,41 @@ public class PlayerManager : MonoBehaviour {
                 destroy_block_score = newObj.GetComponent<BlockStatusManager>().score;
                 newObj.GetComponent<BlockStatusManager>().hp -= damage;
                 GlobalSFX.instance.PlayCollisionSound();
+                AttackEffect.SetActive(true);
+                Instantiate(AttackEffect, new Vector2(newObj.transform.position.x, (newObj.transform.position.y - 2)), transform.rotation);
+                //AttackEffect.GetComponent<EffectAnimation>().Attack();
 
+                if (newObj.GetComponent<BlockStatusManager>().hp <= 0)
+                {
+                    GlobalSFX.instance.PlayDestroySound();
+                    score += destroy_block_score;
+                    GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
+                    Destroy(PlayerCollision.instance.rayCollider);
+                    Instantiate(DestroyParticle, new Vector2(newObj.transform.position.x, (newObj.transform.position.y - 2)), transform.rotation);
+                    Instantiate(CoinParticle, new Vector2(newObj.transform.position.x, (newObj.transform.position.y - 2)), transform.rotation);
+                    StartCoroutine(DestroyBlockCount());
+                    if (!ground_collsion)
+                        playerRg.AddForce(new Vector2(0, jumpSpeedCollision));
+                }
                 if (PlayerCollision.instance.rayCollider.tag == "block5")
                 {
                     if (newObj.GetComponent<BlockStatusManager>().hp <= 0)
                     {
                         parent = PlayerCollision.instance.rayCollider.transform.parent.gameObject;
-                        GlobalSFX.instance.PlayDestroySound();
-                        score += destroy_block_score;
-                        GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
                         Destroy(parent);
-                        Instantiate(DestroyParticle, new Vector2(newObj.transform.position.x, (newObj.transform.position.y-2)), transform.rotation);
-                        if (!ground_collsion)
-                            playerRg.AddForce(new Vector2(0, jumpSpeedCollision));
-                    }
-                }
-                else
-                {
-                    if (newObj.GetComponent<BlockStatusManager>().hp <= 0)
-                    {
-                        GlobalSFX.instance.PlayDestroySound();
-                        score += destroy_block_score;
-                        GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
-                        Destroy(PlayerCollision.instance.rayCollider);
-                        Instantiate(DestroyParticle, new Vector2(newObj.transform.position.x, (newObj.transform.position.y - 2)), transform.rotation);
-                        if (!ground_collsion)
-                            playerRg.AddForce(new Vector2(0, jumpSpeedCollision));
                     }
                 }
             }
             else
-                shield_able = false;
+            {
+                AttackEffect.SetActive(false);
+            }
 
             attackOn = false;
+        }
+        else
+        {
+            AttackEffect.SetActive(false);
         }
     }
 
@@ -240,6 +237,31 @@ public class PlayerManager : MonoBehaviour {
         yield return www;
 
         //PrintLog(www.error);
+    }
+
+    // 파괴된 블럭 개수 카운트
+    public IEnumerator DestroyBlockCount()
+    {
+        blockCnt += 1;
+        yield return null;
+    }
+
+    // 생명 체크
+    public IEnumerator LifeCheck()
+    {
+        while (true)
+        {           
+            yield return new WaitUntil(() => life == 3);
+            GameObject gpgs = GameObject.Find("GPGSManager");
+            if (gpgs != null)
+            {
+                GPGSManager.instance.game_score = score;
+                SceneManager.LoadScene("Result");
+                gpgs.GetComponent<GPGSManager>().ReportScore(score);
+                StartCoroutine(_CreateRank(GPGSManager.mainplayeruserdata.userName,
+                    GameManager.instance.game_score));
+            }
+        }
     }
 
     public void Jump()
@@ -284,12 +306,30 @@ public class PlayerManager : MonoBehaviour {
 
     public void Shield()    // 방어 버튼
     {
-        // 쿨타임 시작
-        if (buttonCool.GetComponent<ButtonCoolTime>().canUseShield)
+        // 쿨타임 시작        
+        shieldOn = true;
+
+        // 트리거 꺼졌을 때
+        if (buttonCool.GetComponent<ButtonCoolTime>().canUseShield && !shield_able)
         {
+            //ShieldCollider.SetActive(true);
             GlobalSFX.instance.PlayShieldSound();
             buttonCool.GetComponent<ButtonCoolTime>().UseShield();
-            shieldOn = true;
+        }
+        // 트리거 켜졌을 때
+        else if(buttonCool.GetComponent<ButtonCoolTime>().canUseShield && shield_able)
+        {
+            if (blockRg == null)
+                blockRg = GameObject.Find("BlockGroup(Clone)").GetComponent<Rigidbody2D>();
+            if (ShieldEffect == null)
+                ShieldEffect = GameObject.Find("BlockGroup(Clone)").transform.Find("ShieldEffect").gameObject;
+
+           // ShieldEffect.GetComponent<EffectAnimation>().Shield();
+            blockRg.AddForce(new Vector2(0, shieldForcetoBlock-1000f));
+            //blockRg.velocity = (Vector2.up * 1f);
+            blockRg.gravityScale = 0.5f;
+            GlobalSFX.instance.PlayShieldSound();
+            buttonCool.GetComponent<ButtonCoolTime>().UseShield();
         }
     }
 
@@ -297,6 +337,7 @@ public class PlayerManager : MonoBehaviour {
     {
         //if(!buttonCool.GetComponent<ButtonCoolTime>().canUseShield)
         shieldOn = false;
+        //ShieldEffect.SetActive(false);
     }
 
     // 파괴할 블럭 처리
@@ -318,6 +359,9 @@ public class PlayerManager : MonoBehaviour {
                     parent = destroy_block.transform.parent.gameObject;
                     destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
                     Destroy(parent);
+                    Instantiate(DestroyParticle, new Vector2(destroy_block.transform.position.x, (destroy_block.transform.position.y - 2)), transform.rotation);
+                    Instantiate(CoinParticle, new Vector2(destroy_block.transform.position.x, (destroy_block.transform.position.y - 2)), transform.rotation);
+
                     GlobalSFX.instance.PlayDestroySound();
                     GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
                     score += destroy_block_score;
@@ -329,6 +373,9 @@ public class PlayerManager : MonoBehaviour {
                 {
                     destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
                     Destroy(destroy_block);
+                    Instantiate(DestroyParticle, new Vector2(destroy_block.transform.position.x, (destroy_block.transform.position.y - 2)), transform.rotation);
+                    Instantiate(CoinParticle, new Vector2(destroy_block.transform.position.x, (destroy_block.transform.position.y - 2)), transform.rotation);
+
                     GlobalSFX.instance.PlayDestroySound();
                     GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
                     score += destroy_block_score;
@@ -353,49 +400,21 @@ public class PlayerManager : MonoBehaviour {
         if (collision.collider.tag == ("block1") || collision.collider.tag == ("block2")
             || collision.collider.tag == ("block3") || collision.collider.tag == ("block4")
             || collision.collider.tag == ("block5"))
-        {
-            int destroy_block_score = 0;    // 파괴할 블럭의 점수
-
-           // playerRg.AddForce(new Vector2(0, 10));
-            
-            //GameObject newObj = collision.collider.gameObject;
-            //destroy_block_score = newObj.GetComponent<BlockStatusManager>().score;
-            //newObj.GetComponent<BlockStatusManager>().hp -= damage;
-            //GlobalSFX.instance.PlayCollisionSound();
-
-            //if (attackOn)  // 공격 버튼만 눌렀을 때.
-            //{
-            //    if (collision.collider.tag == "block5")   // 마지막 블럭일 때, 부모 삭제
-            //    {
-            //        if (newObj.GetComponent<BlockStatusManager>().hp <= 0)
-            //        {
-            //            parent = newObj.transform.parent.gameObject;
-            //            Destroy(parent);
-            //            playerRg.AddForce(new Vector2(0, jumpSpeedCollision));
-            //            //GlobalSFX.instance.PlayDestroySound();
-            //            GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
-            //            score += destroy_block_score;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (newObj.GetComponent<BlockStatusManager>().hp <= 0)
-            //        {
-            //            Destroy(newObj.gameObject);
-            //            playerRg.AddForce(new Vector2(0, jumpSpeedCollision));
-            //            //GlobalSFX.instance.PlayDestroySound();
-            //            GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
-            //            score += destroy_block_score;
-            //        }
-            //    }
-            //    attackOn = false;
-            //}
-
+        {            
+            GameObject newObj = collision.collider.gameObject;
+            //shield_able = true;
+            // 쉴드 버튼 누르면.
             if (shieldOn)
             {
                 if (blockRg == null)
                     blockRg = GameObject.Find("BlockGroup(Clone)").GetComponent<Rigidbody2D>();
+                if (ShieldEffect == null)
+                    ShieldEffect = GameObject.Find("BlockGroup(Clone)").transform.Find("ShieldEffect").gameObject;
+
+                //ShieldEffect.GetComponent<EffectAnimation>().Shield();
                 blockRg.AddForce(new Vector2(0, shieldForcetoBlock));
+                blockRg.velocity = (Vector2.up * 3f);
+                //ShieldCollider.SetActive(true);
                 playerRg.AddForce(new Vector2(0, shieldForcetoPlayer));
             }
 
@@ -403,14 +422,11 @@ public class PlayerManager : MonoBehaviour {
     }
 
     public void OnCollisionStay2D(Collision2D collision)
-    {
-        //Debug.Log("OnCollisionStay2D");
-     
+    {     
         // 땅과 충돌
         if (collision.collider.tag == "Collision")
         {
             ground_collsion = true;
-            //CharacterAnimation.instance.CatJumpAniControll(false);
         }
 
         // 블럭과 충돌
@@ -418,53 +434,22 @@ public class PlayerManager : MonoBehaviour {
             || collision.collider.tag == ("block3") || collision.collider.tag == ("block4")
             || collision.collider.tag == ("block5"))
         {
-           // playerRg.AddForce(new Vector2(0, 10));
-
+            GameObject newObj = collision.collider.gameObject;
             //shield_able = true;
-            //int destroy_block_score = 0;
-            //GameObject newObj = collision.collider.gameObject;
-            //destroy_block_score = newObj.GetComponent<BlockStatusManager>().score;
-            //newObj.GetComponent<BlockStatusManager>().hp -= damage;
-            //GlobalSFX.instance.PlayCollisionSound();
-
-            //if (attackOn)  // 공격 버튼만 눌렀을 때.
-            //{
-            //    if (collision.collider.tag == "block5")   // 마지막 블럭일 때, 부모 삭제
-            //    {
-            //        if (newObj.GetComponent<BlockStatusManager>().hp <= 0)
-            //        {
-            //            parent = newObj.transform.parent.gameObject;
-            //            Destroy(parent);
-            //            playerRg.AddForce(new Vector2(0, jumpSpeedCollision));
-            //            //GlobalSFX.instance.PlayDestroySound();
-            //            GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
-            //            score += destroy_block_score;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (newObj.GetComponent<BlockStatusManager>().hp <= 0)
-            //        {
-            //            Destroy(newObj.gameObject);
-            //            playerRg.AddForce(new Vector2(0, jumpSpeedCollision));
-            //           // GlobalSFX.instance.PlayDestroySound();
-            //            GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
-            //            score += destroy_block_score;
-            //        }
-            //    }
-            //    attackOn = false;
-            //}
-
+            // 쉴드 버튼 누르면.
             if (shieldOn)
             {
-                if(blockRg == null)
+                if (blockRg == null)
                     blockRg = GameObject.Find("BlockGroup(Clone)").GetComponent<Rigidbody2D>();
+                if (ShieldEffect == null)
+                    ShieldEffect = GameObject.Find("BlockGroup(Clone)").transform.Find("ShieldEffect").gameObject;
+                //ShieldEffect.GetComponent<EffectAnimation>().Shield();
                 blockRg.AddForce(new Vector2(0, shieldForcetoBlock));
+                blockRg.velocity = (Vector2.up * 3f);
+                //ShieldCollider.SetActive(true);         
                 playerRg.AddForce(new Vector2(0, shieldForcetoPlayer));
             }
         }
-
-      
     }
 
     public void OnCollisionExit2D(Collision2D collision)
@@ -480,7 +465,7 @@ public class PlayerManager : MonoBehaviour {
             collision.collider.tag == ("block3") || collision.collider.tag == ("block4") ||
             collision.collider.tag == ("block5"))
         {
-            shield_able = false;
+            //shield_able = false;
             block_destroy = false;
             col_player.isTrigger = false;
             // 플레이어 y좌표 freeze 되있던 것을 초기화

@@ -180,7 +180,7 @@ public class BlockGenerator : MonoBehaviour
         while (true)
         {
             BlockDestroy();
-            yield return new WaitUntil(BlockDestroy);
+            yield return new WaitUntil(BlockDestroy);   // true면 아래 코드 실행.
             
             /// 단계별 공통 작업 ///
             blockParents = Instantiate(Resources.Load("Prefabs/BlockGroup"),
@@ -323,6 +323,7 @@ public class BlockGenerator : MonoBehaviour
                     else if (grade_range < 101)    // 포션 확률 1%
                         SetBlock(5);
                 }
+                StartCoroutine(BlockHPCheck());
             }
 
             else if (blockManager.GetComponent<BlockStatusManager>().stage == 6)     // 6단계
@@ -350,6 +351,7 @@ public class BlockGenerator : MonoBehaviour
                     else if (grade_range < 101)    // 포션 확률 1%
                         SetBlock(6);
                 }
+                StartCoroutine(BlockHPCheck());
             }
 
             else if (blockManager.GetComponent<BlockStatusManager>().stage == 7)     // 7단계
@@ -379,6 +381,7 @@ public class BlockGenerator : MonoBehaviour
                     else if (grade_range < 101)    // 포션 확률 1%
                         SetBlock(7);
                 }
+                StartCoroutine(BlockHPCheck());
             }
 
             else if (blockManager.GetComponent<BlockStatusManager>().stage == 8)     // 8단계
@@ -410,6 +413,7 @@ public class BlockGenerator : MonoBehaviour
                     else if (grade_range < 101)    // 포션 확률 1%
                         SetBlock(8);
                 }
+                StartCoroutine(BlockHPCheck());
             }
 
             else if (blockManager.GetComponent<BlockStatusManager>().stage == 9)     // 9단계
@@ -443,6 +447,7 @@ public class BlockGenerator : MonoBehaviour
                     else if (grade_range < 101)    // 포션 확률 1%
                         SetBlock(9);
                 }
+                StartCoroutine(BlockHPCheck());
             }
 
             else if (blockManager.GetComponent<BlockStatusManager>().stage == 10)     // 10단계
@@ -478,6 +483,7 @@ public class BlockGenerator : MonoBehaviour
                     else if (grade_range < 101)    // 포션 확률 1%
                         SetBlock(10);
                 }
+                StartCoroutine(BlockHPCheck());
             }
         }
     }
