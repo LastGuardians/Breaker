@@ -1,8 +1,4 @@
 sceneSetups:
-<<<<<<< HEAD
-- path: Assets/Scene/Main.unity
-=======
 - path: Assets/Scene/Weapon.unity
->>>>>>> 253082f6613ea2cdaecc0faa63471e559c4a3f5d
   isLoaded: 1
   isActive: 1

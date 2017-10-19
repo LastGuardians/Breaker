@@ -70,7 +70,8 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	private void Start()
 	{
-		userId = GPGSManager.mainplayeruserdata.id;
+		//userId = GPGSManager.mainplayeruserdata.id;
+		userId = "TestUser";
 		Window.SetActive(false);
 
 		LightArray[0] = Light1;
@@ -196,8 +197,8 @@ public class WeaponImageGenerator : MonoBehaviour
 					AbilityGauge.transform.parent = Canvas.transform; // canvas의 자식으로 이동
 					AbilityGaugeImage = AbilityGauge.AddComponent<Image>();
 
-					AbilityGauge.GetComponent<RectTransform>().sizeDelta = new Vector2(10, 40);
-					AbilityGauge.transform.localPosition = new Vector3(20 * k + 80 + StatusLocationArray[i - 1], -330 * i - 70 * j + 690, 0);
+					AbilityGauge.GetComponent<RectTransform>().sizeDelta = new Vector2(15, 60);
+					AbilityGauge.transform.localPosition = new Vector3(20 * k + 100 + StatusLocationArray[i - 1], -360 * i - 120 * j + 950, 0);
 
 					AbilityGaugeImage.sprite = AbilityGaugeArray[0];
 
@@ -258,7 +259,7 @@ public class WeaponImageGenerator : MonoBehaviour
 
 		UpgradeLabel = new GameObject("UpgradeLabel");
 		UpgradeLabel.transform.parent = Canvas.transform;
-		UpgradeLabel.transform.localPosition = new Vector3(-200, -700, 0);
+		UpgradeLabel.transform.localPosition = new Vector3(-200, -650, 0);
 
 		UpgradeLabel.AddComponent<Text>();
 		UpgradeLabel.GetComponent<Text>().font = MainFont;
@@ -289,8 +290,8 @@ public class WeaponImageGenerator : MonoBehaviour
 				Minus.AddComponent<Button>();
 				Minus.GetComponent<Button>().onClick.AddListener(() => Subtract(TempI, TempJ));
 
-				Minus.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 40);
-				Minus.transform.localPosition = new Vector3(60 + StatusLocationArray[i - 1], -330 * i - 70 * j + 690, 0);
+				Minus.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
+				Minus.transform.localPosition = new Vector3(80 + StatusLocationArray[i - 1], -360 * i - 120 * j + 950, 0);
 				AbilityButtonArray[i - 1, j - 1, 0] = Minus;
 
 				//플러스 버튼 생성
@@ -303,8 +304,8 @@ public class WeaponImageGenerator : MonoBehaviour
 				Plus.AddComponent<Button>();
 				Plus.GetComponent<Button>().onClick.AddListener(() => Add(TempI, TempJ));
 
-				Plus.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 40);
-				Plus.transform.localPosition = new Vector3(320 + StatusLocationArray[i - 1], -330 * i - 70 * j + 690, 0);
+				Plus.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
+				Plus.transform.localPosition = new Vector3(320 + StatusLocationArray[i - 1], -360 * i - 120 * j + 950, 0);
 				AbilityButtonArray[i - 1, j - 1, 1] = Plus;
 
 				SetLockLast();
@@ -318,16 +319,14 @@ public class WeaponImageGenerator : MonoBehaviour
 		SaveButton = new GameObject("SaveButton");
 		SaveButton.transform.parent = Canvas.transform;
 
-		SaveButton.AddComponent<Text>();
-		SaveButton.GetComponent<Text>().text = "SAVE";
-		SaveButton.GetComponent<Text>().font = MainFont;
-		SaveButton.GetComponent<Text>().fontSize = 30;
+		SaveButton.AddComponent<Image>();
+		SaveButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("UI/saveButton");
 
 		SaveButton.AddComponent<Button>();
 		SaveButton.GetComponent<Button>().onClick.AddListener(() => SaveStatus());
 
-		SaveButton.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 40);
-		SaveButton.transform.localPosition = new Vector3(100, -680);
+		SaveButton.GetComponent<RectTransform>().sizeDelta = new Vector2(250, 100);
+		SaveButton.transform.localPosition = new Vector3(50, -650);
 
 		DecisionButtonArray[0] = SaveButton;
 
@@ -335,16 +334,14 @@ public class WeaponImageGenerator : MonoBehaviour
 		CancelButton = new GameObject("CancelButton");
 		CancelButton.transform.parent = Canvas.transform;
 
-		CancelButton.AddComponent<Text>();
-		CancelButton.GetComponent<Text>().text = "CANCEL";
-		CancelButton.GetComponent<Text>().font = MainFont;
-		CancelButton.GetComponent<Text>().fontSize = 30;
+		CancelButton.AddComponent<Image>();
+		CancelButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("UI/cancelButton");
 
 		CancelButton.AddComponent<Button>();
 		CancelButton.GetComponent<Button>().onClick.AddListener(() => CancelStatus());
 
-		CancelButton.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 40);
-		CancelButton.transform.localPosition = new Vector3(300, - 680);
+		CancelButton.GetComponent<RectTransform>().sizeDelta = new Vector2(250, 100);
+		CancelButton.transform.localPosition = new Vector3(300, - 650);
 
 		DecisionButtonArray[1] = CancelButton;
 
