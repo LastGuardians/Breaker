@@ -178,7 +178,7 @@ public class CharacterImageGenerator: MonoBehaviour
 		//코인 보유량 라벨 생성
 		Coin = new GameObject("CoinAmountText");
 		Coin.transform.parent = GameObject.Find("Canvas").transform;
-		Coin.transform.localPosition = new Vector3(-20, 620, 0);
+		Coin.transform.localPosition = new Vector3(-20, 600, 0);
 
 		CoinText = Coin.AddComponent<Text>();
 		CoinText.font = MainFont;
@@ -191,7 +191,7 @@ public class CharacterImageGenerator: MonoBehaviour
 		//키 보유량 라벨 생성
 		Key = new GameObject("KeyAmountText");
 		Key.transform.parent = GameObject.Find("Canvas").transform;
-		Key.transform.localPosition = new Vector3(270, 620, 0);
+		Key.transform.localPosition = new Vector3(270, 600, 0);
 
 		KeyText = Key.AddComponent<Text>();
 		KeyText.font = MainFont;
