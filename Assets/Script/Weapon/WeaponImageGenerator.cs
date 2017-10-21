@@ -19,7 +19,7 @@ public class WeaponImageGenerator : MonoBehaviour
 	public GameObject Window;
 	public GameObject YesButton;
 	public GameObject WindowText;
-	public GameObject UpgradeLabel;
+	public GameObject Coin3;
 
 	public GameObject Light1;
 	public GameObject Light2;
@@ -31,9 +31,6 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	public Image AbilityGaugeImage;
 
-	public Text CoinText;
-	public Text KeyText;
-
 	public int WeaponIndex;
 	public int UpgradePrice;
 
@@ -43,11 +40,15 @@ public class WeaponImageGenerator : MonoBehaviour
 	public Sprite[] UpgradeButtonArray = new Sprite[2];
 	public Sprite[] DigitArray = new Sprite[10];
 
-	public GameObject[] LockArray = new GameObject[3];
+	public GameObject[] LockArray;
 	public GameObject[,,] WeaponObjectArray = new GameObject[3, 3, 10];
 	public GameObject[] LightArray = new GameObject[3];
 	public GameObject[,,] AbilityButtonArray = new GameObject[3, 3, 2];
 	public GameObject[] DecisionButtonArray = new GameObject[2];
+
+	public GameObject[] CoinArray;
+	public GameObject[] KeyArray;
+	public GameObject[] PriceArray;
 
 	public int[,] TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 	public int[] StatusLocationArray = new int[3] { 50, -280, 50 };
@@ -68,12 +69,16 @@ public class WeaponImageGenerator : MonoBehaviour
 	private int criticalLevel;
 	private int probabilityLevel;
 
-
 	private void Start()
 	{
+		LockArray = new GameObject[3];
+		CoinArray = new GameObject[15];
+		KeyArray = new GameObject[15];
+		PriceArray = new GameObject[15];
+
 		DigitArray = Resources.LoadAll<Sprite>("UI/Number/Digits");
-		//userId = GPGSManager.mainplayeruserdata.id;
-		userId = "TestUser";
+		userId = GPGSManager.mainplayeruserdata.id;
+		//userId = "TestUser";
 		Window.SetActive(false);
 
 		LightArray[0] = Light1;
@@ -104,20 +109,22 @@ public class WeaponImageGenerator : MonoBehaviour
 		if (CharacterImageGenerator.CoinAmount >= WeaponPriceArray[weaponIndex])
 		{
 			CancelWindow();
-
 			LockArray[weaponIndex].GetComponent<Animator>().SetBool("Unlock", true);
 			CharacterImageGenerator.CoinAmount -= WeaponPriceArray[weaponIndex];
-			Coin.GetComponent<Text>().text = CharacterImageGenerator.CoinAmount.ToString();
 			UserWeapon.WeaponStatusArray[weaponIndex] = "Opened";
 
 			weaponId = "Weapon" + (weaponIndex + 1).ToString();
 			CreateUserWeapon();
 
 			LockButton(true);
+
+			DeleteText(CoinArray);
+			GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -80, 640, CoinArray);
 		}
 		else
 		{
-			WindowText.GetComponent<Text>().text = "Not enough key! It requires " + WeaponPriceArray[weaponIndex].ToString() + " coins";
+			Coin3.SetActive(false);
+			WindowText.GetComponent<Text>().text = "Not enough Coin! It requires " + WeaponPriceArray[weaponIndex].ToString() + " coins";
 			YesButton.SetActive(false);
 		}
 	}
@@ -128,6 +135,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		LockButton(true);
 		WindowText.GetComponent<Text>().text = "Would you like to unlock the weapon?";
 		YesButton.SetActive(true);
+		Coin3.SetActive(true);
 	}
 
 	public void ShowSelected(int weaponIndex)
@@ -232,31 +240,41 @@ public class WeaponImageGenerator : MonoBehaviour
 	public void GenerateLabel()
 	{
 		//코인 보유량 라벨 생성
-		GenerateText(CharacterImageGenerator.CoinAmount.ToString(), 0, 600);
+		GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -80, 640, CoinArray);
 		
 		//키 보유량 라벨 생성
-		GenerateText(CharacterImageGenerator.KeyAmount.ToString(), 240, 600);
+		GenerateText(CharacterImageGenerator.KeyAmount.ToString(), 240, 640, KeyArray);
 
 		//업그레이드 금액 라벨 생성
-		GenerateText(UpgradePrice.ToString(), -200, -670);
+		GenerateText(UpgradePrice.ToString(), -200, -660, PriceArray);
 	}
 
-	public void GenerateText(string targetText, int x, int y)
+	public void GenerateText(string targetText, int x, int y, GameObject[] objectList)
 	{
-		for(int i = 0; i < targetText.Length; i++)
+		GameObject TargetString = new GameObject("Digits");
+		for (int i = 0; i < targetText.Length; i++)
 		{
-			GameObject TargetText = new GameObject();
-			TargetText.transform.parent = Canvas.transform;
-			
-			TargetText.transform.localPosition = new Vector3(x + i * 30, y, 0);
-
-			TargetText.AddComponent<Image>();
 			int TargetDigit = int.Parse(targetText[i].ToString());
-			Debug.Log(TargetDigit);
-			TargetText.GetComponent<Image>().sprite = DigitArray[TargetDigit];
 
-			TargetText.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 40);
+			GameObject TargetChar = new GameObject("Digit" + TargetDigit.ToString());
+			TargetChar.transform.parent = TargetString.transform;
 
+			TargetChar.transform.localPosition = new Vector3(i * 30, 0, 0);
+			TargetChar.AddComponent<Image>();
+			TargetChar.GetComponent<Image>().sprite = DigitArray[TargetDigit];
+			TargetChar.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 40);
+
+			objectList[i] = TargetChar;
+		}
+		TargetString.transform.parent = Canvas.transform;
+		TargetString.GetComponent<Transform>().localPosition = new Vector3(x, y, 0);
+	}
+
+	public void DeleteText(GameObject[] objectList)
+	{
+		foreach(GameObject g in objectList)
+		{
+			Destroy(g);
 		}
 	}
 
@@ -346,6 +364,8 @@ public class WeaponImageGenerator : MonoBehaviour
 			WeaponObjectArray[i - 1, j - 1, UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]].GetComponent<Image>().sprite = AbilityGaugeArray[0];
 			UpgradePrice -= UpgradePriceArray[i - 1, UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]];
 		}
+		DeleteText(PriceArray);
+		GenerateText(UpgradePrice.ToString(), -200, -660, PriceArray);
 		//UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
 	}
 
@@ -357,6 +377,8 @@ public class WeaponImageGenerator : MonoBehaviour
 			WeaponObjectArray[i - 1, j - 1, UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1] - 1].GetComponent<Image>().sprite = AbilityGaugeArray[2];
 			UpgradePrice += UpgradePriceArray[i - 1, UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1] - 1];
 		}
+		DeleteText(PriceArray);
+		GenerateText(UpgradePrice.ToString(), -200, -660, PriceArray);
 		//UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
 	}
 
@@ -376,11 +398,25 @@ public class WeaponImageGenerator : MonoBehaviour
 				}
 			}
 			CharacterImageGenerator.CoinAmount -= UpgradePrice;
-			CoinText.text = CharacterImageGenerator.CoinAmount.ToString();
+
+			DeleteText(CoinArray);
+			GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -80, 640, CoinArray);
+
 			TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
+
 			SetStatus();
+
 			UpgradePrice = 0;
-			UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
+
+			DeleteText(PriceArray);
+			GenerateText(UpgradePrice.ToString(), -200, -660, PriceArray);
+			//UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
+		}
+		else
+		{
+			Coin3.SetActive(false);
+			WindowText.GetComponent<Text>().text = "Not enough Coin! It requires " + UpgradePrice.ToString() + " coins";
+			YesButton.SetActive(false);
 		}
 	}
 
@@ -398,7 +434,9 @@ public class WeaponImageGenerator : MonoBehaviour
 		}
 		TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 		UpgradePrice = 0;
-		UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
+		DeleteText(PriceArray);
+		GenerateText(UpgradePrice.ToString(), -200, -660, PriceArray);
+		//UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
 		
 	}
 
@@ -483,11 +521,6 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	public IEnumerator _SetUserWeapon(string userId, string weaponId, int damageLevel, int criticalLevel, int probabilityLevel)
 	{
-		Debug.Log(userId);
-		Debug.Log(weaponId);
-		Debug.Log(damageLevel);
-		Debug.Log(criticalLevel);
-		Debug.Log(probabilityLevel);
 		string url = baseUrl + "/user/" + userId + "/weapons/" + weaponId + "/update";
 		WWWForm form = new WWWForm();
 		form.headers["content-type"] = "application/json";
@@ -499,7 +532,6 @@ public class WeaponImageGenerator : MonoBehaviour
 		yield return www;
 
 		PrintLog(www.error);
-		Debug.Log("Set");
 	}
 
 	void PrintLog(string message)
