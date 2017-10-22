@@ -25,6 +25,7 @@ public class BlockGenerator : MonoBehaviour
 
     public bool block_ypos_min = false;
     public bool game_start = false;
+    public bool isDestroy = false;
 
     float ypos = 30;
     static double[] blockHp = new double[5];
@@ -188,7 +189,7 @@ public class BlockGenerator : MonoBehaviour
 
             if (null == block_gravity)
                 block_gravity = blockParents.GetComponent<Rigidbody2D>();
-
+           
             range = r.Next(0, 5);
             upgrade_range = r.Next(0, 5);
             grade_range = r.Next(0, 101);
@@ -229,16 +230,21 @@ public class BlockGenerator : MonoBehaviour
                         blockArr[i].GetComponent<SpriteRenderer>().sprite = wall_upgrade[i];
                 }
             }
-            
+
+            if (FeverTime.instance.fever_start)
+            {
+                block_gravity.gravityScale *= 1.5f;
+                SetBlock(1);
+            }
             //////////////////////////
 
-            if (blockManager.GetComponent<BlockStatusManager>().stage == 1)  // 1단계
+            if (blockManager.GetComponent<BlockStatusManager>().stage == 1 && !FeverTime.instance.fever_start)  // 1단계
             {
                 SetBlock(1);
                 StartCoroutine(BlockHPCheck());
             }
 
-            else if (blockManager.GetComponent<BlockStatusManager>().stage == 2)     // 2단계
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 2 && !FeverTime.instance.fever_start)     // 2단계
             {
                 for (int i = 0; i < 5; ++i)
                 {
@@ -254,7 +260,7 @@ public class BlockGenerator : MonoBehaviour
                 StartCoroutine(BlockHPCheck());
             }
 
-            else if (blockManager.GetComponent<BlockStatusManager>().stage == 3)     // 3단계
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 3 && !FeverTime.instance.fever_start)     // 3단계
             {
                 for (int i = 0; i < 5; ++i)
                 {
@@ -276,7 +282,7 @@ public class BlockGenerator : MonoBehaviour
                 StartCoroutine(BlockHPCheck());
             }
 
-            else if (blockManager.GetComponent<BlockStatusManager>().stage == 4)     // 4단계
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 4 && !FeverTime.instance.fever_start)     // 4단계
             {
                 for (int i = 0; i < 5; ++i)
                 {
@@ -300,7 +306,7 @@ public class BlockGenerator : MonoBehaviour
                 StartCoroutine(BlockHPCheck());
             }
 
-            else if (blockManager.GetComponent<BlockStatusManager>().stage == 5)     // 5단계
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 5 && !FeverTime.instance.fever_start)     // 5단계
             {
                 for (int i = 0; i < 5; ++i)
                 {
@@ -326,7 +332,7 @@ public class BlockGenerator : MonoBehaviour
                 StartCoroutine(BlockHPCheck());
             }
 
-            else if (blockManager.GetComponent<BlockStatusManager>().stage == 6)     // 6단계
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 6 && !FeverTime.instance.fever_start)     // 6단계
             {
                 for (int i = 0; i < 5; ++i)
                 {
@@ -354,7 +360,7 @@ public class BlockGenerator : MonoBehaviour
                 StartCoroutine(BlockHPCheck());
             }
 
-            else if (blockManager.GetComponent<BlockStatusManager>().stage == 7)     // 7단계
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 7 && !FeverTime.instance.fever_start)     // 7단계
             {
                 for (int i = 0; i < 5; ++i)
                 {
@@ -384,7 +390,7 @@ public class BlockGenerator : MonoBehaviour
                 StartCoroutine(BlockHPCheck());
             }
 
-            else if (blockManager.GetComponent<BlockStatusManager>().stage == 8)     // 8단계
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 8 && !FeverTime.instance.fever_start)     // 8단계
             {
                 for (int i = 0; i < 5; ++i)
                 {
@@ -416,7 +422,7 @@ public class BlockGenerator : MonoBehaviour
                 StartCoroutine(BlockHPCheck());
             }
 
-            else if (blockManager.GetComponent<BlockStatusManager>().stage == 9)     // 9단계
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 9 && !FeverTime.instance.fever_start)     // 9단계
             {
                 for (int i = 0; i < 5; ++i)
                 {
@@ -450,7 +456,7 @@ public class BlockGenerator : MonoBehaviour
                 StartCoroutine(BlockHPCheck());
             }
 
-            else if (blockManager.GetComponent<BlockStatusManager>().stage == 10)     // 10단계
+            else if (blockManager.GetComponent<BlockStatusManager>().stage == 10 && !FeverTime.instance.fever_start)     // 10단계
             {
                 for (int i = 0; i < 5; ++i)
                 {
@@ -522,9 +528,13 @@ public class BlockGenerator : MonoBehaviour
             for (int i = 0; i < 5; ++i)
             {
                 if (blockArr[i] == null)
+                {
+                    isDestroy = true;
                     continue;
+                }
                 else
                 {
+                    isDestroy = false;
                     //Debug.Log(blockHp[i] / 1.5);
                     if (blockArr[i].GetComponent<BlockStatusManager>().hp <= blockHp[i] / 1.5)
                     {
@@ -536,6 +546,13 @@ public class BlockGenerator : MonoBehaviour
                             blockArr[i].GetComponent<EffectAnimation>().Crack2();
                         }
                     }
+
+                    //if (blockArr[i].GetComponent<BlockStatusManager>().hp <= 0)
+                    //{
+                    //    isDestroy = true;
+                    //}
+                    //else
+                    //    isDestroy = false;
                 }
 
             }

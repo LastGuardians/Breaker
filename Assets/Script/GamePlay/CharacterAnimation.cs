@@ -8,6 +8,7 @@ using UnityEngine;
 public class CharacterAnimation : MonoBehaviour
 {
     public Animator catAni;
+    float aniTime = 0;
 
     public static CharacterAnimation instance = null;
 
@@ -34,10 +35,17 @@ public class CharacterAnimation : MonoBehaviour
     // 점프 애니메이션
     public void CatJumpAniControll()
     {
-        //Debug.Log("jump : " + jump);
         catAni.SetTrigger("IsJump");
         //catAni.SetTrigger("IsIdleJump");
     }
+
+    // 점프 idle 애니메이션
+    public void CatJumpIdleAniControll(float n)
+    {
+        catAni.SetFloat("IsJumpIdle", n);
+       
+    }
+
 
     // 점프 상태에서 공격했을 때 애니
     public void CatJumpAttackAniControll()
@@ -45,5 +53,20 @@ public class CharacterAnimation : MonoBehaviour
         catAni.SetTrigger("IsJumpAttack");
     }
 
-   
+    public IEnumerator AniCor()
+    {
+        aniTime = 0;
+        Debug.Log("AniCor 시작");
+        while (true)
+        {
+            yield return new WaitForSeconds(0.1f);
+            aniTime += 0.1f;
+            Debug.Log("aniTime: " + aniTime);
+            if(aniTime >= 0.3)
+            {
+                CatJumpIdleAniControll(11f);
+                yield break;
+            }
+        }
+    }
 }

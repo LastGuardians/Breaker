@@ -1,47 +1,90 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ComboManager : MonoBehaviour {
 
     Sprite[] comboNum = new Sprite[10];
     int blockCnt = 0;
+    int blockCntBefore = 0;
     int comboTime = 0;
 
+    public GameObject ComboText;
+    public GameObject ComboString;
+    public Animator comboEnd;
+
+    public static ComboManager instance = null;
     // Use this for initialization
     void Start () {
-
-        for (int i = 0; i < 10; ++i)
+        if (instance == null)
         {
-            comboNum[i] = Resources.Load<Sprite>("UI/Number/digit" + i.ToString());
-
+            instance = this;
         }
+        else if (instance != this)
+        {
+            //잘못된 인스턴스를 가르키고 있을 경우
+            Destroy(gameObject);
+        }
+       
+        //ComboText = GameObject.Find("ComboText");
+        // 콤보 체크 코루틴
+        StartCoroutine(ComboCheckCurr());
+        //StartCoroutine(ComboCheckBefore());
     }
-	
-    // 블럭 파괴되면 코루틴 실행
-	public IEnumerator ComboCheck()
+
+    // 현재 블럭 카운트 코루틴
+    public IEnumerator ComboCheckCurr()
     {
-        blockCnt = PlayerManager.instance.blockCnt;
         while (true)
         {
-            // 3초 전 카운트와 3초 후 카운트가 같으면 콤보 끊김.            
+            yield return new WaitUntil(() => PlayerManager.instance.isDestroy == true);
+            //yield return new WaitForSeconds(0.1f);
+            //if (PlayerManager.instance.isDestroy)
+            //{
+                //blockCnt = PlayerManager.instance.blockCnt;
+            ComboText.SetActive(true);
+            ComboString.SetActive(true);
+            comboEnd = ComboText.GetComponent<Animator>();
+            ComboText.GetComponent<Text>().text = PlayerManager.instance.blockCnt.ToString();
+            StopCoroutine("ComboTimeCheck");
+            StartCoroutine("ComboTimeCheck");
+            //}
+            //Debug.Log("blockCnt : " + blockCnt);
+        }
+    }
+
+    // 콤보 시간 체크
+    public IEnumerator ComboTimeCheck()
+    {
+        comboTime = 0;
+
+        while (true)
+        {            
             yield return new WaitForSeconds(1f);
             comboTime += 1;
+            //Debug.Log("comboTime: " + comboTime);
 
-            if(comboTime >= 3)
+            if (comboTime >= 2)
             {
-                if(blockCnt == PlayerManager.instance.blockCnt)
-                {
+                //ComboAniEnd();
+                ComboText.SetActive(false);
+                ComboString.SetActive(false);
+            }
+
+            if (comboTime >= 5)
+            {
+                if (!PlayerManager.instance.isDestroy)
+                {                    
                     PlayerManager.instance.blockCnt = 0;
                     comboTime = 0;
                 }
             }
         }
-
-        if (blockCnt != PlayerManager.instance.blockCnt)
-        {
-
-        }
     }
 
+    public void ComboAniEnd()
+    {
+        comboEnd.SetTrigger("ComboEnd");
+    }
 }

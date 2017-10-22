@@ -13,6 +13,7 @@ public class PlayerCollision : MonoBehaviour
     public GameObject rayCollider;      // 레이로 충돌 체크 된 오브젝트
 
     public bool isNear = false;
+    public bool isDestroy = false;
 
     int blockNum = 0;
 
@@ -56,8 +57,13 @@ public class PlayerCollision : MonoBehaviour
                 hit.collider.tag == "block5")
             {
                 rayCollider = hit.collider.gameObject;
-                //Debug.Log("블럭과 충돌");
+                //if (rayCollider.GetComponent<BlockStatusManager>().hp > 0)
+                //{
+                //    PlayerManager.instance.isDestroy = false;
+                //}
             }
+            
         }
+      
     }
 }

@@ -32,7 +32,7 @@ public class FeverTime : MonoBehaviour
         }
 
         feverGauge = GameObject.Find("FeverGauge");
-        //StartCoroutine(FeverTimeCheck());
+        StartCoroutine(FeverStartCheck());
         //Invoke("FeverTimeCheck", 0.1f);
     }
 
@@ -42,10 +42,25 @@ public class FeverTime : MonoBehaviour
         if (!fever_start)
         {            
             feverGauge.GetComponent<Slider>().value = block_destroy_count;
-            if (block_destroy_count == (20 * fever_cnt) &&
-                BlockGenerator.instance.block_gravity != null)
+            //if (block_destroy_count == (20 * fever_cnt) &&
+            //    BlockGenerator.instance.block_gravity != null)
+            //{
+            //    //Debug.Log("fever 발동");
+            //    feverGauge.GetComponent<Slider>().value = 0;
+            //    block_destroy_count = 0;
+            //    fever_start = true;
+            //    StartCoroutine(FeverTimeCheck());
+            //}
+        }
+    }
+
+    public IEnumerator FeverStartCheck()
+    {
+        while (true)
+        {
+            yield return new WaitUntil(() => block_destroy_count == (20 * fever_cnt));
+            if(BlockGenerator.instance.block_gravity != null)
             {
-                //Debug.Log("fever 발동");
                 feverGauge.GetComponent<Slider>().value = 0;
                 block_destroy_count = 0;
                 fever_start = true;
@@ -58,7 +73,8 @@ public class FeverTime : MonoBehaviour
     {
         //Debug.Log("FeverTimeCheck");
         GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().feverBgmOn = true;
-        GameObject.Find("BlockManager").GetComponent< BlockGenerator >().block_gravity.gravityScale *= 1.5f;
+        //GameObject.Find("BlockManager").GetComponent< BlockGenerator >().block_gravity.gravityScale *= 1.5f;
+
         feverStartImage.SetActive(true);
 
         while (true)
