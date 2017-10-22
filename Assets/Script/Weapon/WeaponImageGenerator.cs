@@ -19,7 +19,7 @@ public class WeaponImageGenerator : MonoBehaviour
 	public GameObject Window;
 	public GameObject YesButton;
 	public GameObject WindowText;
-	public GameObject UpgradeLabel;
+	public GameObject Coin3;
 
 	public GameObject Light1;
 	public GameObject Light2;
@@ -31,9 +31,6 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	public Image AbilityGaugeImage;
 
-	public Text CoinText;
-	public Text KeyText;
-
 	public int WeaponIndex;
 	public int UpgradePrice;
 
@@ -41,12 +38,17 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	public Sprite[] AbilityGaugeArray = new Sprite[3];
 	public Sprite[] UpgradeButtonArray = new Sprite[2];
+	public Sprite[] DigitArray = new Sprite[10];
 
-	public GameObject[] LockArray = new GameObject[3];
+	public GameObject[] LockArray;
 	public GameObject[,,] WeaponObjectArray = new GameObject[3, 3, 10];
 	public GameObject[] LightArray = new GameObject[3];
 	public GameObject[,,] AbilityButtonArray = new GameObject[3, 3, 2];
 	public GameObject[] DecisionButtonArray = new GameObject[2];
+
+	public GameObject[] CoinArray;
+	public GameObject[] KeyArray;
+	public GameObject[] PriceArray;
 
 	public int[,] TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 	public int[] StatusLocationArray = new int[3] { 50, -280, 50 };
@@ -67,10 +69,16 @@ public class WeaponImageGenerator : MonoBehaviour
 	private int criticalLevel;
 	private int probabilityLevel;
 
-
 	private void Start()
 	{
+		LockArray = new GameObject[3];
+		CoinArray = new GameObject[15];
+		KeyArray = new GameObject[15];
+		PriceArray = new GameObject[15];
+
+		DigitArray = Resources.LoadAll<Sprite>("UI/Number/Digits");
 		userId = GPGSManager.mainplayeruserdata.id;
+		//userId = "TestUser";
 		Window.SetActive(false);
 
 		LightArray[0] = Light1;
@@ -91,7 +99,7 @@ public class WeaponImageGenerator : MonoBehaviour
 	public void LoadWindow(int weaponIndex)
 	{
 		Window.SetActive(true);
-		WindowText.GetComponent<Text>().text = "\t\t\tX\t" + WeaponPriceArray[weaponIndex].ToString();
+		WindowText.GetComponent<Text>().text = "\t\tX\t" + WeaponPriceArray[weaponIndex].ToString();
 		YesButton.GetComponent<Button>().onClick.AddListener(() => UnlockWeapon(weaponIndex));
 		LockButton(false);
 	}
@@ -101,20 +109,22 @@ public class WeaponImageGenerator : MonoBehaviour
 		if (CharacterImageGenerator.CoinAmount >= WeaponPriceArray[weaponIndex])
 		{
 			CancelWindow();
-
 			LockArray[weaponIndex].GetComponent<Animator>().SetBool("Unlock", true);
 			CharacterImageGenerator.CoinAmount -= WeaponPriceArray[weaponIndex];
-			Coin.GetComponent<Text>().text = CharacterImageGenerator.CoinAmount.ToString();
 			UserWeapon.WeaponStatusArray[weaponIndex] = "Opened";
 
 			weaponId = "Weapon" + (weaponIndex + 1).ToString();
 			CreateUserWeapon();
 
 			LockButton(true);
+
+			DeleteText(CoinArray);
+			GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -80, 640, CoinArray);
 		}
 		else
 		{
-			WindowText.GetComponent<Text>().text = "Not enough key! It requires " + WeaponPriceArray[weaponIndex].ToString() + " coins";
+			Coin3.SetActive(false);
+			WindowText.GetComponent<Text>().text = "Not enough Coin! It requires " + WeaponPriceArray[weaponIndex].ToString() + " coins";
 			YesButton.SetActive(false);
 		}
 	}
@@ -125,6 +135,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		LockButton(true);
 		WindowText.GetComponent<Text>().text = "Would you like to unlock the weapon?";
 		YesButton.SetActive(true);
+		Coin3.SetActive(true);
 	}
 
 	public void ShowSelected(int weaponIndex)
@@ -196,8 +207,8 @@ public class WeaponImageGenerator : MonoBehaviour
 					AbilityGauge.transform.parent = Canvas.transform; // canvas의 자식으로 이동
 					AbilityGaugeImage = AbilityGauge.AddComponent<Image>();
 
-					AbilityGauge.GetComponent<RectTransform>().sizeDelta = new Vector2(10, 40);
-					AbilityGauge.transform.localPosition = new Vector3(20 * k + 80 + StatusLocationArray[i - 1], -330 * i - 70 * j + 690, 0);
+					AbilityGauge.GetComponent<RectTransform>().sizeDelta = new Vector2(15, 60);
+					AbilityGauge.transform.localPosition = new Vector3(20 * k + 100 + StatusLocationArray[i - 1], -360 * i - 120 * j + 950, 0);
 
 					AbilityGaugeImage.sprite = AbilityGaugeArray[0];
 
@@ -229,44 +240,42 @@ public class WeaponImageGenerator : MonoBehaviour
 	public void GenerateLabel()
 	{
 		//코인 보유량 라벨 생성
-		Coin = new GameObject("CoinAmountText");
-		Coin.transform.parent = Canvas.transform;
-		Coin.transform.localPosition = new Vector3(-20, 620, 0);
-
-		CoinText = Coin.AddComponent<Text>();
-		CoinText.font = MainFont;
-		CoinText.fontSize = 40;
-		CoinText.text = CharacterImageGenerator.CoinAmount.ToString();
-		CoinText.alignment = TextAnchor.UpperCenter;
-
-		Coin.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
-
+		GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -80, 640, CoinArray);
+		
 		//키 보유량 라벨 생성
-		Key = new GameObject("KeyAmountText");
-		Key.transform.parent = Canvas.transform;
-		Key.transform.localPosition = new Vector3(270, 620, 0);
-
-		KeyText = Key.AddComponent<Text>();
-		KeyText.font = MainFont;
-		KeyText.fontSize = 40;
-		KeyText.text = CharacterImageGenerator.KeyAmount.ToString();
-		KeyText.alignment = TextAnchor.UpperCenter;
-
-		Key.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
+		GenerateText(CharacterImageGenerator.KeyAmount.ToString(), 240, 640, KeyArray);
 
 		//업그레이드 금액 라벨 생성
+		GenerateText(UpgradePrice.ToString(), -200, -660, PriceArray);
+	}
 
-		UpgradeLabel = new GameObject("UpgradeLabel");
-		UpgradeLabel.transform.parent = Canvas.transform;
-		UpgradeLabel.transform.localPosition = new Vector3(-200, -700, 0);
+	public void GenerateText(string targetText, int x, int y, GameObject[] objectList)
+	{
+		GameObject TargetString = new GameObject("Digits");
+		for (int i = 0; i < targetText.Length; i++)
+		{
+			int TargetDigit = int.Parse(targetText[i].ToString());
 
-		UpgradeLabel.AddComponent<Text>();
-		UpgradeLabel.GetComponent<Text>().font = MainFont;
-		UpgradeLabel.GetComponent<Text>().fontSize = 40;
-		UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
-		UpgradeLabel.GetComponent<Text>().alignment = TextAnchor.UpperCenter;
+			GameObject TargetChar = new GameObject("Digit" + TargetDigit.ToString());
+			TargetChar.transform.parent = TargetString.transform;
 
-		UpgradeLabel.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
+			TargetChar.transform.localPosition = new Vector3(i * 30, 0, 0);
+			TargetChar.AddComponent<Image>();
+			TargetChar.GetComponent<Image>().sprite = DigitArray[TargetDigit];
+			TargetChar.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 40);
+
+			objectList[i] = TargetChar;
+		}
+		TargetString.transform.parent = Canvas.transform;
+		TargetString.GetComponent<Transform>().localPosition = new Vector3(x, y, 0);
+	}
+
+	public void DeleteText(GameObject[] objectList)
+	{
+		foreach(GameObject g in objectList)
+		{
+			Destroy(g);
+		}
 	}
 
 	public void GenerateAbilityButton()
@@ -289,8 +298,8 @@ public class WeaponImageGenerator : MonoBehaviour
 				Minus.AddComponent<Button>();
 				Minus.GetComponent<Button>().onClick.AddListener(() => Subtract(TempI, TempJ));
 
-				Minus.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 40);
-				Minus.transform.localPosition = new Vector3(60 + StatusLocationArray[i - 1], -330 * i - 70 * j + 690, 0);
+				Minus.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
+				Minus.transform.localPosition = new Vector3(80 + StatusLocationArray[i - 1], -360 * i - 120 * j + 950, 0);
 				AbilityButtonArray[i - 1, j - 1, 0] = Minus;
 
 				//플러스 버튼 생성
@@ -303,8 +312,8 @@ public class WeaponImageGenerator : MonoBehaviour
 				Plus.AddComponent<Button>();
 				Plus.GetComponent<Button>().onClick.AddListener(() => Add(TempI, TempJ));
 
-				Plus.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 40);
-				Plus.transform.localPosition = new Vector3(320 + StatusLocationArray[i - 1], -330 * i - 70 * j + 690, 0);
+				Plus.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
+				Plus.transform.localPosition = new Vector3(320 + StatusLocationArray[i - 1], -360 * i - 120 * j + 950, 0);
 				AbilityButtonArray[i - 1, j - 1, 1] = Plus;
 
 				SetLockLast();
@@ -318,16 +327,14 @@ public class WeaponImageGenerator : MonoBehaviour
 		SaveButton = new GameObject("SaveButton");
 		SaveButton.transform.parent = Canvas.transform;
 
-		SaveButton.AddComponent<Text>();
-		SaveButton.GetComponent<Text>().text = "SAVE";
-		SaveButton.GetComponent<Text>().font = MainFont;
-		SaveButton.GetComponent<Text>().fontSize = 30;
+		SaveButton.AddComponent<Image>();
+		SaveButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("UI/saveButton");
 
 		SaveButton.AddComponent<Button>();
 		SaveButton.GetComponent<Button>().onClick.AddListener(() => SaveStatus());
 
-		SaveButton.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 40);
-		SaveButton.transform.localPosition = new Vector3(100, -680);
+		SaveButton.GetComponent<RectTransform>().sizeDelta = new Vector2(250, 100);
+		SaveButton.transform.localPosition = new Vector3(50, -650);
 
 		DecisionButtonArray[0] = SaveButton;
 
@@ -335,16 +342,14 @@ public class WeaponImageGenerator : MonoBehaviour
 		CancelButton = new GameObject("CancelButton");
 		CancelButton.transform.parent = Canvas.transform;
 
-		CancelButton.AddComponent<Text>();
-		CancelButton.GetComponent<Text>().text = "CANCEL";
-		CancelButton.GetComponent<Text>().font = MainFont;
-		CancelButton.GetComponent<Text>().fontSize = 30;
+		CancelButton.AddComponent<Image>();
+		CancelButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("UI/cancelButton");
 
 		CancelButton.AddComponent<Button>();
 		CancelButton.GetComponent<Button>().onClick.AddListener(() => CancelStatus());
 
-		CancelButton.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 40);
-		CancelButton.transform.localPosition = new Vector3(300, - 680);
+		CancelButton.GetComponent<RectTransform>().sizeDelta = new Vector2(250, 100);
+		CancelButton.transform.localPosition = new Vector3(300, - 650);
 
 		DecisionButtonArray[1] = CancelButton;
 
@@ -359,7 +364,9 @@ public class WeaponImageGenerator : MonoBehaviour
 			WeaponObjectArray[i - 1, j - 1, UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]].GetComponent<Image>().sprite = AbilityGaugeArray[0];
 			UpgradePrice -= UpgradePriceArray[i - 1, UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1]];
 		}
-		UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
+		DeleteText(PriceArray);
+		GenerateText(UpgradePrice.ToString(), -200, -660, PriceArray);
+		//UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
 	}
 
 	public void Add(int i, int j)
@@ -370,7 +377,9 @@ public class WeaponImageGenerator : MonoBehaviour
 			WeaponObjectArray[i - 1, j - 1, UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1] - 1].GetComponent<Image>().sprite = AbilityGaugeArray[2];
 			UpgradePrice += UpgradePriceArray[i - 1, UserWeapon.WeaponAbilityArray[i - 1, j - 1] + TempAbilityArray[i - 1, j - 1] - 1];
 		}
-		UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
+		DeleteText(PriceArray);
+		GenerateText(UpgradePrice.ToString(), -200, -660, PriceArray);
+		//UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
 	}
 
 	public void SaveStatus()
@@ -389,11 +398,25 @@ public class WeaponImageGenerator : MonoBehaviour
 				}
 			}
 			CharacterImageGenerator.CoinAmount -= UpgradePrice;
-			CoinText.text = CharacterImageGenerator.CoinAmount.ToString();
+
+			DeleteText(CoinArray);
+			GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -80, 640, CoinArray);
+
 			TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
+
 			SetStatus();
+
 			UpgradePrice = 0;
-			UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
+
+			DeleteText(PriceArray);
+			GenerateText(UpgradePrice.ToString(), -200, -660, PriceArray);
+			//UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
+		}
+		else
+		{
+			Coin3.SetActive(false);
+			WindowText.GetComponent<Text>().text = "Not enough Coin! It requires " + UpgradePrice.ToString() + " coins";
+			YesButton.SetActive(false);
 		}
 	}
 
@@ -411,7 +434,9 @@ public class WeaponImageGenerator : MonoBehaviour
 		}
 		TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 		UpgradePrice = 0;
-		UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
+		DeleteText(PriceArray);
+		GenerateText(UpgradePrice.ToString(), -200, -660, PriceArray);
+		//UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
 		
 	}
 
@@ -496,11 +521,6 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	public IEnumerator _SetUserWeapon(string userId, string weaponId, int damageLevel, int criticalLevel, int probabilityLevel)
 	{
-		Debug.Log(userId);
-		Debug.Log(weaponId);
-		Debug.Log(damageLevel);
-		Debug.Log(criticalLevel);
-		Debug.Log(probabilityLevel);
 		string url = baseUrl + "/user/" + userId + "/weapons/" + weaponId + "/update";
 		WWWForm form = new WWWForm();
 		form.headers["content-type"] = "application/json";
@@ -512,7 +532,6 @@ public class WeaponImageGenerator : MonoBehaviour
 		yield return www;
 
 		PrintLog(www.error);
-		Debug.Log("Set");
 	}
 
 	void PrintLog(string message)

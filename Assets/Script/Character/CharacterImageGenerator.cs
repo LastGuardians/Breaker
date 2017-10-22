@@ -13,6 +13,12 @@ public class CharacterImageGenerator: MonoBehaviour
 	public GameObject Window;
 	public GameObject YesButton;
 	public GameObject WindowText;
+	public GameObject Canvas;
+	public GameObject Key2;
+
+	public Sprite[] DigitArray = new Sprite[10];
+	public GameObject[] CoinArray;
+	public GameObject[] KeyArray;
 
 	public Sprite UnveiledCharacterSprite;
 
@@ -44,7 +50,12 @@ public class CharacterImageGenerator: MonoBehaviour
 
 	void Start()
     {
+		DigitArray = Resources.LoadAll<Sprite>("UI/Number/Digits");
+		CoinArray = new GameObject[15];
+		KeyArray = new GameObject[15];
+
 		userId = GPGSManager.mainId;
+		//userId = "TestUser";
 		Window.SetActive(false);
 		GenerateImage();
 		GenerateLabel();
@@ -109,7 +120,7 @@ public class CharacterImageGenerator: MonoBehaviour
 	public void LoadWindow(int characterIndex)
 	{
 		Window.SetActive(true);
-		WindowText.GetComponent<Text>().text = "\t\tX\t" + CharacterPriceArray[characterIndex].ToString();
+		WindowText.GetComponent<Text>().text = "\t\t\tX\t" + CharacterPriceArray[characterIndex].ToString();
 		YesButton.GetComponent<Button>().onClick.AddListener(() => UnlockCharacter(characterIndex));
 		CharacterButtonController(false);
 	}
@@ -119,6 +130,7 @@ public class CharacterImageGenerator: MonoBehaviour
 		Window.SetActive(false);
 		CharacterButtonController(true);
 		YesButton.SetActive(true);
+		Key2.SetActive(true);
 	}
 
 	public void UnlockCharacter(int characterIndex)
@@ -137,13 +149,15 @@ public class CharacterImageGenerator: MonoBehaviour
 			TargetCharacterButton.GetComponent<Button>().onClick.AddListener(() => LoadSelection(characterIndex));
 
 			KeyAmount -= CharacterPriceArray[characterIndex];
-			Key.GetComponent<Text>().text = KeyAmount.ToString();
+			DeleteText(KeyArray);
+			GenerateText(CharacterImageGenerator.KeyAmount.ToString(), 240, 640, KeyArray);
 
 			characterId = "Character" + (characterIndex + 1).ToString();
 			CreateUserCharacter();
 		}
 		else
 		{
+			Key2.SetActive(false);
 			WindowText.GetComponent<Text>().text = "Not enough key! It requires " + CharacterPriceArray[characterIndex].ToString() + " keys";
 			YesButton.SetActive(false);
 		}
@@ -176,30 +190,39 @@ public class CharacterImageGenerator: MonoBehaviour
 	public void GenerateLabel()
 	{
 		//코인 보유량 라벨 생성
-		Coin = new GameObject("CoinAmountText");
-		Coin.transform.parent = GameObject.Find("Canvas").transform;
-		Coin.transform.localPosition = new Vector3(-20, 620, 0);
-
-		CoinText = Coin.AddComponent<Text>();
-		CoinText.font = MainFont;
-		CoinText.fontSize = 40;
-		CoinText.text = CoinAmount.ToString();
-		CoinText.alignment = TextAnchor.UpperCenter;
-
-		Coin.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
+		GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -80, 640, CoinArray);
 
 		//키 보유량 라벨 생성
-		Key = new GameObject("KeyAmountText");
-		Key.transform.parent = GameObject.Find("Canvas").transform;
-		Key.transform.localPosition = new Vector3(270, 620, 0);
+		GenerateText(CharacterImageGenerator.KeyAmount.ToString(), 240, 640, KeyArray);
+	}
 
-		KeyText = Key.AddComponent<Text>();
-		KeyText.font = MainFont;
-		KeyText.fontSize = 40;
-		KeyText.text = KeyAmount.ToString();
-		KeyText.alignment = TextAnchor.UpperCenter;
+	public void GenerateText(string targetText, int x, int y, GameObject[] objectList)
+	{
+		GameObject TargetString = new GameObject("Digits");
+		for (int i = 0; i < targetText.Length; i++)
+		{
+			int TargetDigit = int.Parse(targetText[i].ToString());
 
-		Key.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
+			GameObject TargetChar = new GameObject("Digit" + TargetDigit.ToString());
+			TargetChar.transform.parent = TargetString.transform;
+
+			TargetChar.transform.localPosition = new Vector3(i * 30, 0, 0);
+			TargetChar.AddComponent<Image>();
+			TargetChar.GetComponent<Image>().sprite = DigitArray[TargetDigit];
+			TargetChar.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 40);
+
+			objectList[i] = TargetChar;
+		}
+		TargetString.transform.parent = Canvas.transform;
+		TargetString.GetComponent<Transform>().localPosition = new Vector3(x, y, 0);
+	}
+
+	public void DeleteText(GameObject[] objectList)
+	{
+		foreach (GameObject g in objectList)
+		{
+			Destroy(g);
+		}
 	}
 
 	//서버 함수
