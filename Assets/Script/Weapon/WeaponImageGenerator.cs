@@ -77,8 +77,8 @@ public class WeaponImageGenerator : MonoBehaviour
 		PriceArray = new GameObject[15];
 
 		DigitArray = Resources.LoadAll<Sprite>("UI/Number/Digits");
-		//userId = GPGSManager.mainplayeruserdata.id;
-		userId = "TestUser";
+		userId = GPGSManager.mainplayeruserdata.id;
+		//userId = "TestUser";
 		Window.SetActive(false);
 
 		LightArray[0] = Light1;
