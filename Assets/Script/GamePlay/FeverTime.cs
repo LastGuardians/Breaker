@@ -59,13 +59,13 @@ public class FeverTime : MonoBehaviour
         while (true)
         {
             yield return new WaitUntil(() => block_destroy_count == (20 * fever_cnt));
-            if(BlockGenerator.instance.block_gravity != null)
-            {
+            //if(BlockGenerator.instance.block_gravity != null)
+            //{
                 feverGauge.GetComponent<Slider>().value = 0;
                 block_destroy_count = 0;
                 fever_start = true;
                 StartCoroutine(FeverTimeCheck());
-            }
+            //}
         }
     }
 

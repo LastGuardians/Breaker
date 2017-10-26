@@ -88,10 +88,7 @@ public class PlayerManager : MonoBehaviour {
         buttonCool = GameObject.Find("ShieldButton");
         StartCoroutine(LifeCheck());
         StartCoroutine(JumpCheck());
-        //StartCoroutine(AttackCheck());
-        //ShieldCollider = transform.Find("ShieldCollider").GetComponent<Collider2D>().gameObject;
-
-        //AttackEffect = transform.Find("AttackEffect").gameObject;
+        StartCoroutine(PlayerYLimit());
     }
 
     void Update()
@@ -99,7 +96,7 @@ public class PlayerManager : MonoBehaviour {
         // UI 갱신
         scoreText.GetComponent<Text>().text = this.score.ToString();    // UI에 점수 갱신
         lifeSlider.GetComponent<Slider>().value = life;
-
+        
         // 트리거 켜졌을 때 방어버튼 누르면.(조건: 블럭과 충돌했을때 && 방어버튼 눌렸을때 && 트리거 켜졌을때)
         if (shield_able)
         {
@@ -160,7 +157,7 @@ public class PlayerManager : MonoBehaviour {
                     else if (tempTouchs.phase == TouchPhase.Ended)  // 터치가 끝났다면.
                     {
                         attackOn = false;
-                        SwordEffect.SetActive(true);
+                        SwordEffect.SetActive(false);
                         //transform.Find("swing").gameObject.SetActive(false);
                     }
                 }
@@ -276,6 +273,16 @@ public class PlayerManager : MonoBehaviour {
                 StartCoroutine(_CreateRank(GPGSManager.mainplayeruserdata.userName,
                     GameManager.instance.game_score));
             }
+        }
+    }
+
+    // 플레이어 y 좌표 제한
+    public IEnumerator PlayerYLimit()
+    {
+        while (true)
+        {
+            yield return new WaitUntil(() => transform.position.y >= 34);
+            playerRg.AddForce(new Vector2(0, -50));
         }
     }
 

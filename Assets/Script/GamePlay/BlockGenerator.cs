@@ -185,7 +185,7 @@ public class BlockGenerator : MonoBehaviour
             
             /// 단계별 공통 작업 ///
             blockParents = Instantiate(Resources.Load("Prefabs/BlockGroup"),
-                  new Vector2(transform.position.x, (transform.position.y + 20)), transform.rotation) as GameObject;
+                  new Vector2(transform.position.x, (transform.position.y + 15)), transform.rotation) as GameObject;
 
             if (null == block_gravity)
                 block_gravity = blockParents.GetComponent<Rigidbody2D>();
