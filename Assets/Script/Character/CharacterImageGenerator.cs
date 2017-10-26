@@ -206,10 +206,10 @@ public class CharacterImageGenerator: MonoBehaviour
 			GameObject TargetChar = new GameObject("Digit" + TargetDigit.ToString());
 			TargetChar.transform.parent = TargetString.transform;
 
-			TargetChar.transform.localPosition = new Vector3(i * 30, 0, 0);
+			TargetChar.transform.localPosition = new Vector3(i * 60, 0, 0);
 			TargetChar.AddComponent<Image>();
 			TargetChar.GetComponent<Image>().sprite = DigitArray[TargetDigit];
-			TargetChar.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 40);
+			TargetChar.GetComponent<RectTransform>().sizeDelta = new Vector2(80, 80);
 
 			objectList[i] = TargetChar;
 		}
