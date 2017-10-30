@@ -123,6 +123,7 @@ public class CharacterImageGenerator: MonoBehaviour
 		WindowText.GetComponent<Text>().text = "\t\t\tX\t" + CharacterPriceArray[characterIndex].ToString();
 		YesButton.GetComponent<Button>().onClick.AddListener(() => UnlockCharacter(characterIndex));
 		CharacterButtonController(false);
+		Window.transform.SetAsLastSibling();
 	}
 
 	public void CancelWindow()
@@ -209,11 +210,12 @@ public class CharacterImageGenerator: MonoBehaviour
 			TargetChar.transform.localPosition = new Vector3(i * 60, 0, 0);
 			TargetChar.AddComponent<Image>();
 			TargetChar.GetComponent<Image>().sprite = DigitArray[TargetDigit];
-			TargetChar.GetComponent<RectTransform>().sizeDelta = new Vector2(80, 80);
+			TargetChar.transform.localScale = new Vector3(0.8f, 0.8f, 0);
 
 			objectList[i] = TargetChar;
 		}
 		TargetString.transform.parent = Canvas.transform;
+		TargetString.transform.localScale = new Vector3(0.5f, 0.5f, 0);
 		TargetString.GetComponent<Transform>().localPosition = new Vector3(x, y, 0);
 	}
 

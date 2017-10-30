@@ -9,6 +9,12 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 	public GameObject Character;
 	public GameObject Canvas;
 	public GameObject Explanation;
+	GameObject CheckeButton;
+
+	public Sprite onButton;
+	public Sprite offButton;
+
+	public static int CurrentCharacterIndex;
 
 	public RuntimeAnimatorController CharacterAnimatorController;
 
@@ -20,9 +26,13 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 	public void Start()
 	{
 		ExplanationArray = Resources.LoadAll<Sprite>("Character/Explanation");
+		onButton = Resources.Load<Sprite>("UI/onButton");
+		offButton = Resources.Load<Sprite>("UI/offButton");
 		Canvas = GameObject.Find("Canvas");
 		GenerateSelectionImage();
 		SetExplanation();
+		GenerateCheckButton();
+		ChangeCheckButton(CharacterImageGenerator.TargetCharacterIndex);
 	}
 
 	public void GenerateSelectionImage()
@@ -85,6 +95,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 			while (UserCharacter.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Locked" || UserCharacter.CharacterStatusArray[CharacterImageGenerator.TargetCharacterIndex] == "Unveiled");
 		}
 		ChangeImage(TargetButtonName);
+		ChangeCheckButton(CharacterImageGenerator.TargetCharacterIndex);
 	}
 
 	public void ChangeImage(string ClickedButton)
@@ -94,11 +105,44 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		Character.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>(AnimatorPath);
 		Rescale(Character, CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex]);
 		SetExplanation();
+
 	}
 
 	public void SetExplanation()
 	{
 		Explanation.GetComponent<Image>().sprite = ExplanationArray[CharacterImageGenerator.TargetCharacterIndex];
+	}
+
+	public void GenerateCheckButton()
+	{
+		CheckeButton = new GameObject("CheckButton");
+		CheckeButton.transform.parent = Canvas.transform;
+
+		CheckeButton.transform.localScale = new Vector3(1.0f, 1.0f, 0);
+		CheckeButton.transform.localPosition = new Vector3(200, -150, 0);
+
+		CheckeButton.AddComponent<Button>();
+		CheckeButton.AddComponent<Image>();
+	}
+
+	public void ChangeCheckButton(int targetcharacterIndex)
+	{
+		CheckeButton.GetComponent<Button>().onClick.RemoveAllListeners();
+		CheckeButton.GetComponent<Button>().onClick.AddListener(() => ChangeCurrentIndex(targetcharacterIndex));
+		if (targetcharacterIndex == CurrentCharacterIndex)
+		{
+			CheckeButton.GetComponent<Image>().sprite = onButton;
+		}
+		else
+		{
+			CheckeButton.GetComponent<Image>().sprite = offButton;
+		}
+	}
+
+	public void ChangeCurrentIndex(int targetcharacterIndex)
+	{
+		CurrentCharacterIndex = targetcharacterIndex;
+		CheckeButton.GetComponent<Image>().sprite = onButton;
 	}
 }
 
