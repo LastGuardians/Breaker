@@ -14,8 +14,6 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 	public Sprite onButton;
 	public Sprite offButton;
 
-	public static int CurrentCharacterIndex;
-
 	public RuntimeAnimatorController CharacterAnimatorController;
 
 	//public Sprite[] CharacterImageArray = new Sprite[12];
@@ -129,7 +127,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 	{
 		CheckeButton.GetComponent<Button>().onClick.RemoveAllListeners();
 		CheckeButton.GetComponent<Button>().onClick.AddListener(() => ChangeCurrentIndex(targetcharacterIndex));
-		if (targetcharacterIndex == CurrentCharacterIndex)
+		if (targetcharacterIndex == UserCharacter.CurrentCharacterIndex)
 		{
 			CheckeButton.GetComponent<Image>().sprite = onButton;
 		}
@@ -141,7 +139,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 
 	public void ChangeCurrentIndex(int targetcharacterIndex)
 	{
-		CurrentCharacterIndex = targetcharacterIndex;
+		UserCharacter.CurrentCharacterIndex = targetcharacterIndex;
 		CheckeButton.GetComponent<Image>().sprite = onButton;
 	}
 }
