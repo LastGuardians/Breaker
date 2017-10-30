@@ -215,7 +215,7 @@ public class WeaponImageGenerator : MonoBehaviour
 					AbilityGauge.transform.parent = Canvas.transform; // canvas의 자식으로 이동
 					AbilityGaugeImage = AbilityGauge.AddComponent<Image>();
 
-					AbilityGauge.GetComponent<RectTransform>().sizeDelta = new Vector2(15, 60);
+					AbilityGauge.transform.localScale = new Vector3(0.1f, 0.4f, 0);
 					AbilityGauge.transform.localPosition = new Vector3(15 * k + 140 + StatusLocationArray[i - 1], -360 * i - 120 * j + 950, 0);
 
 					AbilityGaugeImage.sprite = AbilityGaugeArray[0];
@@ -270,7 +270,7 @@ public class WeaponImageGenerator : MonoBehaviour
 			TargetChar.transform.localPosition = new Vector3(i * 60, 0, 0);
 			TargetChar.AddComponent<Image>();
 			TargetChar.GetComponent<Image>().sprite = DigitArray[TargetDigit];
-			TargetChar.GetComponent<RectTransform>().sizeDelta = new Vector2(80, 80);
+			TargetChar.transform.localScale = new Vector3(0.8f, 0.8f, 0);
 
 			objectList[i] = TargetChar;
 		}
@@ -306,7 +306,7 @@ public class WeaponImageGenerator : MonoBehaviour
 				Minus.AddComponent<Button>();
 				Minus.GetComponent<Button>().onClick.AddListener(() => Subtract(TempI, TempJ));
 
-				Minus.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 100);
+				Minus.transform.localScale = new Vector3(0.5f, 0.5f);
 				Minus.transform.localPosition = new Vector3(120 + StatusLocationArray[i - 1], -360 * i - 120 * j + 950, 0);
 				AbilityButtonArray[i - 1, j - 1, 0] = Minus;
 
@@ -320,7 +320,7 @@ public class WeaponImageGenerator : MonoBehaviour
 				Plus.AddComponent<Button>();
 				Plus.GetComponent<Button>().onClick.AddListener(() => Add(TempI, TempJ));
 
-				Plus.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 100);
+				Plus.transform.localScale = new Vector3(0.5f, 0.5f);
 				Plus.transform.localPosition = new Vector3(325 + StatusLocationArray[i - 1], -360 * i - 120 * j + 950, 0);
 				AbilityButtonArray[i - 1, j - 1, 1] = Plus;
 
@@ -341,7 +341,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		SaveButton.AddComponent<Button>();
 		SaveButton.GetComponent<Button>().onClick.AddListener(() => LoadDecisionWindow());
 
-		SaveButton.GetComponent<RectTransform>().sizeDelta = new Vector2(350, 130);
+		SaveButton.transform.localScale = new Vector3(1.9f, 0.65f, 0);
 		SaveButton.transform.localPosition = new Vector3(90, -660);
 
 		DecisionButtonArray[0] = SaveButton;
@@ -356,7 +356,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		CancelButton.AddComponent<Button>();
 		CancelButton.GetComponent<Button>().onClick.AddListener(() => CancelStatus());
 
-		CancelButton.GetComponent<RectTransform>().sizeDelta = new Vector2(350, 130);
+		CancelButton.transform.localScale = new Vector3(1.9f, 0.65f, 0);
 		CancelButton.transform.localPosition = new Vector3(290, - 660);
 
 		DecisionButtonArray[1] = CancelButton;

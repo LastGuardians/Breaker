@@ -209,7 +209,7 @@ public class CharacterImageGenerator: MonoBehaviour
 			TargetChar.transform.localPosition = new Vector3(i * 60, 0, 0);
 			TargetChar.AddComponent<Image>();
 			TargetChar.GetComponent<Image>().sprite = DigitArray[TargetDigit];
-			TargetChar.GetComponent<RectTransform>().sizeDelta = new Vector2(80, 80);
+			TargetChar.transform.localScale = new Vector3(0.8f, 0.8f, 0);
 
 			objectList[i] = TargetChar;
 		}
