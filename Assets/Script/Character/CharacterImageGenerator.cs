@@ -214,6 +214,7 @@ public class CharacterImageGenerator: MonoBehaviour
 			objectList[i] = TargetChar;
 		}
 		TargetString.transform.parent = Canvas.transform;
+		TargetString.transform.localScale = new Vector3(0.5f, 0.5f, 0);
 		TargetString.GetComponent<Transform>().localPosition = new Vector3(x, y, 0);
 	}
 
