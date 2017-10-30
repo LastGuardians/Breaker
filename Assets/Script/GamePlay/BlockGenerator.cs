@@ -20,12 +20,14 @@ public class BlockGenerator : MonoBehaviour
     public GameObject blockParents;
     //public GameObject blockGroup;
     public GameObject[] blockArr = new GameObject[5];
+    public GameObject[] blockArrFever = new GameObject[10];
     public Rigidbody2D block_gravity = new Rigidbody2D();
     GameObject blockManager;
 
     public bool block_ypos_min = false;
     public bool game_start = false;
     public bool isDestroy = false;
+    public bool feverStart = false;
 
     float ypos = 30;
     static double[] blockHp = new double[5];
@@ -35,6 +37,7 @@ public class BlockGenerator : MonoBehaviour
     public int range = 0;      //  블록 리소스 확률 범위
     public int grade_range = 0; // 블록 등급 확률 범위
     public int upgrade_range = 0;   // 강화 블록 확률
+    int type_range = 0;     // 블록 타입 확률(블록 or 오브젝트)
 
     // 건물 리소스
     Sprite[] jail_normal = new Sprite[5];  // 교도소 내부(철창) 기본
@@ -51,8 +54,13 @@ public class BlockGenerator : MonoBehaviour
 
     Sprite[] wall_normal = new Sprite[5];    // 담장 기본
     Sprite[] wall_upgrade = new Sprite[5];   // 담장 강화
-    
-    
+
+    Sprite rope = new Sprite();  // 밧줄
+    Sprite handcuffs = new Sprite();  // 수갑
+    Sprite bomb = new Sprite();  // 폭탄
+    Sprite portion = new Sprite();  // 포션
+
+
     public static BlockGenerator instance = null;
 
     void Awake()
@@ -80,7 +88,8 @@ public class BlockGenerator : MonoBehaviour
     void Start()
     {
         StartCoroutine(BlockTranslate());
-        StartCoroutine(BlockStageCheck());       
+        StartCoroutine(BlockStageCheck());
+       // StartCoroutine(FeverBlock());
 
         blockManager = GameObject.Find("BlockManager");
         range = r.Next(0, 5);   // 강화블럭 확률 범위
@@ -103,8 +112,12 @@ public class BlockGenerator : MonoBehaviour
             wall_normal[i] = Resources.Load<Sprite>("Building/5.Wall/wall" + (i + 1).ToString());
             wall_upgrade[i] = Resources.Load<Sprite>("Building/5.Wall/upgrade/wall_upgrade" + (i + 1).ToString());
                     
-
         }
+
+        rope = Resources.Load<Sprite>("Building/Object/rope");
+        handcuffs = Resources.Load<Sprite>("Building/Object/handcuffs");
+        bomb = Resources.Load<Sprite>("Building/Object/bomb");
+        portion = Resources.Load<Sprite>("Building/Object/potion");
 
         for (int i = 0; i < 5; ++i)
         {
@@ -143,13 +156,15 @@ public class BlockGenerator : MonoBehaviour
     // 블럭이 모두 파괴되었는지 체크
     public bool BlockDestroy()
     {
-        GameObject obj = GameObject.Find("building5");
-        if (obj != null)  // hierarchy 상에 오브젝트가 존재하면 블록 생성 x
-            return false; 
+        GameObject obj1 = GameObject.Find("BlockGroup");
+        GameObject obj2 = GameObject.Find("BlockGroup(Clone)");
+        GameObject obj3 = GameObject.Find("BlockGroupFever(Clone)");
+        if (obj1 != null || obj2 != null || obj3 != null)  // hierarchy 상에 오브젝트가 존재하면 블록 생성 x
+            return false;  
         else
         {
             block_ypos_min = false;
-            //Debug.Log("true 리턴");
+            //StartCoroutine(BlockStageCheck());
             return true;
         }
     }
@@ -166,13 +181,56 @@ public class BlockGenerator : MonoBehaviour
                 if (blockArr[i] == null)
                     continue;
 
-                if (blockArr[i].transform.position.y < 1.4 &&
-                    blockArr[i].transform.position.y >= -0.4)
+                if ((blockArr[i].transform.position.y < 1.4 &&
+                     blockArr[i].transform.position.y >= -0.4))
                 {
+                    block_ypos_min = true;
+                }             
+            }
+
+            for (int i = 0; i < 10; ++i)
+            {
+                if (blockArrFever[i] == null)
+                    continue;
+
+                if (blockArrFever[i].transform.position.y < 1.4 &&
+                    blockArrFever[i].transform.position.y >= -0.4)
+                {
+                    //Debug.Log("block_ypos_min : " + block_ypos_min);
                     block_ypos_min = true;
                 }
             }
         }
+    }
+
+    IEnumerator FeverBlock()    // 피버 발동 시 블럭 생성
+    {
+        blockParents = Instantiate(Resources.Load("Prefabs/BlockGroupFever"),
+                new Vector2(transform.position.x, (transform.position.y + 15)), transform.rotation) as GameObject;
+
+        if (null == block_gravity)
+            block_gravity = blockParents.GetComponent<Rigidbody2D>();
+
+        block_gravity.gravityScale *= 1.8f;
+
+        range = r.Next(0, 5);
+        upgrade_range = r.Next(0, 5);
+        grade_range = r.Next(0, 101);
+
+        for (int i = 0; i < 10; ++i)
+        {
+            blockArrFever[i] = GameObject.Find("BlockGroupFever(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
+            blockArrFever[i].AddComponent<BlockStatusManager>();
+
+            if(i<5)
+                blockArrFever[i].GetComponent<SpriteRenderer>().sprite = door_normal[i];
+            else
+                blockArrFever[i].GetComponent<SpriteRenderer>().sprite = door_normal[i-5];
+        }
+
+        SetFeverBlock(1);
+        StartCoroutine(BlockStageCheck());
+        yield break;
     }
 
     // 블럭 단계 체크(리소스 바꾸기 위해)
@@ -182,60 +240,160 @@ public class BlockGenerator : MonoBehaviour
         {
             BlockDestroy();
             yield return new WaitUntil(BlockDestroy);   // true면 아래 코드 실행.
-            
+            //Debug.Log("BlockDestroy : " + BlockDestroy());
             /// 단계별 공통 작업 ///
-            blockParents = Instantiate(Resources.Load("Prefabs/BlockGroup"),
-                  new Vector2(transform.position.x, (transform.position.y + 15)), transform.rotation) as GameObject;
+            if (!feverStart)
+            {
+                blockParents = Instantiate(Resources.Load("Prefabs/BlockGroup"),
+                      new Vector2(transform.position.x, (transform.position.y + 15)), transform.rotation) as GameObject;
 
-            if (null == block_gravity)
-                block_gravity = blockParents.GetComponent<Rigidbody2D>();
-           
+                if (null == block_gravity)
+                    block_gravity = blockParents.GetComponent<Rigidbody2D>();
+            }
+
+            else      // 피버 발동 시
+            {
+                StartCoroutine(FeverBlock());
+                yield break;
+            }
+
             range = r.Next(0, 5);
             upgrade_range = r.Next(0, 5);
             grade_range = r.Next(0, 101);
+            //type_range = r.Next(0, 101);
 
-            for (int i = 0; i < 5; ++i)
+            int block_set_range = 0;
+            if (blockManager.GetComponent<BlockStatusManager>().stage < 3)
+                block_set_range = 101;
+            else
+                block_set_range = 70;
+
+
+            if (grade_range < block_set_range)
             {
-                blockArr[i] = GameObject.Find("BlockGroup(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
-                blockArr[i].AddComponent<BlockStatusManager>();
-                // 리소스 랜덤
-                if (range == 0)
+                for (int i = 0; i < 5; ++i)
                 {
-                    blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_normal[i];
-                    if (i == upgrade_range)
-                        blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_upgrade[i];
-                }
-                else if (range == 1)
-                {
-                    blockArr[i].GetComponent<SpriteRenderer>().sprite = door_normal[i];
-                    if (i == upgrade_range)
-                        blockArr[i].GetComponent<SpriteRenderer>().sprite = door_upgrade[i];
-                }
-                else if (range == 2)
-                {
-                    blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_normal[i];
-                    if (i == upgrade_range)
-                        blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_upgrade[i];
-                }
-                else if (range == 3)
-                {
-                    blockArr[i].GetComponent<SpriteRenderer>().sprite = watch_normal[i];
-                    if (i == upgrade_range)
-                        blockArr[i].GetComponent<SpriteRenderer>().sprite = watch_upgrade[i];
-                }
-                else if (range == 4)
-                {
-                    blockArr[i].GetComponent<SpriteRenderer>().sprite = wall_normal[i];
-                    if (i == upgrade_range)
-                        blockArr[i].GetComponent<SpriteRenderer>().sprite = wall_upgrade[i];
+                    blockArr[i] = GameObject.Find("BlockGroup(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
+                    blockArr[i].AddComponent<BlockStatusManager>();
+                    // 리소스 랜덤
+                    if (range == 0)
+                    {
+                        blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_normal[i];
+                        if (i == upgrade_range)
+                            blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_upgrade[i];
+                    }
+                    else if (range == 1)
+                    {
+                        blockArr[i].GetComponent<SpriteRenderer>().sprite = door_normal[i];
+                        if (i == upgrade_range)
+                            blockArr[i].GetComponent<SpriteRenderer>().sprite = door_upgrade[i];
+                    }
+                    else if (range == 2)
+                    {
+                        blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_normal[i];
+                        if (i == upgrade_range)
+                            blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_upgrade[i];
+                    }
+                    else if (range == 3)
+                    {
+                        blockArr[i].GetComponent<SpriteRenderer>().sprite = watch_normal[i];
+                        if (i == upgrade_range)
+                            blockArr[i].GetComponent<SpriteRenderer>().sprite = watch_upgrade[i];
+                    }
+                    else if (range == 4)
+                    {
+                        blockArr[i].GetComponent<SpriteRenderer>().sprite = wall_normal[i];
+                        if (i == upgrade_range)
+                            blockArr[i].GetComponent<SpriteRenderer>().sprite = wall_upgrade[i];
+                    }
                 }
             }
 
-            if (FeverTime.instance.fever_start)
+            // if (blockManager.GetComponent<BlockStatusManager>().stage > 2)
+            else if (grade_range >= 70 && !FeverTime.instance.fever_start)
             {
-                block_gravity.gravityScale *= 1.5f;
-                SetBlock(1);
+                for (int i = 0; i < 5; ++i)
+                {
+                    blockArr[i] = GameObject.Find("BlockGroup(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
+                    blockArr[i].AddComponent<BlockStatusManager>();
+                }               
+
+                if (grade_range >= 70 && grade_range < 80)    // 밧줄 확률 10%
+                {
+                    blockArr[0].tag = "rope";
+                    for (int i = 0; i < 5; ++i)
+                    {
+                        if (i == 0)
+                            blockArr[i].GetComponent<SpriteRenderer>().sprite = rope;
+                        else
+                        {
+                            Destroy(blockArr[i]);
+                            //blockArr[i] = null;
+                            //blockArr[i].GetComponent<SpriteRenderer>().sprite = ;
+                        }
+                    }
+
+                    SetObject(1);
+                }
+                else if (grade_range >= 80 && grade_range < 90)    // 수갑 확률 10%
+                {
+                    blockArr[0].tag = "handcuffs";
+                    for (int i = 0; i < 5; ++i)
+                    {
+                        if (i == 0)
+                            blockArr[i].GetComponent<SpriteRenderer>().sprite = handcuffs;
+                        else
+                        {
+                            Destroy(blockArr[i]);
+                            //blockArr[i] = null;
+                            //blockArr[i].GetComponent<SpriteRenderer>().sprite = null;
+                        }
+
+                    }
+
+                    SetObject(2);
+                }
+                else if (grade_range >= 90 && grade_range < 99)    // 폭탄 확률 9%
+                {
+                    blockArr[0].tag = "bomb";
+                    for (int i = 0; i < 5; ++i)
+                    {
+                        if (i == 0)
+                            blockArr[i].GetComponent<SpriteRenderer>().sprite = bomb;
+                        else
+                        {
+                            Destroy(blockArr[i]);
+                            //blockArr[i] = null;
+                            //blockArr[i].GetComponent<SpriteRenderer>().sprite = null;
+                        }
+                    }
+
+                    SetObject(3);
+                }
+                else if (grade_range >= 99 && grade_range < 100)    // 포션 확률 1%
+                {
+                    blockArr[0].tag = "portion";
+                    for (int i = 0; i < 5; ++i)
+                    {
+                        if (i == 0)
+                            blockArr[i].GetComponent<SpriteRenderer>().sprite = portion;
+                        else
+                        {
+                            Destroy(blockArr[i]);
+                            //blockArr[i] = null;
+                            //blockArr[i].GetComponent<SpriteRenderer>().sprite = null;
+                        }
+                    }
+                    SetObject(4);
+                }
+
+                if (FeverTime.instance.fever_start)      // 피버 발동 시
+                {
+                    SetBlock(1);
+                    //StartCoroutine(BlockHPCheck());
+                }
             }
+
             //////////////////////////
 
             if (blockManager.GetComponent<BlockStatusManager>().stage == 1 && !FeverTime.instance.fever_start)  // 1단계
@@ -270,14 +428,6 @@ public class BlockGenerator : MonoBehaviour
                         SetBlock(2);
                     else if (grade_range < 70)    // 3단계 건물 확률 50%
                         SetBlock(3);
-                    else if (grade_range < 80)    // 밧줄 확률 10%
-                        SetBlock(3);
-                    else if (grade_range < 90)    // 수갑 확률 10%
-                        SetBlock(3);
-                    else if (grade_range < 99)    // 폭탄 확률 9%
-                        SetBlock(3);
-                    else if (grade_range < 101)    // 포션 확률 1%
-                        SetBlock(3);
                 }
                 StartCoroutine(BlockHPCheck());
             }
@@ -293,14 +443,6 @@ public class BlockGenerator : MonoBehaviour
                     else if (grade_range < 30)    // 3단계 건물 확률 20%
                         SetBlock(3);
                     else if (grade_range < 70)    // 4단계 건물 확률 40%
-                        SetBlock(4);
-                    else if (grade_range < 80)    // 밧줄 확률 10%
-                        SetBlock(4);
-                    else if (grade_range < 90)    // 수갑 확률 10%
-                        SetBlock(4);
-                    else if (grade_range < 99)    // 폭탄 확률 9%
-                        SetBlock(4);
-                    else if (grade_range < 101)    // 포션 확률 1%
                         SetBlock(4);
                 }
                 StartCoroutine(BlockHPCheck());
@@ -319,14 +461,6 @@ public class BlockGenerator : MonoBehaviour
                     else if (grade_range < 30)    // 4단계 건물 확률 20%
                         SetBlock(4);
                     else if (grade_range < 70)    // 5단계 건물 확률 40%
-                        SetBlock(5);
-                    else if (grade_range < 80)    // 밧줄 확률 10%
-                        SetBlock(5);
-                    else if (grade_range < 90)    // 수갑 확률 10%
-                        SetBlock(5);
-                    else if (grade_range < 99)    // 폭탄 확률 9%
-                        SetBlock(5);
-                    else if (grade_range < 101)    // 포션 확률 1%
                         SetBlock(5);
                 }
                 StartCoroutine(BlockHPCheck());
@@ -347,14 +481,6 @@ public class BlockGenerator : MonoBehaviour
                     else if (grade_range < 30)    // 5단계 건물 확률 20%
                         SetBlock(5);
                     else if (grade_range < 70)    // 6단계 건물 확률 40%
-                        SetBlock(6);
-                    else if (grade_range < 80)    // 밧줄 확률 10%
-                        SetBlock(6);
-                    else if (grade_range < 90)    // 수갑 확률 10%
-                        SetBlock(6);
-                    else if (grade_range < 99)    // 폭탄 확률 9%
-                        SetBlock(6);
-                    else if (grade_range < 101)    // 포션 확률 1%
                         SetBlock(6);
                 }
                 StartCoroutine(BlockHPCheck());
@@ -377,14 +503,6 @@ public class BlockGenerator : MonoBehaviour
                     else if (grade_range < 30)    // 6단계 건물 확률 20%
                         SetBlock(6);
                     else if (grade_range < 70)    // 7단계 건물 확률 40%
-                        SetBlock(7);
-                    else if (grade_range < 80)    // 밧줄 확률 10%
-                        SetBlock(7);
-                    else if (grade_range < 90)    // 수갑 확률 10%
-                        SetBlock(7);
-                    else if (grade_range < 99)    // 폭탄 확률 9%
-                        SetBlock(7);
-                    else if (grade_range < 101)    // 포션 확률 1%
                         SetBlock(7);
                 }
                 StartCoroutine(BlockHPCheck());
@@ -409,14 +527,6 @@ public class BlockGenerator : MonoBehaviour
                     else if (grade_range < 30)    // 7단계 건물 확률 20%
                         SetBlock(7);
                     else if (grade_range < 70)    // 8단계 건물 확률 40%
-                        SetBlock(8);
-                    else if (grade_range < 80)    // 밧줄 확률 10%
-                        SetBlock(8);
-                    else if (grade_range < 90)    // 수갑 확률 10%
-                        SetBlock(8);
-                    else if (grade_range < 99)    // 폭탄 확률 9%
-                        SetBlock(8);
-                    else if (grade_range < 101)    // 포션 확률 1%
                         SetBlock(8);
                 }
                 StartCoroutine(BlockHPCheck());
@@ -443,14 +553,6 @@ public class BlockGenerator : MonoBehaviour
                     else if (grade_range < 30)    // 8단계 건물 확률 20%
                         SetBlock(8);
                     else if (grade_range < 70)    // 9단계 건물 확률 40%
-                        SetBlock(9);
-                    else if (grade_range < 80)    // 밧줄 확률 10%
-                        SetBlock(9);
-                    else if (grade_range < 90)    // 수갑 확률 10%
-                        SetBlock(9);
-                    else if (grade_range < 99)    // 폭탄 확률 9%
-                        SetBlock(9);
-                    else if (grade_range < 101)    // 포션 확률 1%
                         SetBlock(9);
                 }
                 StartCoroutine(BlockHPCheck());
@@ -480,14 +582,14 @@ public class BlockGenerator : MonoBehaviour
                         SetBlock(9);
                     else if (grade_range < 70)    // 10단계 건물 확률 40%
                         SetBlock(10);
-                    else if (grade_range < 80)    // 밧줄 확률 10%
-                        SetBlock(10);
-                    else if (grade_range < 90)    // 수갑 확률 10%
-                        SetBlock(10);
-                    else if (grade_range < 99)    // 폭탄 확률 9%
-                        SetBlock(10);
-                    else if (grade_range < 101)    // 포션 확률 1%
-                        SetBlock(10);
+                    //else if (grade_range < 80)    // 밧줄 확률 10%
+                    //    SetBlock(10);
+                    //else if (grade_range < 90)    // 수갑 확률 10%
+                    //    SetBlock(10);
+                    //else if (grade_range < 99)    // 폭탄 확률 9%
+                    //    SetBlock(10);
+                    //else if (grade_range < 101)    // 포션 확률 1%
+                    //    SetBlock(10);
                 }
                 StartCoroutine(BlockHPCheck());
             }
@@ -496,8 +598,6 @@ public class BlockGenerator : MonoBehaviour
 
     public void SetBlock(int num)
     {
-        range = r.Next(0, 5);
-
         for (int i = 0; i < 5; ++i)
         {
             if (i == upgrade_range)
@@ -510,6 +610,28 @@ public class BlockGenerator : MonoBehaviour
                // Debug.Log("hp : " + blockArr[i].GetComponent<BlockStatusManager>().hp);
             }
         }
+    }
+
+    public void SetFeverBlock(int num)
+    {
+        for (int i = 0; i < 10; ++i)
+        {
+             blockArrFever[i].GetComponent<BlockStatusManager>().SetBlockNormal(num);
+        }
+
+    }
+
+    public void SetObject(int num)
+    {
+        for (int i = 0; i < 5; ++i)
+        {
+            if (i == 0) 
+                blockArr[i].GetComponent<BlockStatusManager>().SetObject(num);
+            else
+                blockArr[i] = null;
+
+        }
+
     }
 
     IEnumerator BlockHPCheck()
@@ -535,7 +657,6 @@ public class BlockGenerator : MonoBehaviour
                 else
                 {
                     isDestroy = false;
-                    //Debug.Log(blockHp[i] / 1.5);
                     if (blockArr[i].GetComponent<BlockStatusManager>().hp <= blockHp[i] / 1.5)
                     {
                         //Debug.Log("hp / 1.5 이하");
@@ -545,14 +666,7 @@ public class BlockGenerator : MonoBehaviour
                             //Debug.Log("hp / 4 이하");
                             blockArr[i].GetComponent<EffectAnimation>().Crack2();
                         }
-                    }
-
-                    //if (blockArr[i].GetComponent<BlockStatusManager>().hp <= 0)
-                    //{
-                    //    isDestroy = true;
-                    //}
-                    //else
-                    //    isDestroy = false;
+                    }                    
                 }
 
             }

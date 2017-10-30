@@ -42,15 +42,6 @@ public class FeverTime : MonoBehaviour
         if (!fever_start)
         {            
             feverGauge.GetComponent<Slider>().value = block_destroy_count;
-            //if (block_destroy_count == (20 * fever_cnt) &&
-            //    BlockGenerator.instance.block_gravity != null)
-            //{
-            //    //Debug.Log("fever 발동");
-            //    feverGauge.GetComponent<Slider>().value = 0;
-            //    block_destroy_count = 0;
-            //    fever_start = true;
-            //    StartCoroutine(FeverTimeCheck());
-            //}
         }
     }
 
@@ -58,7 +49,8 @@ public class FeverTime : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitUntil(() => block_destroy_count == (20 * fever_cnt));
+            yield return new WaitUntil(() => block_destroy_count >= (20 * fever_cnt));
+            Debug.Log("fever_cnt: " + fever_cnt);
             //if(BlockGenerator.instance.block_gravity != null)
             //{
                 feverGauge.GetComponent<Slider>().value = 0;
@@ -73,7 +65,7 @@ public class FeverTime : MonoBehaviour
     {
         //Debug.Log("FeverTimeCheck");
         GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().feverBgmOn = true;
-        //GameObject.Find("BlockManager").GetComponent< BlockGenerator >().block_gravity.gravityScale *= 1.5f;
+        BlockGenerator.instance.feverStart = true;
 
         feverStartImage.SetActive(true);
 
@@ -82,21 +74,22 @@ public class FeverTime : MonoBehaviour
             yield return new WaitForSeconds(1f);
             fever_time += 1;
 
-            if (fever_time >= 4)
+            if (fever_time >= 6)
             {
                 feverStartImage.SetActive(false);
             }
 
-            if (fever_time >= 5) 
+            if (fever_time >= 7) 
             {
                 fever_time = 0;
                 fever_start = false;
+                BlockGenerator.instance.feverStart = false;
                 BlockGenerator.instance.block_gravity.gravityScale = originGrav;
                 GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().feverBgmOn = false;
                 block_destroy_count = 0;
                 fever_cnt += 1;
                 feverGauge.GetComponent<Slider>().maxValue = 20 * fever_cnt;                
-                //Debug.Log("maxValue : " + feverGauge.GetComponent<Slider>().maxValue);
+                Debug.Log("maxValue : " + feverGauge.GetComponent<Slider>().maxValue);
                 yield break;
             }
         }

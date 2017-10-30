@@ -181,9 +181,18 @@ public class PlayerManager : MonoBehaviour {
         {
             if (PlayerCollision.instance.rayCollider != null)
             {
-                //shield_able = true;
-                int destroy_block_score = 0;
                 GameObject newObj = PlayerCollision.instance.rayCollider.gameObject;
+                if (PlayerCollision.instance.rayCollider.tag == "bomb") // 폭탄 공격 시 생명력 -2
+                {
+                    //Debug.Log("bomb attack");
+                    life += 2;
+                    parent = PlayerCollision.instance.rayCollider.transform.parent.gameObject;
+                    Destroy(parent);
+                    Destroy(newObj);
+                }
+
+                int destroy_block_score = 0;
+                
                 destroy_block_score = newObj.GetComponent<BlockStatusManager>().score;
                 newObj.GetComponent<BlockStatusManager>().hp -= damage;
                 GlobalSFX.instance.PlayCollisionSound();
@@ -193,7 +202,8 @@ public class PlayerManager : MonoBehaviour {
 
                 if (newObj.GetComponent<BlockStatusManager>().hp <= 0)
                 {
-                    if (PlayerCollision.instance.rayCollider.tag == "block5")
+                    if (PlayerCollision.instance.rayCollider.tag == "block5" ||
+                        PlayerCollision.instance.rayCollider.tag == "FeverBlock10")
                     {
                         if (newObj.GetComponent<BlockStatusManager>().hp <= 0)
                         {
@@ -201,17 +211,26 @@ public class PlayerManager : MonoBehaviour {
                             Destroy(parent);
                         }
                     }
+                    else if (PlayerCollision.instance.rayCollider.tag == "portion") // 포션 파괴 시 생명력 +1
+                    {
+                        life -= 1;
+                        parent = PlayerCollision.instance.rayCollider.transform.parent.gameObject;
+                        Destroy(parent);
+                    }
 
                     GlobalSFX.instance.PlayDestroySound();
                     score += destroy_block_score;
-                    GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
+                    if (PlayerCollision.instance.rayCollider.tag == "block1" || PlayerCollision.instance.rayCollider.tag == "block2" ||
+                        PlayerCollision.instance.rayCollider.tag == "block3" || PlayerCollision.instance.rayCollider.tag == "block4" ||
+                        PlayerCollision.instance.rayCollider.tag == "block5")
+                    {
+                        GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
+                    }
                     Destroy(PlayerCollision.instance.rayCollider);
                     Instantiate(DestroyParticle, new Vector2(newObj.transform.position.x, (newObj.transform.position.y - 2)), transform.rotation);
                     Instantiate(CoinParticle, new Vector2(newObj.transform.position.x, (newObj.transform.position.y - 2)), transform.rotation);
                     isDestroy = true;
                     blockCnt += 1;
-                    //StartCoroutine(ComboManager.instance.ComboCheck());
-                    //ComboManager.instance.ComboCheck(blockCnt);
 
                     if (!ground_collsion)
                         playerRg.AddForce(new Vector2(0, jumpSpeedCollision));
@@ -379,6 +398,13 @@ public class PlayerManager : MonoBehaviour {
 
             destroy_block.transform.Find("ShieldEffect").gameObject.GetComponent<Animator>().SetTrigger("ShieldOn");
 
+            if(destroy_block.tag == "rope" || destroy_block.tag == "handcuffs")  // 부모 삭제
+            {
+                parent = destroy_block.transform.parent.gameObject;
+                Destroy(parent);
+                Destroy(destroy_block);
+            }
+
             blockRg.AddForce(new Vector2(0, shieldForcetoBlock-1000f));
             //blockRg.velocity = (Vector2.up * 1f);
             blockRg.gravityScale = 0.5f;
@@ -406,6 +432,14 @@ public class PlayerManager : MonoBehaviour {
             destroy_block.GetComponent<BlockStatusManager>().hp -= damage;
             GlobalSFX.instance.PlayCollisionSound();
 
+            if(destroy_block.tag == "bomb")     // 폭탄 공격 시 생명력 -2
+            {
+                life += 2;
+                parent = destroy_block.transform.parent.gameObject;
+                Destroy(parent);
+                Destroy(destroy_block);
+            }
+
             if (destroy_block.GetComponent<BlockStatusManager>().hp <= 0)
             {
                 destroy_block_score = destroy_block.GetComponent<BlockStatusManager>().score;
@@ -415,11 +449,23 @@ public class PlayerManager : MonoBehaviour {
                 isDestroy = true;
                 blockCnt += 1;
 
+                if(destroy_block.tag == "portion")  // 포션 파괴 시 생명력 +1
+                {
+                    life -= 1;
+                }                
+
                 GlobalSFX.instance.PlayDestroySound();
-                GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
+
+                if (destroy_block.tag == "block1" || destroy_block.tag == "block2"
+                    || destroy_block.tag == "block3" || destroy_block.tag == "block4"
+                    || destroy_block.tag == "block5")
+                {
+                    GameObject.Find("FeverManager").GetComponent<FeverTime>().block_destroy_count += 1;
+                }
                 score += destroy_block_score;
 
-                if (destroy_block.tag == "block5")   // 마지막 블럭일 때, 부모 삭제
+                if (destroy_block.tag == "block5" || destroy_block.tag == "portion" ||
+                    destroy_block.tag == "FeverBlock10")   // 마지막 블럭일 때, 부모 삭제
                 {
                     parent = destroy_block.transform.parent.gameObject;
                     Destroy(parent);
@@ -447,7 +493,12 @@ public class PlayerManager : MonoBehaviour {
         // 블럭과 충돌
         if (collision.collider.tag == ("block1") || collision.collider.tag == ("block2")
             || collision.collider.tag == ("block3") || collision.collider.tag == ("block4")
-            || collision.collider.tag == ("block5"))
+            || collision.collider.tag == ("block5") || collision.collider.tag == ("FeverBlock1")
+            || collision.collider.tag == ("FeverBlock2") || collision.collider.tag == ("FeverBlock3")
+            || collision.collider.tag == ("FeverBlock4") || collision.collider.tag == ("FeverBlock5")
+            || collision.collider.tag == ("FeverBlock6") || collision.collider.tag == ("FeverBlock7")
+            || collision.collider.tag == ("FeverBlock8") || collision.collider.tag == ("FeverBlock9")
+            || collision.collider.tag == ("FeverBlock10"))
         {            
             GameObject newObj = collision.collider.gameObject;
             //shield_able = true;
@@ -463,7 +514,25 @@ public class PlayerManager : MonoBehaviour {
                 blockRg.velocity = (Vector2.up * 3f);
                 playerRg.AddForce(new Vector2(0, shieldForcetoPlayer));
             }
+        }
 
+        if (collision.collider.tag == "rope" || collision.collider.tag == "handcuffs" || collision.collider.tag == "bomb")
+        {
+            GameObject newObj = collision.collider.gameObject;
+
+            if (shieldOn)
+            {
+                if (blockRg == null)
+                    blockRg = GameObject.Find("BlockGroup(Clone)").GetComponent<Rigidbody2D>();
+
+                newObj.transform.Find("ShieldEffect").gameObject.GetComponent<Animator>().SetTrigger("ShieldOn");
+                blockRg.AddForce(new Vector2(0, shieldForcetoBlock));
+                blockRg.velocity = (Vector2.up * 3f);
+                playerRg.AddForce(new Vector2(0, shieldForcetoPlayer));
+                parent = newObj.transform.parent.gameObject;
+                Destroy(newObj);
+                Destroy(parent);
+            }
         }
     }
 
@@ -478,7 +547,12 @@ public class PlayerManager : MonoBehaviour {
         // 블럭과 충돌
         if (collision.collider.tag == ("block1") || collision.collider.tag == ("block2")
             || collision.collider.tag == ("block3") || collision.collider.tag == ("block4")
-            || collision.collider.tag == ("block5"))
+            || collision.collider.tag == ("block5") || collision.collider.tag == ("FeverBlock1")
+            || collision.collider.tag == ("FeverBlock2") || collision.collider.tag == ("FeverBlock3")
+            || collision.collider.tag == ("FeverBlock4") || collision.collider.tag == ("FeverBlock5")
+            || collision.collider.tag == ("FeverBlock6") || collision.collider.tag == ("FeverBlock7")
+            || collision.collider.tag == ("FeverBlock8") || collision.collider.tag == ("FeverBlock9")
+            || collision.collider.tag == ("FeverBlock10"))
         {
             GameObject newObj = collision.collider.gameObject;
             //shield_able = true;
@@ -497,6 +571,27 @@ public class PlayerManager : MonoBehaviour {
                 //ShieldEffect.SetActive(true);
             }
         }
+
+        if (collision.collider.tag == "rope" || collision.collider.tag == "handcuffs" || collision.collider.tag == "bomb")
+        {
+            GameObject newObj = collision.collider.gameObject;
+
+            if (shieldOn)
+            {
+                if (blockRg == null)
+                    blockRg = GameObject.Find("BlockGroup(Clone)").GetComponent<Rigidbody2D>();
+
+                newObj.transform.Find("ShieldEffect").gameObject.GetComponent<Animator>().SetTrigger("ShieldOn");
+                blockRg.AddForce(new Vector2(0, shieldForcetoBlock));
+                blockRg.velocity = (Vector2.up * 3f);
+                playerRg.AddForce(new Vector2(0, shieldForcetoPlayer));
+                parent = newObj.transform.parent.gameObject;
+                Destroy(newObj);
+                Destroy(parent);
+            }
+        }
+
+      
     }
 
     public void OnCollisionExit2D(Collision2D collision)
@@ -510,7 +605,12 @@ public class PlayerManager : MonoBehaviour {
 
         if (collision.collider.tag == ("block1") || collision.collider.tag == ("block2") ||
             collision.collider.tag == ("block3") || collision.collider.tag == ("block4") ||
-            collision.collider.tag == ("block5"))
+            collision.collider.tag == ("block5") || collision.collider.tag == ("FeverBlock1")
+            || collision.collider.tag == ("FeverBlock2") || collision.collider.tag == ("FeverBlock3")
+            || collision.collider.tag == ("FeverBlock4") || collision.collider.tag == ("FeverBlock5")
+            || collision.collider.tag == ("FeverBlock6") || collision.collider.tag == ("FeverBlock7")
+            || collision.collider.tag == ("FeverBlock8") || collision.collider.tag == ("FeverBlock9")
+            || collision.collider.tag == ("FeverBlock10"))
         {
             col_player.isTrigger = false;
             // 플레이어 y좌표 freeze 되있던 것을 초기화
@@ -526,11 +626,18 @@ public class PlayerManager : MonoBehaviour {
     // 트리거 함수 자체는 플레이어의 트리거가 true일 때만 발동.
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("OnTriggerEnter2D");
+        //Debug.Log("OnTriggerEnter2D");
         GameObject newObj = collision.gameObject;
         if (collision.tag == ("block1") || collision.tag == ("block2")
             || collision.tag == ("block3") || collision.tag == ("block4")
-            || collision.tag == ("block5"))
+            || collision.tag == ("block5") || collision.tag == ("rope")
+            || collision.tag == ("handcuffs") || collision.tag == ("bomb")
+            || collision.tag == ("portion") || collision.tag == ("FeverBlock1")
+            || collision.tag == ("FeverBlock2") || collision.tag == ("FeverBlock3")
+            || collision.tag == ("FeverBlock4") || collision.tag == ("FeverBlock5")
+            || collision.tag == ("FeverBlock6") || collision.tag == ("FeverBlock7")
+            || collision.tag == ("FeverBlock8") || collision.tag == ("FeverBlock9")
+            || collision.tag == ("FeverBlock10"))
         {
             //Debug.Log("collision.tag : " + collision.tag);
             shield_able = true;
@@ -553,7 +660,7 @@ public class PlayerManager : MonoBehaviour {
 
         if (/*collision.tag == ("block1") || collision.tag == ("block2")
             || collision.tag == ("block3") || collision.tag == ("block4")
-            ||*/ collision.tag == ("block5"))
+            ||*/ collision.tag == ("block5") || collision.tag == ("FeverBlock10"))
         {
             col_player.isTrigger = false;
             playerRg.constraints = RigidbodyConstraints2D.None;

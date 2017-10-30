@@ -54,7 +54,14 @@ public class PlayerCollision : MonoBehaviour
             //Debug.Log("hit.transform.position.y = " + hit.transform.position.y);
             if (hit.collider.tag == "block1" || hit.collider.tag == "block2" ||
                 hit.collider.tag == "block3" || hit.collider.tag == "block4" ||
-                hit.collider.tag == "block5")
+                hit.collider.tag == "block5" || hit.collider.tag == "rope" ||
+                hit.collider.tag == "bomb" || hit.collider.tag == "handcuffs" ||
+                hit.collider.tag == "portion" || hit.collider.tag == "FeverBlock1" ||
+                hit.collider.tag == "FeverBlock2" || hit.collider.tag == "FeverBlock3" ||
+                hit.collider.tag == "FeverBlock4" || hit.collider.tag == "FeverBlock5" ||
+                hit.collider.tag == "FeverBlock6" || hit.collider.tag == "FeverBlock7" ||
+                hit.collider.tag == "FeverBlock8" || hit.collider.tag == "FeverBlock9" ||
+                hit.collider.tag == "FeverBlock10")
             {
                 rayCollider = hit.collider.gameObject;
                 //if (rayCollider.GetComponent<BlockStatusManager>().hp > 0)
