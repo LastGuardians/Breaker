@@ -102,6 +102,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		WindowText.GetComponent<Text>().text = "\t\tX\t" + WeaponPriceArray[weaponIndex].ToString();
 		YesButton.GetComponent<Button>().onClick.AddListener(() => UnlockWeapon(weaponIndex));
 		LockButton(false);
+		Window.transform.SetAsLastSibling();
 	}
 
 	public void LoadDecisionWindow()

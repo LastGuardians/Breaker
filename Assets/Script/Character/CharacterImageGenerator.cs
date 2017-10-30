@@ -123,6 +123,7 @@ public class CharacterImageGenerator: MonoBehaviour
 		WindowText.GetComponent<Text>().text = "\t\t\tX\t" + CharacterPriceArray[characterIndex].ToString();
 		YesButton.GetComponent<Button>().onClick.AddListener(() => UnlockCharacter(characterIndex));
 		CharacterButtonController(false);
+		Window.transform.SetAsLastSibling();
 	}
 
 	public void CancelWindow()
