@@ -33,6 +33,14 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		ChangeCheckButton(CharacterImageGenerator.TargetCharacterIndex);
 	}
 
+	private void Update()
+	{
+		if (Input.GetKey(KeyCode.Escape))
+		{
+			SceneManager.LoadScene("Character");
+		}
+	}
+
 	public void GenerateSelectionImage()
 	{
 		// 캐릭터 이미지 오브젝트 생성

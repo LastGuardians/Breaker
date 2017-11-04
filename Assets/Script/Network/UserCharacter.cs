@@ -17,7 +17,7 @@ public class UserCharacter : MonoBehaviour
     {
 		DontDestroyOnLoad(this);
 		userId = GPGSManager.mainId;
-		CreateUserCharacter();
+		//CreateUserCharacter();
     }
 
 	public void CreateUserCharacter()

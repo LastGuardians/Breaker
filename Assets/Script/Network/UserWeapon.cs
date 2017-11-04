@@ -19,7 +19,7 @@ public class UserWeapon : MonoBehaviour
     {
 		DontDestroyOnLoad(this);
 		userId = GPGSManager.mainId;
-		CreateUserWeapon();
+		//CreateUserWeapon();
     }
 
 	public void CreateUserWeapon()

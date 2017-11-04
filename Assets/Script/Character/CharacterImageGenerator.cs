@@ -48,7 +48,7 @@ public class CharacterImageGenerator: MonoBehaviour
 	private string userId;
 	private string characterId;
 
-	void Start()
+	private void Start()
     {
 		DigitArray = Resources.LoadAll<Sprite>("UI/Number/Digits");
 		CoinArray = new GameObject[15];
@@ -59,6 +59,14 @@ public class CharacterImageGenerator: MonoBehaviour
 		Window.SetActive(false);
 		GenerateImage();
 		GenerateLabel();
+	}
+
+	private void Update()
+	{
+		if (Input.GetKey(KeyCode.Escape))
+		{
+			SceneManager.LoadScene("Main");
+		}
 	}
 
 	public void GenerateImage()
@@ -191,10 +199,10 @@ public class CharacterImageGenerator: MonoBehaviour
 	public void GenerateLabel()
 	{
 		//코인 보유량 라벨 생성
-		GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -80, 640, CoinArray);
+		GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -30, 640, CoinArray);
 
 		//키 보유량 라벨 생성
-		GenerateText(CharacterImageGenerator.KeyAmount.ToString(), 240, 640, KeyArray);
+		GenerateText(CharacterImageGenerator.KeyAmount.ToString(), 290, 640, KeyArray);
 	}
 
 	public void GenerateText(string targetText, int x, int y, GameObject[] objectList)
