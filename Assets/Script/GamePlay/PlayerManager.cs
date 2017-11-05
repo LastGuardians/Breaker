@@ -112,8 +112,7 @@ public class PlayerManager : MonoBehaviour {
 
         // 블럭이 일정 좌표 이상 내려오면 플레이어 트리거 활성화.
         if (BlockGenerator.instance.block_ypos_min)
-        {
-            //Debug.Log("block_ypos_min : " + BlockGenerator.instance.block_ypos_min);
+        {            
             col_player.isTrigger = true;
             playerRg.constraints = RigidbodyConstraints2D.FreezePositionY;
         }
@@ -282,7 +281,7 @@ public class PlayerManager : MonoBehaviour {
     {
         while (true)
         {           
-            yield return new WaitUntil(() => life == 3);
+            yield return new WaitUntil(() => life >= 3);
             GameObject gpgs = GameObject.Find("GPGSManager");
             if (gpgs != null)
             {
@@ -516,7 +515,7 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
-        if (collision.collider.tag == "rope" || collision.collider.tag == "handcuffs" || collision.collider.tag == "bomb")
+        else if (collision.collider.tag == "rope" || collision.collider.tag == "handcuffs")
         {
             GameObject newObj = collision.collider.gameObject;
 
@@ -533,6 +532,13 @@ public class PlayerManager : MonoBehaviour {
                 Destroy(newObj);
                 Destroy(parent);
             }
+        }        
+
+        else if(collision.collider.tag == "bomb")   // 폭탄 트리거 활성화
+        {   
+            GameObject newObj = collision.collider.gameObject;
+
+          
         }
     }
 
@@ -591,7 +597,12 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
-      
+        else if (collision.collider.tag == "bomb")
+        {
+            GameObject newObj = collision.collider.gameObject;
+            
+        }
+
     }
 
     public void OnCollisionExit2D(Collision2D collision)

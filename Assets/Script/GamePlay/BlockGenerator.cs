@@ -181,11 +181,14 @@ public class BlockGenerator : MonoBehaviour
                 if (blockArr[i] == null)
                     continue;
 
-                if ((blockArr[i].transform.position.y < 1.4 &&
-                     blockArr[i].transform.position.y >= -0.4))
+                if (blockArr[i].tag != "bomb")
                 {
-                    block_ypos_min = true;
-                }             
+                    if ((blockArr[i].transform.position.y < 1.4 &&
+                         blockArr[i].transform.position.y >= -0.4))
+                    {
+                        block_ypos_min = true;
+                    }
+                }
             }
 
             for (int i = 0; i < 10; ++i)
@@ -321,6 +324,7 @@ public class BlockGenerator : MonoBehaviour
                 if (grade_range >= 70 && grade_range < 80)    // 밧줄 확률 10%
                 {
                     blockArr[0].tag = "rope";
+                    //blockArr[0].GetComponent<Collider2D>().isTrigger = true;
                     for (int i = 0; i < 5; ++i)
                     {
                         if (i == 0)
@@ -338,6 +342,7 @@ public class BlockGenerator : MonoBehaviour
                 else if (grade_range >= 80 && grade_range < 90)    // 수갑 확률 10%
                 {
                     blockArr[0].tag = "handcuffs";
+                    //blockArr[0].GetComponent<Collider2D>().isTrigger = true;
                     for (int i = 0; i < 5; ++i)
                     {
                         if (i == 0)
@@ -356,6 +361,7 @@ public class BlockGenerator : MonoBehaviour
                 else if (grade_range >= 90 && grade_range < 99)    // 폭탄 확률 9%
                 {
                     blockArr[0].tag = "bomb";
+                    blockArr[0].GetComponent<Collider2D>().isTrigger = true;
                     for (int i = 0; i < 5; ++i)
                     {
                         if (i == 0)

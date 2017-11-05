@@ -37,11 +37,34 @@ public class BlockCollisionManager : MonoBehaviour
             //PlayerManager.instance.shield_able = false;
         }
 
-        if (collision.collider.tag == "rope" || collision.collider.tag == "handcuffs" || collision.collider.tag == "bomb")        
+        else if (collision.collider.tag == "rope" || collision.collider.tag == "handcuffs")        
         {
             PlayerManager.instance.life += 2;
             GlobalSFX.instance.PlayCollapseSound();
             Handheld.Vibrate();     // 진동
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        GameObject newObj = collision.gameObject;
+        GameObject parent;
+
+        if (collision.tag == "bomb" && collision.tag == "Player") // 폭탄이 터질때, 반경 안에 플레이어가 있으면 생명력 -2
+        {
+            PlayerManager.instance.life += 2;
+            GlobalSFX.instance.PlayCollapseSound();
+            Handheld.Vibrate();     // 진동
+
+            parent = newObj.transform.parent.gameObject;
+            Destroy(newObj);
+            Destroy(parent);
+        }
+        else if(collision.tag == "bomb")
+        {
+            parent = newObj.transform.parent.gameObject;
+            Destroy(newObj);
+            Destroy(parent);
         }
     }
 }

@@ -10,6 +10,7 @@ public class FeverTime : MonoBehaviour
 {
     public GameObject feverGauge;   // 피버 게이지
     public GameObject feverStartImage;
+    public GameObject feverBackground;  // 피버 배경
     public float block_destroy_count = 0;    // 파괴된 블럭 개수
 
     public bool fever_start = false;
@@ -64,6 +65,7 @@ public class FeverTime : MonoBehaviour
     IEnumerator FeverTimeCheck()    // 피버타임 발동 시간 체크
     {
         //Debug.Log("FeverTimeCheck");
+        feverBackground.SetActive(true);
         GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().feverBgmOn = true;
         BlockGenerator.instance.feverStart = true;
 
@@ -74,22 +76,23 @@ public class FeverTime : MonoBehaviour
             yield return new WaitForSeconds(1f);
             fever_time += 1;
 
-            if (fever_time >= 6)
+            if (fever_time >= 8)
             {
                 feverStartImage.SetActive(false);
             }
 
-            if (fever_time >= 7) 
+            if (fever_time >= 8) 
             {
                 fever_time = 0;
                 fever_start = false;
                 BlockGenerator.instance.feverStart = false;
                 BlockGenerator.instance.block_gravity.gravityScale = originGrav;
                 GameObject.Find("GlobalBGM").GetComponent<GlobalBGM>().feverBgmOn = false;
+                feverBackground.SetActive(false);
                 block_destroy_count = 0;
                 fever_cnt += 1;
                 feverGauge.GetComponent<Slider>().maxValue = 20 * fever_cnt;                
-                Debug.Log("maxValue : " + feverGauge.GetComponent<Slider>().maxValue);
+                //Debug.Log("maxValue : " + feverGauge.GetComponent<Slider>().maxValue);
                 yield break;
             }
         }
