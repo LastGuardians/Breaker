@@ -11,6 +11,7 @@ public class UserWeapon : MonoBehaviour
     private int criticalLevel = 0;
     private int probabilityLevel = 0;
 
+	public static int CurrentWeaponIndex;
 	public static string[] WeaponStatusArray = new string[3] { "Locked", "Locked", "Locked" };
 	public static int[,] WeaponAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 
@@ -18,7 +19,7 @@ public class UserWeapon : MonoBehaviour
     {
 		DontDestroyOnLoad(this);
 		userId = GPGSManager.mainId;
-		CreateUserWeapon();
+		//CreateUserWeapon();
     }
 
 	public void CreateUserWeapon()

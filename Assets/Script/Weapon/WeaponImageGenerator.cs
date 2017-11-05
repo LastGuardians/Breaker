@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using LitJson;
 
 public class WeaponImageGenerator : MonoBehaviour
@@ -77,15 +78,15 @@ public class WeaponImageGenerator : MonoBehaviour
 		PriceArray = new GameObject[15];
 
 		DigitArray = Resources.LoadAll<Sprite>("UI/Number/Digits");
-		//userId = GPGSManager.mainplayeruserdata.id;
-		userId = "TestUser";
+		userId = GPGSManager.mainplayeruserdata.id;
+		//userId = "TestUser";
 		Window.SetActive(false);
 
 		LightArray[0] = Light1;
 		LightArray[1] = Light2;
 		LightArray[2] = Light3;
 
-		ShowSelected(WeaponIndex);
+		ShowSelected(UserWeapon.CurrentWeaponIndex);
 		LockWeapon();
 		GenerateGauge();
 		GenerateLabel();
@@ -94,6 +95,14 @@ public class WeaponImageGenerator : MonoBehaviour
 		LockButton(true);
 
 		Window.transform.SetAsLastSibling();
+	}
+
+	private void Update()
+	{
+		if (Input.GetKey(KeyCode.Escape))
+		{
+			SceneManager.LoadScene("Main");
+		}
 	}
 
 	public void LoadWindow(int weaponIndex)
@@ -249,10 +258,10 @@ public class WeaponImageGenerator : MonoBehaviour
 	public void GenerateLabel()
 	{
 		//코인 보유량 라벨 생성
-		GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -80, 640, CoinArray);
+		GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -30, 640, CoinArray);
 		
 		//키 보유량 라벨 생성
-		GenerateText(CharacterImageGenerator.KeyAmount.ToString(), 240, 640, KeyArray);
+		GenerateText(CharacterImageGenerator.KeyAmount.ToString(), 290, 640, KeyArray);
 
 		//업그레이드 금액 라벨 생성
 		GenerateText(UpgradePrice.ToString(), -250, -660, PriceArray);

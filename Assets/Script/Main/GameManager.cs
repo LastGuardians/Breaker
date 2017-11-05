@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour {
     public int game_score = 0;
     public GameObject MainBackAni;
     public GameObject mainBGM;
+	public GameObject Window;
 
     public static GameManager instance = null;
 
@@ -35,11 +36,23 @@ public class GameManager : MonoBehaviour {
         if (SceneManager.GetActiveScene().name == "Main")
         {
             if (Input.GetKeyDown(KeyCode.Escape))
-                Application.Quit();
+			{
+				Window.SetActive(true);
+			}
         }
     }
 
-    public void PlayScene()
+	public void QuitApplication()
+	{
+		Application.Quit();
+	}
+
+	public void QuitWindow()
+	{
+		Window.SetActive(false);
+	}
+
+	public void PlayScene()
     {
         SceneManager.LoadScene("GamePlay");
         //Debug.Log("GamePlay");
