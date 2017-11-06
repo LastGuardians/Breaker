@@ -15,7 +15,6 @@ public class CharacterImageGenerator: MonoBehaviour
 	public GameObject WindowText;
 	public GameObject Canvas;
 	public GameObject Key2;
-	public GameObject Panel;
 
 	public Sprite[] DigitArray = new Sprite[10];
 	public GameObject[] CoinArray;
@@ -53,8 +52,8 @@ public class CharacterImageGenerator: MonoBehaviour
 		CoinArray = new GameObject[15];
 		KeyArray = new GameObject[15];
 
-		userId = GPGSManager.mainId;
-		//userId = "TestUser";
+		//userId = GPGSManager.mainId;
+		userId = "TestUser";
 		Window.SetActive(false);
 		GenerateImage();
 		GenerateLabel();
@@ -221,7 +220,7 @@ public class CharacterImageGenerator: MonoBehaviour
 
 			objectList[i] = TargetChar;
 		}
-		TargetString.transform.parent = Panel.transform;
+		TargetString.transform.parent = Canvas.transform;
 		TargetString.transform.localScale = new Vector3(0.5f, 0.5f, 0);
 		TargetString.GetComponent<Transform>().localPosition = new Vector3(x, y, 0);
 	}
