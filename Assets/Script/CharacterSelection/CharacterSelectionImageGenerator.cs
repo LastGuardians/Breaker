@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class CharacterSelectionImageGenerator: MonoBehaviour
+public class CharacterSelectionImageGenerator : MonoBehaviour
 {
 	public GameObject Character;
 	public GameObject Canvas;
@@ -20,9 +20,14 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 	public Sprite[] ExplanationArray = new Sprite[6];
 
 	public string AnimatorPath;
+	public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
+
+	public string userId;
 
 	public void Start()
 	{
+		userId = GPGSManager.mainId;
+		//userId = "TestUser";
 		ExplanationArray = Resources.LoadAll<Sprite>("Character/Explanation");
 		onButton = Resources.Load<Sprite>("UI/onButton");
 		offButton = Resources.Load<Sprite>("UI/offButton");
@@ -49,7 +54,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 		Character.AddComponent<Image>();
 
 		Rescale(Character, CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex]);
-		
+
 		Character.AddComponent<Animator>();
 		AnimatorPath = "Animation/Animator/" + CharacterImageGenerator.CharacterArray[CharacterImageGenerator.TargetCharacterIndex] + "Animator";
 		Character.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>(AnimatorPath);
@@ -59,17 +64,17 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 
 	public void Rescale(GameObject TargetObject, string TargetCharacter)
 	{
-		if(TargetCharacter == "Deer")
+		if (TargetCharacter == "Deer")
 		{
 			TargetObject.transform.localScale = new Vector3(10, 9, 0);
 			TargetObject.transform.localPosition = new Vector3(0, 190, 0);
 		}
-		else if(TargetCharacter == "Monkey")
+		else if (TargetCharacter == "Monkey")
 		{
 			TargetObject.transform.localScale = new Vector3(12, 18, 0);
 			TargetObject.transform.localPosition = new Vector3(0, 120, 0);
 		}
-		else if(TargetCharacter == "Bear")
+		else if (TargetCharacter == "Bear")
 		{
 			TargetObject.transform.localScale = new Vector3(9, 11, 0);
 			TargetObject.transform.localPosition = new Vector3(0, 260, 0);
@@ -135,7 +140,7 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 	{
 		CheckeButton.GetComponent<Button>().onClick.RemoveAllListeners();
 		CheckeButton.GetComponent<Button>().onClick.AddListener(() => ChangeCurrentIndex(targetcharacterIndex));
-		if (targetcharacterIndex == UserCharacter.CurrentCharacterIndex)
+		if (targetcharacterIndex == UserConnect.CurrentCharacterIndex)
 		{
 			CheckeButton.GetComponent<Image>().sprite = onButton;
 		}
@@ -147,8 +152,41 @@ public class CharacterSelectionImageGenerator: MonoBehaviour
 
 	public void ChangeCurrentIndex(int targetcharacterIndex)
 	{
-		UserCharacter.CurrentCharacterIndex = targetcharacterIndex;
+		UserConnect.CurrentCharacterIndex = targetcharacterIndex;
 		CheckeButton.GetComponent<Image>().sprite = onButton;
+		SetUser();
+	}
+
+	//서버파트
+	public void SetUser()
+	{
+		string weaponId = "Weapon" + (UserConnect.CurrentWeaponIndex + 1).ToString();
+		string characterId = "Character" + (UserConnect.CurrentCharacterIndex + 1).ToString();
+		StartCoroutine(_SetUser(userId, UserConnect.CoinAmount, UserConnect.KeyAmount, weaponId, characterId));
+	}
+
+	public IEnumerator _SetUser(string userId, int coin, int prisonKey, string weaponId, string characterId)
+	{
+		string url = baseUrl + "/user/" + userId + "/update";
+		WWWForm form = new WWWForm();
+		form.headers["content-type"] = "application/json";
+		form.AddField("coin", coin);
+		form.AddField("prisonKey", prisonKey);
+		form.AddField("weaponId", weaponId);
+		form.AddField("characterId", characterId);
+
+		WWW www = new WWW(url, form);
+		yield return www;
+
+		PrintLog(www.error);
+	}
+
+	public void PrintLog(string message)
+	{
+		if (!string.IsNullOrEmpty(message))
+		{
+			Debug.Log(message);
+		}
 	}
 }
 
