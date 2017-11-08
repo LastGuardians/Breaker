@@ -21,6 +21,7 @@ public class WeaponImageGenerator : MonoBehaviour
 	public GameObject YesButton;
 	public GameObject WindowText;
 	public GameObject Coin3;
+	public GameObject Panel;
 
 	public GameObject Light1;
 	public GameObject Light2;
@@ -32,7 +33,6 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	public Image AbilityGaugeImage;
 
-	public int WeaponIndex;
 	public int UpgradePrice;
 
 	public Font MainFont;
@@ -55,7 +55,7 @@ public class WeaponImageGenerator : MonoBehaviour
 	public int[] StatusLocationArray = new int[3] { 30, -290, 40 };
 	public int[] WeaponPriceArray = new int[3] { 0, 100000, 200000 };
 	public int[,] UpgradePriceArray = new int[3, 10]
-	{ 
+	{
 		{200, 400, 800, 1500, 3000, 6000, 12000, 20000, 30000, 40000},
 		{400, 800, 1500, 3000, 6000, 12000, 20000, 30000, 40000, 60000 },
 		{1500, 3000, 6000, 12000, 20000, 30000, 40000, 60000, 80000, 100000 }
@@ -78,15 +78,15 @@ public class WeaponImageGenerator : MonoBehaviour
 		PriceArray = new GameObject[15];
 
 		DigitArray = Resources.LoadAll<Sprite>("UI/Number/Digits");
-		userId = GPGSManager.mainplayeruserdata.id;
-		//userId = "TestUser";
+		//userId = GPGSManager.mainplayeruserdata.id;
+		userId = "TestUser";
 		Window.SetActive(false);
 
 		LightArray[0] = Light1;
 		LightArray[1] = Light2;
 		LightArray[2] = Light3;
 
-		ShowSelected(UserWeapon.CurrentWeaponIndex);
+		ShowSelected(UserConnect.CurrentWeaponIndex);
 		LockWeapon();
 		GenerateGauge();
 		GenerateLabel();
@@ -120,15 +120,16 @@ public class WeaponImageGenerator : MonoBehaviour
 		WindowText.GetComponent<Text>().text = "\t\tX\t" + UpgradePrice.ToString();
 		YesButton.GetComponent<Button>().onClick.AddListener(() => SaveStatus());
 		LockButton(false);
+		Window.transform.SetAsLastSibling();
 	}
 
 	public void UnlockWeapon(int weaponIndex)
 	{
-		if (CharacterImageGenerator.CoinAmount >= WeaponPriceArray[weaponIndex])
+		if (UserConnect.CoinAmount >= WeaponPriceArray[weaponIndex])
 		{
 			CancelWindow();
 			LockArray[weaponIndex].GetComponent<Animator>().SetBool("Unlock", true);
-			CharacterImageGenerator.CoinAmount -= WeaponPriceArray[weaponIndex];
+			UserConnect.CoinAmount -= WeaponPriceArray[weaponIndex];
 			UserWeapon.WeaponStatusArray[weaponIndex] = "Opened";
 
 			weaponId = "Weapon" + (weaponIndex + 1).ToString();
@@ -137,7 +138,7 @@ public class WeaponImageGenerator : MonoBehaviour
 			LockButton(true);
 
 			DeleteText(CoinArray);
-			GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -80, 640, CoinArray);
+			GenerateText(UserConnect.CoinAmount.ToString(), -80, 640, CoinArray);
 		}
 		else
 		{
@@ -163,7 +164,9 @@ public class WeaponImageGenerator : MonoBehaviour
 		Light3.SetActive(false);
 
 		LightArray[weaponIndex].SetActive(true);
-		WeaponIndex = weaponIndex;
+
+		UserConnect.CurrentWeaponIndex = weaponIndex;
+		SetUser();
 	}
 
 	public void LockWeapon()
@@ -222,7 +225,7 @@ public class WeaponImageGenerator : MonoBehaviour
 				for (int k = 1; k <= 10; k++)
 				{
 					AbilityGauge = new GameObject("AbilityGauge");
-					AbilityGauge.transform.parent = Canvas.transform; // canvas의 자식으로 이동
+					AbilityGauge.transform.parent = Panel.transform; // Panel의 자식으로 이동
 					AbilityGaugeImage = AbilityGauge.AddComponent<Image>();
 
 					AbilityGauge.transform.localScale = new Vector3(0.1f, 0.4f, 0);
@@ -258,10 +261,10 @@ public class WeaponImageGenerator : MonoBehaviour
 	public void GenerateLabel()
 	{
 		//코인 보유량 라벨 생성
-		GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -30, 640, CoinArray);
-		
+		GenerateText(UserConnect.CoinAmount.ToString(), -30, 640, CoinArray);
+
 		//키 보유량 라벨 생성
-		GenerateText(CharacterImageGenerator.KeyAmount.ToString(), 290, 640, KeyArray);
+		GenerateText(UserConnect.KeyAmount.ToString(), 290, 640, KeyArray);
 
 		//업그레이드 금액 라벨 생성
 		GenerateText(UpgradePrice.ToString(), -250, -660, PriceArray);
@@ -284,14 +287,14 @@ public class WeaponImageGenerator : MonoBehaviour
 
 			objectList[i] = TargetChar;
 		}
-		TargetString.transform.parent = Canvas.transform;
+		TargetString.transform.parent = Panel.transform;
 		TargetString.transform.localScale = new Vector3(0.5f, 0.5f, 0);
 		TargetString.GetComponent<Transform>().localPosition = new Vector3(x, y, 0);
 	}
 
 	public void DeleteText(GameObject[] objectList)
 	{
-		foreach(GameObject g in objectList)
+		foreach (GameObject g in objectList)
 		{
 			Destroy(g);
 		}
@@ -309,7 +312,7 @@ public class WeaponImageGenerator : MonoBehaviour
 
 				//마이너스 버튼 생성
 				Minus = new GameObject("MinusButton" + i.ToString() + j.ToString());
-				Minus.transform.parent = Canvas.transform;
+				Minus.transform.parent = Panel.transform;
 
 				Minus.AddComponent<Image>();
 				Minus.GetComponent<Image>().sprite = UpgradeButtonArray[0];
@@ -323,7 +326,7 @@ public class WeaponImageGenerator : MonoBehaviour
 
 				//플러스 버튼 생성
 				Plus = new GameObject("PlusButton" + i.ToString() + j.ToString());
-				Plus.transform.parent = Canvas.transform;
+				Plus.transform.parent = Panel.transform;
 
 				Plus.AddComponent<Image>();
 				Plus.GetComponent<Image>().sprite = UpgradeButtonArray[1];
@@ -344,7 +347,7 @@ public class WeaponImageGenerator : MonoBehaviour
 	{
 		//저장 버튼 생성
 		SaveButton = new GameObject("SaveButton");
-		SaveButton.transform.parent = Canvas.transform;
+		SaveButton.transform.parent = Panel.transform;
 
 		SaveButton.AddComponent<Image>();
 		SaveButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("UI/saveButton");
@@ -359,7 +362,7 @@ public class WeaponImageGenerator : MonoBehaviour
 
 		//취소 버튼 생성
 		CancelButton = new GameObject("CancelButton");
-		CancelButton.transform.parent = Canvas.transform;
+		CancelButton.transform.parent = Panel.transform;
 
 		CancelButton.AddComponent<Image>();
 		CancelButton.GetComponent<Image>().sprite = Resources.Load<Sprite>("UI/cancelButton");
@@ -368,7 +371,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		CancelButton.GetComponent<Button>().onClick.AddListener(() => CancelStatus());
 
 		CancelButton.transform.localScale = new Vector3(1.9f, 0.65f, 0);
-		CancelButton.transform.localPosition = new Vector3(290, - 660);
+		CancelButton.transform.localPosition = new Vector3(290, -660);
 
 		DecisionButtonArray[1] = CancelButton;
 
@@ -403,7 +406,7 @@ public class WeaponImageGenerator : MonoBehaviour
 
 	public void SaveStatus()
 	{
-		if(UpgradePrice <= CharacterImageGenerator.CoinAmount)
+		if (UpgradePrice <= UserConnect.CoinAmount)
 		{
 			CancelWindow();
 			for (int i = 1; i <= 3; i++)
@@ -417,11 +420,11 @@ public class WeaponImageGenerator : MonoBehaviour
 					UserWeapon.WeaponAbilityArray[i - 1, j - 1] += TempAbilityArray[i - 1, j - 1];
 				}
 			}
-			
-			CharacterImageGenerator.CoinAmount -= UpgradePrice;
+
+			UserConnect.CoinAmount -= UpgradePrice;
 
 			DeleteText(CoinArray);
-			GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -80, 640, CoinArray);
+			GenerateText(UserConnect.CoinAmount.ToString(), -80, 640, CoinArray);
 
 			TempAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 
@@ -458,7 +461,7 @@ public class WeaponImageGenerator : MonoBehaviour
 		DeleteText(PriceArray);
 		GenerateText(UpgradePrice.ToString(), -250, -660, PriceArray);
 		//UpgradeLabel.GetComponent<Text>().text = UpgradePrice.ToString();
-		
+
 	}
 
 	public void SetStatus()
@@ -555,7 +558,30 @@ public class WeaponImageGenerator : MonoBehaviour
 		PrintLog(www.error);
 	}
 
-	void PrintLog(string message)
+	public void SetUser()
+	{
+		string weaponId = "Weapon" + (UserConnect.CurrentWeaponIndex + 1).ToString();
+		string characterId = "Character" + (UserConnect.CurrentCharacterIndex + 1).ToString();
+		StartCoroutine(_SetUser(userId, UserConnect.CoinAmount, UserConnect.KeyAmount, weaponId, characterId));
+	}
+
+	public IEnumerator _SetUser(string userId, int coin, int prisonKey, string weaponId, string characterId)
+	{
+		string url = baseUrl + "/user/" + userId + "/update";
+		WWWForm form = new WWWForm();
+		form.headers["content-type"] = "application/json";
+		form.AddField("coin", coin);
+		form.AddField("prisonKey", prisonKey);
+		form.AddField("weaponId", weaponId);
+		form.AddField("characterId", characterId);
+
+		WWW www = new WWW(url, form);
+		yield return www;
+
+		PrintLog(www.error);
+	}
+
+	public void PrintLog(string message)
 	{
 		if (!string.IsNullOrEmpty(message))
 		{

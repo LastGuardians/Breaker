@@ -27,8 +27,6 @@ public class CharacterImageGenerator: MonoBehaviour
 
 	public string CharacterButtonImageName;
 
-	public static int CoinAmount = 1000000;
-	public static int KeyAmount = 50;
 	public static int TargetCharacterIndex;
 
 	public Text CoinText;
@@ -54,8 +52,8 @@ public class CharacterImageGenerator: MonoBehaviour
 		CoinArray = new GameObject[15];
 		KeyArray = new GameObject[15];
 
-		userId = GPGSManager.mainId;
-		//userId = "TestUser";
+		//userId = GPGSManager.mainId;
+		userId = "TestUser";
 		Window.SetActive(false);
 		GenerateImage();
 		GenerateLabel();
@@ -144,7 +142,7 @@ public class CharacterImageGenerator: MonoBehaviour
 
 	public void UnlockCharacter(int characterIndex)
 	{
-		if(KeyAmount >= CharacterPriceArray[characterIndex])
+		if(UserConnect.KeyAmount >= CharacterPriceArray[characterIndex])
 		{
 			CancelWindow();
 
@@ -157,9 +155,9 @@ public class CharacterImageGenerator: MonoBehaviour
 			TargetCharacterButton.GetComponent<Button>().onClick.RemoveAllListeners();
 			TargetCharacterButton.GetComponent<Button>().onClick.AddListener(() => LoadSelection(characterIndex));
 
-			KeyAmount -= CharacterPriceArray[characterIndex];
+			UserConnect.KeyAmount -= CharacterPriceArray[characterIndex];
 			DeleteText(KeyArray);
-			GenerateText(CharacterImageGenerator.KeyAmount.ToString(), 240, 640, KeyArray);
+			GenerateText(UserConnect.KeyAmount.ToString(), 240, 640, KeyArray);
 
 			characterId = "Character" + (characterIndex + 1).ToString();
 			CreateUserCharacter();
@@ -199,10 +197,10 @@ public class CharacterImageGenerator: MonoBehaviour
 	public void GenerateLabel()
 	{
 		//코인 보유량 라벨 생성
-		GenerateText(CharacterImageGenerator.CoinAmount.ToString(), -30, 640, CoinArray);
+		GenerateText(UserConnect.CoinAmount.ToString(), -30, 640, CoinArray);
 
 		//키 보유량 라벨 생성
-		GenerateText(CharacterImageGenerator.KeyAmount.ToString(), 290, 640, KeyArray);
+		GenerateText(UserConnect.KeyAmount.ToString(), 290, 640, KeyArray);
 	}
 
 	public void GenerateText(string targetText, int x, int y, GameObject[] objectList)
