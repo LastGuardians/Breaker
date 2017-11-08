@@ -76,12 +76,12 @@ public class FeverTime : MonoBehaviour
             yield return new WaitForSeconds(1f);
             fever_time += 1;
 
-            if (fever_time >= 8)
+            if (fever_time >= 7)
             {
                 feverStartImage.SetActive(false);
             }
 
-            if (fever_time >= 8) 
+            if (fever_time >= 7) 
             {
                 fever_time = 0;
                 fever_start = false;

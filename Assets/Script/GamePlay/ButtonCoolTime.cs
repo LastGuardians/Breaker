@@ -18,7 +18,7 @@ public class ButtonCoolTime : MonoBehaviour
     GameObject shieldCollider;
     public static ButtonCoolTime instance = null;
 
-    void start()
+    void Start()
     {
         shieldFilter.fillAmount = 0; //처음에 방어 버튼을 가리지 않음
         //shieldCollider = GameObject.Find("shield_collider");

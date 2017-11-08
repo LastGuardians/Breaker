@@ -52,25 +52,22 @@ public class PlayerCollision : MonoBehaviour
         {
             //Debug.DrawRay(currentPos, transform.TransformDirection(0, 2, 0), Color.green);
             //Debug.Log("hit.transform.position.y = " + hit.transform.position.y);
-            if (hit.collider.tag == "block1" || hit.collider.tag == "block2" ||
-                hit.collider.tag == "block3" || hit.collider.tag == "block4" ||
-                hit.collider.tag == "block5" || hit.collider.tag == "rope" ||
-                hit.collider.tag == "bomb" || hit.collider.tag == "handcuffs" ||
-                hit.collider.tag == "portion" || hit.collider.tag == "FeverBlock1" ||
-                hit.collider.tag == "FeverBlock2" || hit.collider.tag == "FeverBlock3" ||
-                hit.collider.tag == "FeverBlock4" || hit.collider.tag == "FeverBlock5" ||
-                hit.collider.tag == "FeverBlock6" || hit.collider.tag == "FeverBlock7" ||
-                hit.collider.tag == "FeverBlock8" || hit.collider.tag == "FeverBlock9" ||
-                hit.collider.tag == "FeverBlock10")
+            if (hit.collider.CompareTag("block1") || hit.collider.CompareTag("block2") ||
+                hit.collider.CompareTag("block3") || hit.collider.CompareTag ("block4") ||
+                hit.collider.CompareTag("block5") || hit.collider.CompareTag("rope") ||
+                hit.collider.CompareTag("bomb") || hit.collider.CompareTag("handcuffs") ||
+                hit.collider.CompareTag("portion") || hit.collider.CompareTag("FeverBlock1") ||
+                hit.collider.CompareTag("FeverBlock2") || hit.collider.CompareTag("FeverBlock3") ||
+                hit.collider.CompareTag("FeverBlock4") || hit.collider.CompareTag("FeverBlock5") ||
+                hit.collider.CompareTag("FeverBlock6") || hit.collider.CompareTag("FeverBlock7") ||
+                hit.collider.CompareTag("FeverBlock8") || hit.collider.CompareTag("FeverBlock9") ||
+                hit.collider.CompareTag("FeverBlock10"))
             {
                 rayCollider = hit.collider.gameObject;
-                //if (rayCollider.GetComponent<BlockStatusManager>().hp > 0)
-                //{
-                //    PlayerManager.instance.isDestroy = false;
-                //}
             }
-            
         }
-      
+        else
+            rayCollider = null;
+
     }
 }

@@ -15,6 +15,9 @@ public class GlobalSFX : MonoBehaviour
     public AudioClip collapseSound; // 플레이어 깔리는 사운드.
     public AudioClip shieldSound; // 방어 사운드.
     public AudioClip collisionSound; // 블럭 충돌 사운드.
+    public AudioClip warningSound;  // 경고 사운드
+    public AudioClip bombSound; // 폭탄 사운드
+    public AudioClip objectShieldSound; // 방해사물 튕겨내는 사운드
 
     [Header("Button")]
     public GameObject SfxOnButton;
@@ -80,5 +83,23 @@ public class GlobalSFX : MonoBehaviour
     public void PlayCollisionSound()
     {
         myAudio.PlayOneShot(collisionSound);
+    }
+
+    public void PlayWarningSound(bool on)
+    {
+        if (on)
+            myAudio.PlayOneShot(warningSound);
+        else
+            myAudio.Stop();
+    }
+
+    public void PlayBombSound()
+    {
+        myAudio.PlayOneShot(bombSound);
+    }
+
+    public void PlayObjectSound()
+    {
+        myAudio.PlayOneShot(objectShieldSound);
     }
 }

@@ -9,7 +9,12 @@ using UnityEngine.SceneManagement;
 public class ResultManager : MonoBehaviour
 {
     public GameObject scoreText;
+    public GameObject coinText;
+    public GameObject keyText;
+
     public int score = 0;
+    public int coin = 0;
+    public int key = 0;
 
     public static ResultManager instance = null;
 

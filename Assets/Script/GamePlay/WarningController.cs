@@ -9,12 +9,14 @@ public class WarningController : MonoBehaviour
 {
     float warning_time = 0;         // 게임 시작 후 경고가 발동될 시간
     float warning_continue_time = 0;    // 경고가 지속되는 시간
-    public bool warning_start = true;      // 경고 발생 확인 변수
+    public bool warning_start = false;      // 경고 발생 확인 변수
     public int warning_range = 0;   // 경고 발동 확률 범위
 
     public GameObject notWarningSprite;       // 경고 상태가 아닐 때의 스프라이트
     public GameObject warningSprite;          // 경고 상태일 때 스프라이트
     public GameObject warningPanel;     // 경고 패널
+
+    GameObject blockDestroy;
 
     float originGrav = 1f;        // 블록 스피드 디폴트값
     System.Random r = new System.Random();
@@ -35,43 +37,34 @@ public class WarningController : MonoBehaviour
 
         warning_time = 0;
         notWarningSprite.SetActive(true);
-        StartCoroutine(WarningTimeCheck());       
-    }
-    
 
-    IEnumerator WarningTimeCheck()
+        blockDestroy = GameObject.Find("BlockManager");
+
+        //StartCoroutine(WarningTimeCheck());
+        //StartCoroutine(WarningProbCheck());
+    }
+
+    public IEnumerator WarningProbCheck()
     {
-        // 경고음 발동시간 측정 시작
-        if (BlockGenerator.instance.game_start)
+        warning_range = r.Next(100, 10000);
+        Debug.Log("warning_range :" + warning_range);
+
+        if (warning_range < 200 && !FeverTime.instance.fever_start && !BlockGenerator.instance.warningStart)
         {
-            while (true)
-            {
-                yield return new WaitForSeconds(1f);
-                warning_time += 1;
-                //Debug.Log("warning_time : " + warning_time);
-                if (warning_time > 10)
-                {
-                    if (warning_start && !FeverTime.instance.fever_start)
-                    {
-                        warning_range = r.Next(100, 10000);
-                        if (warning_range < 200)  // 2% 확률
-                        {
-                            warning_start = false;
-                            //Debug.Log("warning_range < 1000 만족");
-                            notWarningSprite.SetActive(false);
-                            StartCoroutine(WarningStart());
-                        }
-                    }
-                }
-            }
+            BlockGenerator.instance.warningStart = true;
+            notWarningSprite.SetActive(false);
+            StartCoroutine(WarningStart());
         }
+
+        yield return null;
     }
 
     // 경고 지속 시간 측정
     IEnumerator WarningStart()
     {
         GlobalBGM.instance.warningBgmOn = true;
-        BlockGenerator.instance.block_gravity.gravityScale *= 1.3f;
+        GlobalSFX.instance.PlayWarningSound(true);
+        //BlockGenerator.instance.block_gravity.gravityScale *= 1.3f;
         warningSprite.SetActive(true);
         warningPanel.SetActive(true);
         //GlobalBGM.instance.WarningBGM();
@@ -83,11 +76,12 @@ public class WarningController : MonoBehaviour
             {
                 BlockGenerator.instance.block_gravity.gravityScale = originGrav;
                 warning_continue_time = 0;
-                warning_start = true;
+                BlockGenerator.instance.warningStart = false;
                 warningSprite.SetActive(false);
                 notWarningSprite.SetActive(true);
                 warningPanel.SetActive(false);
                 GlobalBGM.instance.warningBgmOn = false;
+                GlobalSFX.instance.PlayWarningSound(false);
                 yield break;
             }
             warning_continue_time += 1;
@@ -97,10 +91,11 @@ public class WarningController : MonoBehaviour
                 BlockGenerator.instance.block_gravity.gravityScale = originGrav;
                 warning_continue_time = 0;
                 //GlobalBGM.instance.PlayBGM();
-                warning_start = true;
+                BlockGenerator.instance.warningStart = false;
                 warningSprite.SetActive(false);
                 notWarningSprite.SetActive(true);
                 warningPanel.SetActive(false);
+                GlobalSFX.instance.PlayWarningSound(false);
                 GlobalBGM.instance.warningBgmOn = false;
                 yield break;
             }

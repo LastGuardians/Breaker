@@ -4,19 +4,25 @@ using UnityEngine;
 
 public class ParticleLifeTime : MonoBehaviour {
 
-    float lifeTime = 3000;
-	// Use this for initialization
-	void Start () {
-		
-	}
+    public string poolItemName = "BlockParticle";
+    public float lifeTime = 3f;
+    public float elapsedTime = 0f;
 	
-	// Update is called once per frame
 	void Update () {
-        lifeTime = lifeTime - Time.deltaTime * 1000;
-        if(lifeTime <= 0)
+       if(GetTimer() > lifeTime)
         {
-            Destroy(gameObject);
+            SetTimer();
+            ObjectPool.Instance.PushToPool(poolItemName, gameObject);
         }
+    }
 
+    float GetTimer()
+    {
+        return (elapsedTime += Time.deltaTime);
+    }
+
+    void SetTimer()
+    {
+        elapsedTime = 0f;
     }
 }
