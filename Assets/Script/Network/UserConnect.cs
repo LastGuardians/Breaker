@@ -7,8 +7,8 @@ public class UserConnect : MonoBehaviour
 {
 	public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
 	private string userId;
-	public static int CoinAmount = 100000;
-	public static int KeyAmount = 100;
+	public static int CoinAmount;
+	public static int KeyAmount;
 	public static int CurrentCharacterIndex;
 	public static int CurrentWeaponIndex;
 
