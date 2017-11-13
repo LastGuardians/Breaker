@@ -27,9 +27,4 @@ public class PlayerStatusManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    void Update()
-    {
-
-    }
 }

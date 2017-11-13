@@ -13,8 +13,8 @@ public class ResultManager : MonoBehaviour
     public GameObject keyText;
 
     public int score = 0;
-    public int coin = 0;
-    public int key = 0;
+    public float coin = 0;
+    public float key = 0;
 
     public static ResultManager instance = null;
 
@@ -35,17 +35,20 @@ public class ResultManager : MonoBehaviour
         BlockGenerator.instance.game_start = false;
     }
 
-    private void Update()
+    public void ResultScore(int iScore)
     {
-        
-        //ResultScore(score);
+        scoreText.GetComponent<Text>().text = iScore.ToString();
+       // scoreText = GameObject.Find("Score");       
     }
 
-    public void ResultScore(int score_parm)
+    public void ResultCoin(float fCoin)
     {
-        scoreText.GetComponent<Text>().text = score_parm.ToString();
-       // scoreText = GameObject.Find("Score");
-       
+        coinText.GetComponent<Text>().text = fCoin.ToString();
+    }
+
+    public void ResultKey(float fKey)
+    {
+        keyText.GetComponent<Text>().text = fKey.ToString();
     }
 
     public void MainScene()

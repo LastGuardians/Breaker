@@ -24,11 +24,6 @@ public class GameManager : MonoBehaviour {
             //잘못된 인스턴스를 가르키고 있을 경우
             Destroy(gameObject);
         }
-
-        //mainBGM = GameObject.Find("SoundManager");
-        //DontDestroyOnLoad(mainBGM);
-        //DontDestroyOnLoad(this);
-        //Debug.Log(GPGSManager.instance.userdata);
     }
 
     public void Update()
@@ -54,23 +49,32 @@ public class GameManager : MonoBehaviour {
 
 	public void PlayScene()
     {
+        //AutoFade.LoadLevel("GamePlay", 0.5f, 0.5f, Color.black);
+        //SceneManager.LoadScene("Loading");
         SceneManager.LoadScene("GamePlay");
         //Debug.Log("GamePlay");
     }
 
     public void CharacterSelect()
     {
-        SceneManager.LoadScene("Character");
+        AutoFade.LoadLevel("Character", 1.5f, 0.5f, Color.black);
+         //SceneManager.LoadScene("Character");
     }
 
 	public void WeaponSelect()
 	{
 		SceneManager.LoadScene("Weapon");
-	}
+        //UserConnect.instance._GetUser("TestUser");
+    }
 
     public void CreditScene()
     {
         SceneManager.LoadScene("Credit");
+    }
+
+    public void Tutorial()
+    {
+        SceneManager.LoadScene("Tutorial");
     }
 
     // 사운드 관련

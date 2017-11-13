@@ -18,7 +18,7 @@ public class Loading : MonoBehaviour
         //가비지 콜렉터 실행
         Resources.UnloadUnusedAssets();
 
-        StartCoroutine(StartLoad("Character"));
+        StartCoroutine(StartLoad("GamePlay"));
     }
 
     // Update is called once per frame

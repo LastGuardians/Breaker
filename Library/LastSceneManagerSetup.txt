@@ -1,8 +1,4 @@
 sceneSetups:
-<<<<<<< HEAD
-- path: Assets/Scene/Main.unity
-=======
-- path: Assets/Scene/Character.unity
->>>>>>> 27e9ddb1541a560481b37fe21215e85e1c85cd2b
+- path: Assets/Scene/Splash.unity
   isLoaded: 1
   isActive: 1

@@ -12,7 +12,7 @@ public class GlobalBGM : MonoBehaviour
     [Header("AudioSource")]
     public AudioSource mainBGM;
     public AudioSource playBGM; //AudioSorce 컴포넌트 변수.
-    public AudioSource warningBGM;
+    //public AudioSource warningBGM;
     public AudioSource feverBGM;
 
     [Header ("AudioClip")]
@@ -46,67 +46,55 @@ public class GlobalBGM : MonoBehaviour
         }
 
         DontDestroyOnLoad(this);
-
-        //BgmOnButton = GameObject.Find("SetupUI").transform.Find("BGMOnButton").gameObject;
-        //BgmOffButton = GameObject.Find("Canvas").transform.Find("SetupUI").transform.Find("BGMOffButton").gameObject;
+        StartCoroutine(SetBGM1());
+        StartCoroutine(SetBGM2());
     }
 
-    void Update()
+    public IEnumerator SetBGM1()
     {
-        //Debug.Log("bgmOnButton : " + bgmOnButton);
-        if ((SceneManager.GetActiveScene().name == "Main" ||
-           SceneManager.GetActiveScene().name == "Weapon" ||
-           SceneManager.GetActiveScene().name == "Character" ||
-           SceneManager.GetActiveScene().name == "SpecificCharacter" ||
-           SceneManager.GetActiveScene().name == "Credit")
-           && bgmOnButton)
+        while (true)
         {
-            //Debug.Log("메인씬");
-            if(!mainBGM.isPlaying)
-                mainBGM.Play();
-
-            if(playBGM.isPlaying)
-                playBGM.Stop();
-
-            if(feverBGM.isPlaying)
-                feverBGM.Stop();
-
-            if (warningBGM.isPlaying)
-                warningBGM.Stop();
-        }
-        //else if(SceneManager.GetActiveScene().name == "Main" &&
-        //    !bgmOnButton)
-        //{
-        //    BgmOnButton.SetActive(true);
-        //    BgmOffButton.SetActive(false);
-        //}
-        else if(SceneManager.GetActiveScene().name == "GamePlay"
-            && bgmOnButton)
-        {
-            if (!playBGM.isPlaying && !feverBgmOn)
-                playBGM.Play();
-
-            if (!feverBgmOn)
-                feverBGM.Stop();
-            else if(feverBgmOn && !feverBGM.isPlaying)
+            yield return new WaitUntil(() => (SceneManager.GetActiveScene().name.Equals("Main") ||
+            SceneManager.GetActiveScene().name.Equals("Weapon") || SceneManager.GetActiveScene().name.Equals("Character") ||
+            SceneManager.GetActiveScene().name.Equals("SpecificCharacter") || SceneManager.GetActiveScene().name.Equals("Credit") ||
+            SceneManager.GetActiveScene().name.Equals("Tutorial")));
+            if (bgmOnButton)
             {
-               // Debug.Log("feverBgmOn: " + feverBgmOn);
-                feverBGM.Play();
-                playBGM.Stop();
+                if (!mainBGM.isPlaying)
+                    mainBGM.Play();
+
+                if (playBGM.isPlaying)
+                    playBGM.Stop();
+
+                if (feverBGM.isPlaying)
+                    feverBGM.Stop();
             }
-
-            if (mainBGM.isPlaying)
-                mainBGM.Stop();
-
-            //if (!warningBGM.isPlaying && warningBgmOn && !feverBgmOn)
-            //{
-            //    playBGM.Stop();
-            //    warningBGM.Play();
-            //}
-            //else
-                warningBGM.Stop();
         }
+    }
 
+    public IEnumerator SetBGM2()
+    {
+        while (true)
+        {
+            yield return new WaitUntil(() => SceneManager.GetActiveScene().name.Equals("GamePlay"));
+            if (bgmOnButton)
+            {
+                if (!playBGM.isPlaying && !feverBgmOn)
+                    playBGM.Play();
+
+                if (!feverBgmOn)
+                    feverBGM.Stop();
+                else if (feverBgmOn && !feverBGM.isPlaying)
+                {
+                    // Debug.Log("feverBgmOn: " + feverBgmOn);
+                    feverBGM.Play();
+                    playBGM.Stop();
+                }
+
+                if (mainBGM.isPlaying)
+                    mainBGM.Stop();
+            }
+        }
     }
 
     public void BGMSoundOn()
@@ -123,7 +111,6 @@ public class GlobalBGM : MonoBehaviour
         mainBGM.Stop();
         playBGM.Stop();
         feverBGM.Stop();
-        warningBGM.Stop();
     }
     
 }

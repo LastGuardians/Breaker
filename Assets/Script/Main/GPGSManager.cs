@@ -27,13 +27,12 @@ public class GPGSManager : MonoBehaviour {
     public static UnityEngine.SocialPlatforms.ILocalUser mainplayeruserdata;
 
 	public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
-    public int game_score = 0;
+    public int iResultScore = 0;
+    public float fResultCoin = 0;
+    public int iResultkey = 0;
+    public bool bGameEnd = false;
 
-	public static string mainId;
-
-    void Awake()
-    {
-	}
+    public static string mainId;
 
     // Use this for initialization
     void Start ()
@@ -52,22 +51,46 @@ public class GPGSManager : MonoBehaviour {
             //잘못된 인스턴스를 가르키고 있을 경우
             Destroy(gameObject);
         }
+        bGameEnd = false;
 
-        //LoginUrl = "tozha31@tozha31.woobi.co.kr/mobile_php_connect.php";
-              
+        StartCoroutine(ResultCheck());
+        StartCoroutine(SetUserStatus());
+
         Login();
 	}
 
-	private void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
             SceneManager.LoadScene("Main");
         }
+    }
 
-        if (GameObject.Find("ResultManager") != null)
+    public IEnumerator ResultCheck()
+    {
+        while(true)
         {
-            ResultManager.instance.ResultScore(game_score);
+            yield return new WaitForSeconds(0.1f);
+            if (GameObject.Find("ResultManager") != null)
+            {
+                ResultManager.instance.ResultScore(iResultScore);
+                ResultManager.instance.ResultCoin(fResultCoin);
+                ResultManager.instance.ResultKey(iResultkey);
+            }
+        }
+    }
+
+    public IEnumerator SetUserStatus()
+    {
+        while(true)
+        {
+            yield return new WaitUntil(() => bGameEnd);
+            //Debug.Log("bGameEnd: " + bGameEnd);
+            StartCoroutine(Rank.instance._CreateRank(mainId, iResultScore));
+            StartCoroutine(UserConnect.instance._SetUser(mainId, (int)UserConnect.CoinAmount, UserConnect.KeyAmount,
+                UserConnect.CurrentWeaponIndex.ToString(), UserConnect.CurrentCharacterIndex.ToString()));
+
         }
     }
 
@@ -186,7 +209,7 @@ public class GPGSManager : MonoBehaviour {
             if (success)
             {
                 // Report 성공
-                Debug.Log("총 score : " + score);
+                //Debug.Log("총 score : " + score);
                 // 그에 따른 처리
             }
             else

@@ -47,9 +47,9 @@ public class WarningController : MonoBehaviour
     public IEnumerator WarningProbCheck()
     {
         warning_range = r.Next(100, 10000);
-        Debug.Log("warning_range :" + warning_range);
+        //Debug.Log("warning_range :" + warning_range);
 
-        if (warning_range < 200 && !FeverTime.instance.fever_start && !BlockGenerator.instance.warningStart)
+        if (warning_range < 1000 && !FeverTime.instance.fever_start && !BlockGenerator.instance.warningStart)
         {
             BlockGenerator.instance.warningStart = true;
             notWarningSprite.SetActive(false);

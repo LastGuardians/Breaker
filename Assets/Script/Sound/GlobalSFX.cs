@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -40,9 +39,18 @@ public class GlobalSFX : MonoBehaviour
         DontDestroyOnLoad(this);
 
         myAudio = transform.Find("SFX").GetComponent<AudioSource>();
-        
+        StartCoroutine(StopSFXSound());
     }
 
+    public IEnumerator StopSFXSound()
+    {
+        while(true)
+        {
+            yield return new WaitUntil(() => SceneManager.GetActiveScene().name == "Result");
+            myAudio.Stop();
+        }
+    }
+    
     public void SFXSoundOn()
     {
         Debug.Log("SFXSoundOn");

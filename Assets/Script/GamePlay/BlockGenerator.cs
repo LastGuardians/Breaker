@@ -4,19 +4,6 @@ using UnityEngine;
 
 public class BlockGenerator : MonoBehaviour
 {
-    //---객체 배열생성 
-    //ArrayList[] objArray = new ArrayList[100];
-    ////-----------객체 생성 
-    //BlockObject obj = Instantiate(CloneObjectPrefab) as BlockObject;
-    ////----------객체 배열에 등록 
-    //objArray.Add(obj);
-
-    ////------등록된 객체를 전부 삭제 
-    //foreach(BlockObject blockobj in objArray) 
-    //{ 
-    //Destroy(blockobj);
-    //}
-    
     public GameObject blockParents;
     //public GameObject blockGroup;
     public GameObject[] blockArr = new GameObject[5];
@@ -141,7 +128,7 @@ public class BlockGenerator : MonoBehaviour
 
     void Update()
     {
-        BlockDestroy();
+        //BlockDestroy();
     }
 
     // 블럭이 모두 파괴되었는지 체크
@@ -163,28 +150,45 @@ public class BlockGenerator : MonoBehaviour
     // 블럭 위치 체크
     IEnumerator BlockTranslate()
     {
+        int min = 0;
+        int min_f = 0;
         while (true)
         {
             yield return new WaitWhile(BlockDestroy);   // false면 아래 코드 실행
             for (int i = 0; i < 5; ++i)
             {
                 if (blockArr[i] == null)
+                {
+                    min = i;
                     continue;
-
+                }
+                
                 if (blockArr[i].tag != "bomb")
                 {
                     if ((blockArr[i].transform.position.y < 1.2 &&
                          blockArr[i].transform.position.y >= -0.4))
                     {
                         block_ypos_min = true;
-                    }
+                    }                   
                 }
             }
+            if (min > 0 && min < 4)
+            {
+                if (blockArr[min + 1].transform.position.y > 1.3)
+                {
+                    block_ypos_min = false;
+                }
+            }
+            else
+                min = 0;
 
             for (int i = 0; i < 10; ++i)
             {
                 if (blockArrFever[i] == null)
+                {
+                    min_f = i;
                     continue;
+                }
 
                 if (blockArrFever[i].transform.position.y < 1.2 &&
                     blockArrFever[i].transform.position.y >= -0.4)
@@ -193,6 +197,15 @@ public class BlockGenerator : MonoBehaviour
                     block_ypos_min = true;
                 }
             }
+            if (min_f > 0 && min_f < 9)
+            {
+                if (blockArrFever[min_f + 1].transform.position.y > 1.3)
+                {
+                    block_ypos_min = false;
+                }
+            }
+            else
+                min_f = 0;
         }
     }
 
@@ -284,31 +297,31 @@ public class BlockGenerator : MonoBehaviour
                     blockArr[i] = GameObject.Find("BlockGroup(Clone)").transform.Find("building" + (i + 1).ToString()).gameObject;
                     blockArr[i].AddComponent<BlockStatusManager>();
                     // 리소스 랜덤
-                    if (range == 0)
+                    if (range.Equals(0))
                     {
                         blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_normal[i];
                         if (i == upgrade_range)
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_upgrade[i];
                     }
-                    else if (range == 1)
+                    else if (range.Equals(1))
                     {
                         blockArr[i].GetComponent<SpriteRenderer>().sprite = door_normal[i];
                         if (i == upgrade_range)
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = door_upgrade[i];
                     }
-                    else if (range == 2)
+                    else if (range.Equals(2))
                     {
                         blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_normal[i];
                         if (i == upgrade_range)
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_upgrade[i];
                     }
-                    else if (range == 3)
+                    else if (range.Equals(3))
                     {
                         blockArr[i].GetComponent<SpriteRenderer>().sprite = watch_normal[i];
                         if (i == upgrade_range)
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = watch_upgrade[i];
                     }
-                    else if (range == 4)
+                    else if (range.Equals(4))
                     {
                         blockArr[i].GetComponent<SpriteRenderer>().sprite = wall_normal[i];
                         if (i == upgrade_range)

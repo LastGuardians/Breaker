@@ -14,9 +14,10 @@ public class UserWeapon : MonoBehaviour
 	public static string[] WeaponStatusArray = new string[3] { "Opened", "Locked", "Locked" };
 	public static int[,] WeaponAbilityArray = new int[3, 3] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 
-	void Start()
+
+    void Start()
 	{
-		DontDestroyOnLoad(this);
+        DontDestroyOnLoad(this);
 		userId = GPGSManager.mainId;
 		CreateUserWeapon();
 	}
@@ -79,7 +80,7 @@ public class UserWeapon : MonoBehaviour
 			WeaponAbilityArray[OpenedWeaponIndex, 1] = criticalLevel;
 			WeaponAbilityArray[OpenedWeaponIndex, 2] = probabilityLevel;
 		}
-	}
+    }
 
 	/* 무기 갱신 */
 	public IEnumerator _SetUserWeapon(string userId, string weaponId, int damageLevel, int criticalLevel, int probabilityLevel)

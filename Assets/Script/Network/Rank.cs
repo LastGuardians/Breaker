@@ -6,12 +6,23 @@ public class Rank : MonoBehaviour
 {
     public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
     private string userId;
-    public int score = 100;
+    public int score = 0;
     public int offset = 0;
     public int limit = 5;
 
+    public static Rank instance = null;
+
     void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            //잘못된 인스턴스를 가르키고 있을 경우
+            Destroy(gameObject);
+        }
         DontDestroyOnLoad(this);
 		userId = GPGSManager.mainId;
 	}

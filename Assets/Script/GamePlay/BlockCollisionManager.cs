@@ -1,20 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class BlockCollisionManager : MonoBehaviour
 {
-    public GameObject player;
-    GameObject bombEffect;
+    GameObject BombEffect;
+    public string BombEffectName = "BombEffect";
+    float bombLifeTime = 0f;
 
-    private void Start()
-    {
-        player = GameObject.Find("Player");
-        bombEffect = player.GetComponent<PlayerManager>().BombEffect;
-    }
+    public bool isBombCollision = false;
+    bool playerCollision = false;
+    bool bombCorStart = false;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -36,9 +34,30 @@ public class BlockCollisionManager : MonoBehaviour
 
         else if (collision.collider.CompareTag("rope") || collision.collider.CompareTag("handcuffs"))        
         {
-            PlayerManager.instance.life += 2;
+            PlayerManager.instance.life += 1;
             GlobalSFX.instance.PlayCollapseSound();
             Handheld.Vibrate();     // 진동
+        }
+
+        else if(collision.collider.CompareTag("Player"))
+        {
+            playerCollision = true;
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Player"))
+        {
+            playerCollision = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Player"))
+        {
+            playerCollision = false;
         }
     }
 
@@ -46,31 +65,49 @@ public class BlockCollisionManager : MonoBehaviour
     {
         GameObject newObj = collision.gameObject;
         GameObject parent;
+               
+        if(collision.CompareTag("bomb"))
+        {
+            isBombCollision = true;
 
-        if (collision.CompareTag("bomb") && collision.CompareTag("Player")) // 폭탄이 터질때, 반경 안에 플레이어가 있으면 생명력 -2
+            BombEffect = ObjectPool.Instance.PopFromPool(BombEffectName);
+            BombEffect.transform.position = new Vector2(newObj.transform.position.x, (newObj.transform.position.y - 2));
+            BombEffect.SetActive(true);
+
+            parent = newObj.transform.parent.gameObject;
+            GlobalSFX.instance.PlayBombSound();
+            Destroy(newObj);
+            Destroy(parent);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("bomb"))
+        {
+            StartCoroutine(BombLifeCheck());            
+        }
+    }
+
+    public IEnumerator BombLifeCheck()
+    {
+        if (playerCollision)
         {
             PlayerManager.instance.life += 2;
             GlobalSFX.instance.PlayCollapseSound();
             Handheld.Vibrate();     // 진동
-
-            bombEffect.SetActive(true);
-            Instantiate(bombEffect, new Vector2(newObj.transform.position.x, (newObj.transform.position.y - 2)), transform.rotation);
-
-            parent = newObj.transform.parent.gameObject;
-            GlobalSFX.instance.PlayBombSound();
-            Destroy(newObj);
-            Destroy(parent);
         }
-        else if(collision.CompareTag("bomb"))
+
+        while (true)
         {
-            bombEffect.SetActive(true);
-            Instantiate(bombEffect, new Vector2(newObj.transform.position.x, (newObj.transform.position.y - 2)), transform.rotation);
+            yield return new WaitForSeconds(1f);
+            bombLifeTime += 1;
 
-            parent = newObj.transform.parent.gameObject;
-            GlobalSFX.instance.PlayBombSound();
-            Destroy(newObj);
-            Destroy(parent);
+            if (bombLifeTime >= 2)
+            {
+                bombLifeTime = 0;
+                yield break;
+            }
         }
-        bombEffect.SetActive(false);
     }
 }

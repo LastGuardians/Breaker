@@ -7,13 +7,13 @@ public class BlockStatusManager : MonoBehaviour
 {
     // 블럭 스탯
     [Header ("BlockStatus")]
-    public double hp = 0;           // 블록 hp
+    public float hp = 0;           // 블록 hp
     public int grade = 0;           // 블록 등급
     public int blockType = 0;       // 블록 타입(기본 =0 / 강화 =1)
     public int resourceType = 0;    // 블록 리소스 타입(0 = 철창 / 1 = 철문 / 3 = 교도소 건물 / 4 = 감시탑 / 5 = 담장 /
                                     //                  6 = 밧줄 / 7 = 수갑 / 8 = 폭탄 / 9 = 포션)
     public int score = 0;           // 블록의 점수
-    public double coin = 0;         // 블록 깼을 때 얻는 코인 수
+    public float coin = 0;         // 블록 깼을 때 얻는 코인 수
     public int key = 0;             // 블록 깼을 때 얻는 열쇠 수
     public int stage = 1;   // 블럭 단계
 
@@ -41,12 +41,14 @@ public class BlockStatusManager : MonoBehaviour
             BlockStatNormal[i].coin = 5 * (i+1);
             BlockStatNormal[i].grade = i + 1;
             BlockStatNormal[i].blockType = 0;
+            BlockStatNormal[i].key = 0;
 
-            BlockStatUpgrade[i].hp = (5 + 17 * ((i + 1) - 1)) * 1.5;  // 1.5배
+            BlockStatUpgrade[i].hp = (5 + 17 * ((i + 1) - 1)) * 1.5f;  // 1.5배
             BlockStatUpgrade[i].score = 20 * (i + 1);
-            BlockStatUpgrade[i].coin = (5 * (i + 1)) * 1.5; // 1.5배
+            BlockStatUpgrade[i].coin = (5 * (i + 1)) * 1.5f; // 1.5배
             BlockStatUpgrade[i].grade = i + 1;
             BlockStatUpgrade[i].blockType = 1;
+            BlockStatUpgrade[i].key = 1;
         }
     }
 
@@ -59,6 +61,7 @@ public class BlockStatusManager : MonoBehaviour
         coin = BlockStatNormal[num-1].coin;
         grade = BlockStatNormal[num-1].grade;
         blockType = BlockStatNormal[num-1].blockType;
+        key = BlockStatNormal[num - 1].key;
     }
 
     // 강화 건물 셋팅
@@ -69,6 +72,7 @@ public class BlockStatusManager : MonoBehaviour
         coin = BlockStatUpgrade[num-1].coin;
         grade = BlockStatUpgrade[num-1].grade;
         blockType = BlockStatUpgrade[num-1].blockType;
+        key = BlockStatUpgrade[num - 1].key;
     }
 
     public void SetObject(int num)
@@ -78,24 +82,28 @@ public class BlockStatusManager : MonoBehaviour
             hp = 10000;
             score = 100;
             coin = 0;
+            key = 0;
         }
         else if (num == 2)  // 수갑
         {
             hp = 10000;
             score = 100;
             coin = 0;
+            key = 0;
         }
         else if (num == 3)  // 폭탄
         {
             hp = 10000;
             score = 0;
             coin = 0;
+            key = 0;
         }
         else if (num == 4)  // 포션
         {
             hp = 50;
             score = 0;
             coin = 0;
+            key = 0;
         }
     }
     

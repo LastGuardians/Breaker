@@ -12,9 +12,20 @@ public class UserConnect : MonoBehaviour
 	public static int CurrentCharacterIndex;
 	public static int CurrentWeaponIndex;
 
-	void Start()
+    public static UserConnect instance = null;
+
+    void Start()
 	{
-		DontDestroyOnLoad(this);
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            //잘못된 인스턴스를 가르키고 있을 경우
+            Destroy(gameObject);
+        }
+        DontDestroyOnLoad(this);
 		userId = GPGSManager.mainId;
 		CreateUser();
 	}
@@ -75,7 +86,7 @@ public class UserConnect : MonoBehaviour
 		}
 		else if (www.isDone)    // 조회한 유저가 있음.
 		{
-
+            Debug.Log("CoinAmount : " + CoinAmount);
 		}
 
 		JsonData json = JsonMapper.ToObject(www.text);

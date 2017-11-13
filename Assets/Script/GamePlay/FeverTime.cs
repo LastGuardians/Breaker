@@ -51,7 +51,7 @@ public class FeverTime : MonoBehaviour
         while (true)
         {
             yield return new WaitUntil(() => block_destroy_count >= (20 * fever_cnt));
-            Debug.Log("fever_cnt: " + fever_cnt);
+            //Debug.Log("fever_cnt: " + fever_cnt);
             //if(BlockGenerator.instance.block_gravity != null)
             //{
                 feverGauge.GetComponent<Slider>().value = 0;

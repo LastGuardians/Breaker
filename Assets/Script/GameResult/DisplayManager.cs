@@ -14,7 +14,7 @@ public class DisplayManager : MonoBehaviour {
     // Use this for initialization
     void Start () {    
         range = r.Next(0, 5);
-        Debug.Log("range : " + range);
+        //Debug.Log("range : " + range);
 
         displayStr[0] = "Rating!";  // 별점주기
         displayStr[1] = "Watching Ad";  // 영상 광고
