@@ -10,7 +10,7 @@ public class UserCharacter : MonoBehaviour
 	private string skillId = "TestSkill";
 	public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
 
-	public static string[] CharacterStatusArray = new string[12] { "Opened", "Locked", "Locked", "Locked", "Locked", "Locked", "Unveiled", "Unveiled", "Unveiled", "Unveiled", "Unveiled", "Unveiled" };
+	public static string[] CharacterStatusArray = new string[12] { "Opened", "Locked", "Locked", "Locked", "Unveiled", "Locked", "Unveiled", "Unveiled", "Unveiled", "Unveiled", "Unveiled", "Unveiled" };
 
 	void Start()
 	{

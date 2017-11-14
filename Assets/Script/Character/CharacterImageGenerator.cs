@@ -36,7 +36,7 @@ public class CharacterImageGenerator: MonoBehaviour
 
 	public Sprite[] OpenedCharacterSpriteArray = new Sprite[12];
 
-	public static string[] CharacterArray = new string[12] { "Cat", "Frog", "Deer", "Monkey", "Bear", "Alpaca", "Unveiled", "Unveiled", "Unveiled", "Unveiled", "Unveiled", "Unveiled" };
+	public static string[] CharacterArray = new string[12] { "Cat", "Frog", "Deer", "Monkey", "Unveiled", "Alpaca", "Unveiled", "Unveiled", "Unveiled", "Unveiled", "Unveiled", "Unveiled" };
 	public static int[] CharacterPriceArray = new int[12] { 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0 };
 
 	public GameObject[] CharacterButtonArray = new GameObject[12];
@@ -99,6 +99,10 @@ public class CharacterImageGenerator: MonoBehaviour
 
 					Character.AddComponent<Image>();
 					Character.GetComponent<Image>().sprite = UnveiledCharacterSprite;
+
+					Color TempColor = Character.GetComponent<Image>().color;
+					TempColor.a = 0.6f;
+					Character.GetComponent<Image>().color = TempColor;
 
 					Character.AddComponent<Button>();
 				}
