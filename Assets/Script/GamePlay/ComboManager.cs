@@ -44,7 +44,7 @@ public class ComboManager : MonoBehaviour {
     {
         while (true)
         {
-            yield return new WaitUntil(() => PlayerManager.instance.isDestroy == true);
+            yield return new WaitUntil(() => PlayerManager.instance.isDestroy);
             ComboText.SetActive(true);
             ComboString.SetActive(true);
             

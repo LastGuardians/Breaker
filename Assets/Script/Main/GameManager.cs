@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour {
 
     public void Update()
     {
-        if (SceneManager.GetActiveScene().name == "Main")
+        if (SceneManager.GetActiveScene().name.Equals("Main"))
         {
             if (Input.GetKeyDown(KeyCode.Escape))
 			{
@@ -50,8 +50,8 @@ public class GameManager : MonoBehaviour {
 	public void PlayScene()
     {
         //AutoFade.LoadLevel("GamePlay", 0.5f, 0.5f, Color.black);
-        //SceneManager.LoadScene("Loading");
-        SceneManager.LoadScene("GamePlay");
+        SceneManager.LoadScene("Loading");
+        //SceneManager.LoadScene("GamePlay");
         //Debug.Log("GamePlay");
     }
 

@@ -38,6 +38,7 @@ public class UnityAdsHelper : MonoBehaviour
 
                     // to do ...
                     // 광고 시청이 완료되었을 때 처리
+                    UserConnect.KeyAmount += 10;
 
                     break;
                 }

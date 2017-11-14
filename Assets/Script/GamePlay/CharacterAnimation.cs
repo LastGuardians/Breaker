@@ -7,7 +7,12 @@ using UnityEngine;
 
 public class CharacterAnimation : MonoBehaviour
 {
-    public Animator catAni;
+    public Animator characterAni;
+    public RuntimeAnimatorController catAni;
+    public RuntimeAnimatorController alpacaAni;
+    public RuntimeAnimatorController deerAni;
+    public RuntimeAnimatorController frogAni;
+    public RuntimeAnimatorController monkeyAni;
     float aniTime = 0;
 
     public static CharacterAnimation instance = null;
@@ -23,26 +28,26 @@ public class CharacterAnimation : MonoBehaviour
             //잘못된 인스턴스를 가르키고 있을 경우
             Destroy(gameObject);
         }
-        catAni = gameObject.GetComponent<Animator>();
+        characterAni = gameObject.GetComponent<Animator>();
     }
 
     // idle 상태에서 공격했을 때 애니메이션
     public void CatAttackAniControll()
     {
-        catAni.SetTrigger("IsAttack");
+        characterAni.SetTrigger("IsAttack");
     }
 
     // 점프 애니메이션
     public void CatJumpAniControll()
     {
-        catAni.SetTrigger("IsJump");
-        //catAni.SetTrigger("IsIdleJump");
+        characterAni.SetTrigger("IsJump");
+        //characterAni.SetTrigger("IsIdleJump");
     }
 
     // 점프 idle 애니메이션
     public void CatJumpIdleAniControll(float n)
     {
-        catAni.SetFloat("IsJumpIdle", n);
+        characterAni.SetFloat("IsJumpIdle", n);
        
     }
 
@@ -50,7 +55,7 @@ public class CharacterAnimation : MonoBehaviour
     // 점프 상태에서 공격했을 때 애니
     public void CatJumpAttackAniControll()
     {
-        catAni.SetTrigger("IsJumpAttack");
+        characterAni.SetTrigger("IsJumpAttack");
     }
 
     public IEnumerator AniCor()

@@ -11,6 +11,7 @@ public class UserConnect : MonoBehaviour
 	public static int KeyAmount;
 	public static int CurrentCharacterIndex;
 	public static int CurrentWeaponIndex;
+    public static int maxScore;
 
     public static UserConnect instance = null;
 
@@ -94,8 +95,10 @@ public class UserConnect : MonoBehaviour
 
 		CoinAmount = int.Parse(json["coin"].ToString());
 		KeyAmount = int.Parse(json["prisonKey"].ToString());
+        maxScore = int.Parse(json["maxScore"].ToString());
 
-		try
+
+        try
 		{
 			CurrentWeaponIndex = int.Parse(json["weaponId"].ToString().Substring(6)) - 1;
 			CurrentCharacterIndex = int.Parse(json["characterId"].ToString().Substring(9)) - 1;

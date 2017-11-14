@@ -28,7 +28,8 @@ public class GPGSManager : MonoBehaviour {
 
 	public string baseUrl = "http://ec2-18-220-97-254.us-east-2.compute.amazonaws.com/prisoncrush";
     public int iResultScore = 0;
-    public float fResultCoin = 0;
+    public int iMaxScore = 0;
+    public int iResultCoin = 0;
     public int iResultkey = 0;
     public bool bGameEnd = false;
 
@@ -59,13 +60,13 @@ public class GPGSManager : MonoBehaviour {
         Login();
 	}
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            SceneManager.LoadScene("Main");
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.A))
+    //    {
+    //        SceneManager.LoadScene("Main");
+    //    }
+    //}
 
     public IEnumerator ResultCheck()
     {
@@ -75,7 +76,8 @@ public class GPGSManager : MonoBehaviour {
             if (GameObject.Find("ResultManager") != null)
             {
                 ResultManager.instance.ResultScore(iResultScore);
-                ResultManager.instance.ResultCoin(fResultCoin);
+                ResultManager.instance.MaxScore(iMaxScore);
+                ResultManager.instance.ResultCoin(iResultCoin);
                 ResultManager.instance.ResultKey(iResultkey);
             }
         }
@@ -87,7 +89,7 @@ public class GPGSManager : MonoBehaviour {
         {
             yield return new WaitUntil(() => bGameEnd);
             //Debug.Log("bGameEnd: " + bGameEnd);
-            StartCoroutine(Rank.instance._CreateRank(mainId, iResultScore));
+            StartCoroutine(Rank.instance._CreateRank(mainId, iMaxScore));
             StartCoroutine(UserConnect.instance._SetUser(mainId, (int)UserConnect.CoinAmount, UserConnect.KeyAmount,
                 UserConnect.CurrentWeaponIndex.ToString(), UserConnect.CurrentCharacterIndex.ToString()));
 

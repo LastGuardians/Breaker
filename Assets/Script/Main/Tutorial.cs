@@ -42,7 +42,7 @@ public class Tutorial : MonoBehaviour {
             TutoImage.GetComponent<SpriteRenderer>().sprite = tutorial[current + 1];
             ++current;
 
-            if(current == 9)
+            if(current.Equals(9))
                 RightCollider.SetActive(true);
         }
         else

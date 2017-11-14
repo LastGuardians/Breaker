@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 public class PlayerManager : MonoBehaviour {
     
     float jumpSpeed = 1600f;   // 점프 버튼 눌렀을 때 적용되는 힘
-    float jumpSpeedCollision = 150f;    // 공중에서 블럭 파괴했을 때 적용되는 힘
+    float jumpSpeedCollision = 120f;    // 공중에서 블럭 파괴했을 때 적용되는 힘
     float shieldForcetoPlayer = -400f;  // 방어했을 때 플레이어에 적용되는 힘
     float shieldForcetoBlock = 1200f;    // 방어했을 때 블럭에 적용되는 힘
     float aniTime = 0;
@@ -23,7 +23,7 @@ public class PlayerManager : MonoBehaviour {
     static private float probablity = 0f;  // 크리티컬 확률
     static private float coin = 0;
     static private int key = 0;
-    public GameObject ShieldCollider;  // 쉴드 콜라이더
+   // public GameObject ShieldCollider;  // 쉴드 콜라이더
     public GameObject AttackEffect;
     public GameObject SwordEffect;
     public GameObject BombEffect;
@@ -32,6 +32,9 @@ public class PlayerManager : MonoBehaviour {
     public string AttackEffectName = "AttackEffect";
     public string BombEffectName = "BombEffect";
     float originDamage;
+    Sprite[] weaponSprite = new Sprite[3];
+    GameObject playerWeapon;
+    Animator playerAnimator;
 
     //public bool block_drop_min = false; // 블럭이 최소 좌표에 도달했는지 확인하는 변수
 
@@ -109,9 +112,17 @@ public class PlayerManager : MonoBehaviour {
         StartCoroutine(ShieldAbleCheck());
         StartCoroutine(CriticalCheck());
 
-        SetWeaponAbility();
+        playerWeapon = transform.Find("Weapon").gameObject;
+        weaponSprite[0] = Resources.Load<Sprite>("Weapon/spoon_bronze");
+        weaponSprite[1] = Resources.Load<Sprite>("Weapon/spoon_silver");
+        weaponSprite[2] = Resources.Load<Sprite>("Weapon/spoon_gold");
 
-        originDamage = damage;
+        SetWeaponAbility();
+        SetCharacter();
+        Debug.Log("CurrentWeaponIndex : " + UserConnect.CurrentWeaponIndex);
+        Debug.Log("damage : " + damage);
+
+       originDamage = damage;
     }
 
     void Update()
@@ -124,24 +135,59 @@ public class PlayerManager : MonoBehaviour {
     // 무기 능력치 셋팅
     void SetWeaponAbility()
     {
-        //Debug.Log("UserConnect.CurrentWeaponIndex: " + UserConnect.CurrentWeaponIndex);
-        if(UserConnect.CurrentWeaponIndex.Equals(0))    // 무기1(브론즈)
+        // 무기1(브론즈)
+        if (UserConnect.CurrentWeaponIndex.Equals(0))    
         {
             damage = 5 * (UserWeapon.WeaponAbilityArray[UserConnect.CurrentWeaponIndex, 0]) + 5;
             critical = 0.05f * (float)(UserWeapon.WeaponAbilityArray[UserConnect.CurrentWeaponIndex, 1]) + 1.2f;
             probablity = (UserWeapon.WeaponAbilityArray[UserConnect.CurrentWeaponIndex, 2]) + 10;
+            playerWeapon.GetComponent<SpriteRenderer>().sprite = weaponSprite[0];
         }
-        else if(UserConnect.CurrentWeaponIndex.Equals(1))   // 무기2(실버)
+        // 무기2(실버)
+        else if (UserConnect.CurrentWeaponIndex.Equals(1))   
         {
             damage = 7.5f * (UserWeapon.WeaponAbilityArray[UserConnect.CurrentWeaponIndex, 0]) + 10;
             critical = 0.05f * (float)(UserWeapon.WeaponAbilityArray[UserConnect.CurrentWeaponIndex, 1]) + 1.5f;
             probablity = 1.1f * (UserWeapon.WeaponAbilityArray[UserConnect.CurrentWeaponIndex, 2]) + 15;
+            playerWeapon.GetComponent<SpriteRenderer>().sprite = weaponSprite[1];
         }
-        else if (UserConnect.CurrentWeaponIndex.Equals(2))   // 무기3(골드)
+        // 무기3(골드)
+        else if (UserConnect.CurrentWeaponIndex.Equals(2))   
         {
             damage = 10 * (UserWeapon.WeaponAbilityArray[UserConnect.CurrentWeaponIndex, 0]) + 20;
             critical = 0.07f * (float)(UserWeapon.WeaponAbilityArray[UserConnect.CurrentWeaponIndex, 1]) + 1.75f;
             probablity = 1.2f * (UserWeapon.WeaponAbilityArray[UserConnect.CurrentWeaponIndex, 2]) + 20;
+            playerWeapon.GetComponent<SpriteRenderer>().sprite = weaponSprite[2];
+        }
+    }
+
+    // 캐릭터 셋팅
+    void SetCharacter()
+    {
+        // 고양이
+        if(UserConnect.CurrentCharacterIndex.Equals(0))
+        {
+            transform.GetComponent<Animator>().runtimeAnimatorController = CharacterAnimation.instance.catAni;
+        }
+        // 개구리
+        else if (UserConnect.CurrentCharacterIndex.Equals(1))
+        {
+            transform.GetComponent<Animator>().runtimeAnimatorController = CharacterAnimation.instance.frogAni;
+        }
+        // 사슴
+        else if (UserConnect.CurrentCharacterIndex.Equals(2))
+        {
+            transform.GetComponent<Animator>().runtimeAnimatorController = CharacterAnimation.instance.deerAni;
+        }
+        // 원숭이
+        else if (UserConnect.CurrentCharacterIndex.Equals(3))
+        {
+            transform.GetComponent<Animator>().runtimeAnimatorController = CharacterAnimation.instance.monkeyAni;
+        }
+        // 알파카
+        else if (UserConnect.CurrentCharacterIndex.Equals(5))
+        {
+            transform.GetComponent<Animator>().runtimeAnimatorController = CharacterAnimation.instance.alpacaAni;
         }
     }
 
@@ -205,8 +251,9 @@ public class PlayerManager : MonoBehaviour {
             if (gpgs != null)
             {
                 GPGSManager.instance.iResultScore = score;
+                GPGSManager.instance.iMaxScore = UserConnect.maxScore;
                 UserConnect.CoinAmount += (int)coin;
-                GPGSManager.instance.fResultCoin = coin;
+                GPGSManager.instance.iResultCoin = (int)coin;
                 UserConnect.KeyAmount += key;
                 GPGSManager.instance.iResultkey = key;
                 GPGSManager.instance.bGameEnd = true;
@@ -276,7 +323,7 @@ public class PlayerManager : MonoBehaviour {
     {
         while (true)
         {
-            yield return new WaitUntil(() => jumpButClick == true);
+            yield return new WaitUntil(() => jumpButClick);
             //Debug.Log("jumpButClick: " + jumpButClick);
             CharacterAnimation.instance.CatJumpIdleAniControll(0.5f);
             //StartCoroutine("AniCor");
@@ -310,7 +357,7 @@ public class PlayerManager : MonoBehaviour {
     {
         while (true)
         {
-            yield return new WaitUntil(() => attackOn == true);
+            yield return new WaitUntil(() => attackOn);
             if (jumpOn)
             {
                 CharacterAnimation.instance.CatJumpIdleAniControll(20f);
@@ -349,10 +396,10 @@ public class PlayerManager : MonoBehaviour {
             yield return new WaitUntil(() => Input.touchCount > 0);
             for (int i = 0; i < Input.touchCount; i++)
             {
-                if (EventSystem.current.IsPointerOverGameObject(i) == false)
+                if (EventSystem.current.IsPointerOverGameObject(i).Equals(false))
                 {
                     tempTouchs = Input.GetTouch(i);
-                    if (tempTouchs.phase == TouchPhase.Began)
+                    if (tempTouchs.phase.Equals(TouchPhase.Began))
                     {    //해당 터치가 시작됐다면.
                         GlobalSFX.instance.PlayWeaponSwingSound();
                         SwordEffect.SetActive(true);
@@ -369,7 +416,7 @@ public class PlayerManager : MonoBehaviour {
                         attackOn = true;
                         break;   //한 프레임(update)에는 하나만.
                     }
-                    else if (tempTouchs.phase == TouchPhase.Ended)  // 터치가 끝났다면.
+                    else if (tempTouchs.phase.Equals(TouchPhase.Ended))  // 터치가 끝났다면.
                     {
                         attackOn = false;
                         SwordEffect.SetActive(false);
@@ -384,7 +431,7 @@ public class PlayerManager : MonoBehaviour {
     {
         while (true)
         {
-            yield return new WaitUntil(() => ground_collsion == true);
+            yield return new WaitUntil(() => ground_collsion);
             jumpOn = false;
             CharacterAnimation.instance.CatJumpIdleAniControll(-0.1f);
         }
@@ -405,7 +452,7 @@ public class PlayerManager : MonoBehaviour {
         while (true)
         {
             //isDestroy = false;
-            yield return new WaitUntil(() => attackOn == true);
+            yield return new WaitUntil(() => attackOn);
             if (!(col_player.isTrigger))
             {
                 //Debug.Log("attack ray");
@@ -519,7 +566,7 @@ public class PlayerManager : MonoBehaviour {
                 if (blockRg == null)
                     blockRg = GameObject.Find("BlockGroup(Clone)").GetComponent<Rigidbody2D>();
                 blockRg.AddForce(new Vector2(0, shieldForcetoBlock -1000f));
-                blockRg.gravityScale = 0.5f;
+                blockRg.gravityScale = 0.4f;
                 GlobalSFX.instance.PlayShieldSound();
             }
             else if(destroy_block.CompareTag("FeverBlock1")
@@ -532,7 +579,7 @@ public class PlayerManager : MonoBehaviour {
                 if (blockRg == null)
                     blockRg = GameObject.Find("BlockGroupFever(Clone)").GetComponent<Rigidbody2D>();
                 blockRg.AddForce(new Vector2(0, shieldForcetoBlock - 1000f));
-                blockRg.gravityScale = 0.5f;
+                blockRg.gravityScale = 0.4f;
                 GlobalSFX.instance.PlayShieldSound();
             }
 

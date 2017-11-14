@@ -11,6 +11,7 @@ public class ResultManager : MonoBehaviour
     public GameObject scoreText;
     public GameObject coinText;
     public GameObject keyText;
+    public GameObject maxScoreText;
 
     public int score = 0;
     public float coin = 0;
@@ -31,6 +32,7 @@ public class ResultManager : MonoBehaviour
             Destroy(gameObject);
         }
         scoreText = GameObject.Find("Score");
+        Debug.Log("maxScore : " + UserConnect.maxScore);
 
         BlockGenerator.instance.game_start = false;
     }
@@ -41,14 +43,19 @@ public class ResultManager : MonoBehaviour
        // scoreText = GameObject.Find("Score");       
     }
 
-    public void ResultCoin(float fCoin)
+    public void MaxScore(int iMax)
     {
-        coinText.GetComponent<Text>().text = fCoin.ToString();
+        maxScoreText.GetComponent<Text>().text = iMax.ToString();
     }
 
-    public void ResultKey(float fKey)
+    public void ResultCoin(int iCoin)
     {
-        keyText.GetComponent<Text>().text = fKey.ToString();
+        coinText.GetComponent<Text>().text = iCoin.ToString();
+    }
+
+    public void ResultKey(int iKey)
+    {
+        keyText.GetComponent<Text>().text = iKey.ToString();
     }
 
     public void MainScene()

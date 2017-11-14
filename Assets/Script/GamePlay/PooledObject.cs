@@ -29,7 +29,7 @@ public class PooledObject
 
     public GameObject PopFromPool(Transform parent = null)
     {
-        if (poolList.Count == 0)
+        if (poolList.Count.Equals(0))
             poolList.Add(CreateItem(parent));
 
         GameObject item = poolList[0];

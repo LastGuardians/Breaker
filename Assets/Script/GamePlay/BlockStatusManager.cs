@@ -36,14 +36,14 @@ public class BlockStatusManager : MonoBehaviour
 
         for (int i = 0; i < 10; ++i) 
         {
-            BlockStatNormal[i].hp = 5 + 17 * ((i + 1) - 1);
+            BlockStatNormal[i].hp = 5 + 20 * ((i + 1) - 1);
             BlockStatNormal[i].score = 20 * (i + 1);
             BlockStatNormal[i].coin = 5 * (i+1);
             BlockStatNormal[i].grade = i + 1;
             BlockStatNormal[i].blockType = 0;
             BlockStatNormal[i].key = 0;
 
-            BlockStatUpgrade[i].hp = (5 + 17 * ((i + 1) - 1)) * 1.5f;  // 1.5배
+            BlockStatUpgrade[i].hp = (5 + 20 * ((i + 1) - 1)) * 1.5f;  // 1.5배
             BlockStatUpgrade[i].score = 20 * (i + 1);
             BlockStatUpgrade[i].coin = (5 * (i + 1)) * 1.5f; // 1.5배
             BlockStatUpgrade[i].grade = i + 1;
@@ -77,28 +77,28 @@ public class BlockStatusManager : MonoBehaviour
 
     public void SetObject(int num)
     {
-        if(num == 1)    // 밧줄
+        if(num.Equals(1))    // 밧줄
         {
             hp = 10000;
             score = 100;
             coin = 0;
             key = 0;
         }
-        else if (num == 2)  // 수갑
+        else if (num.Equals(2))  // 수갑
         {
             hp = 10000;
             score = 100;
             coin = 0;
             key = 0;
         }
-        else if (num == 3)  // 폭탄
+        else if (num.Equals(3))  // 폭탄
         {
             hp = 10000;
             score = 0;
             coin = 0;
             key = 0;
         }
-        else if (num == 4)  // 포션
+        else if (num.Equals(4))  // 포션
         {
             hp = 50;
             score = 0;
@@ -114,31 +114,31 @@ public class BlockStatusManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
-            if (PlayerManager.instance.score < 340)
+            if (PlayerManager.instance.score < 300)
             {
                 //Debug.Log("playerScore : " + playerScore);
                 stage = 1;
             }
-            else if (PlayerManager.instance.score < 1020)
+            else if (PlayerManager.instance.score < 900)
             {
                 //Debug.Log("stage : " + stage);
                 stage = 2;
             }
-            else if (PlayerManager.instance.score < 2040)
+            else if (PlayerManager.instance.score < 1800)
                 stage = 3;
-            else if (PlayerManager.instance.score < 3400)
+            else if (PlayerManager.instance.score < 3000)
                 stage = 4;
-            else if (PlayerManager.instance.score < 5100)
+            else if (PlayerManager.instance.score < 4500)
                 stage = 5;
-            else if (PlayerManager.instance.score < 7140)
+            else if (PlayerManager.instance.score < 6300)
                 stage = 6;
-            else if (PlayerManager.instance.score < 9520)
+            else if (PlayerManager.instance.score < 8400)
                 stage = 7;
-            else if (PlayerManager.instance.score < 12240)
+            else if (PlayerManager.instance.score < 10800)
                 stage = 8;
-            else if (PlayerManager.instance.score < 15300)
+            else if (PlayerManager.instance.score < 13500)
                 stage = 9;
-            else if (PlayerManager.instance.score < 18700)
+            else if (PlayerManager.instance.score < 16500)
                 stage = 10;
         }
     }

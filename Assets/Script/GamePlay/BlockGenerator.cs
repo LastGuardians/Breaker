@@ -109,7 +109,7 @@ public class BlockGenerator : MonoBehaviour
 
         for (int i = 0; i < 5; ++i)
         {
-            if (i == range)      // 랜덤한 한 블럭을 강화블럭으로 셋팅
+            if (i.Equals(range))      // 랜덤한 한 블럭을 강화블럭으로 셋팅
             {
                 blockArr[range].GetComponent<SpriteRenderer>().sprite = jail_upgrade[range];
                 blockArr[range].GetComponent<BlockStatusManager>().SetBlockUpgrade(1);
@@ -163,7 +163,7 @@ public class BlockGenerator : MonoBehaviour
                     continue;
                 }
                 
-                if (blockArr[i].tag != "bomb")
+                if (!blockArr[i].CompareTag("bomb"))
                 {
                     if ((blockArr[i].transform.position.y < 1.2 &&
                          blockArr[i].transform.position.y >= -0.4))
@@ -214,7 +214,7 @@ public class BlockGenerator : MonoBehaviour
         blockParents = Instantiate(Resources.Load("Prefabs/BlockGroupFever"),
                 new Vector2(transform.position.x, (transform.position.y + 15)), transform.rotation) as GameObject;
 
-        if (null == block_gravity)
+        if (block_gravity == null)
             block_gravity = blockParents.GetComponent<Rigidbody2D>();
 
         block_gravity.gravityScale *= 1.8f;
@@ -263,7 +263,7 @@ public class BlockGenerator : MonoBehaviour
                 blockParents = Instantiate(Resources.Load("Prefabs/BlockGroup"),
                      new Vector2(transform.position.x, (transform.position.y + 15)), transform.rotation) as GameObject;
 
-                if (null == block_gravity)
+                if (block_gravity == null)
                     block_gravity = blockParents.GetComponent<Rigidbody2D>();
 
                 grade_range = r.Next(70, 99);
@@ -275,7 +275,7 @@ public class BlockGenerator : MonoBehaviour
                 blockParents = Instantiate(Resources.Load("Prefabs/BlockGroup"),
                       new Vector2(transform.position.x, (transform.position.y + 15)), transform.rotation) as GameObject;
 
-                if (null == block_gravity)
+                if (block_gravity == null)
                     block_gravity = blockParents.GetComponent<Rigidbody2D>();
 
                 grade_range = r.Next(0, 101);
@@ -300,31 +300,31 @@ public class BlockGenerator : MonoBehaviour
                     if (range.Equals(0))
                     {
                         blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_normal[i];
-                        if (i == upgrade_range)
+                        if (i.Equals(upgrade_range))
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = jail_upgrade[i];
                     }
                     else if (range.Equals(1))
                     {
                         blockArr[i].GetComponent<SpriteRenderer>().sprite = door_normal[i];
-                        if (i == upgrade_range)
+                        if (i.Equals(upgrade_range))
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = door_upgrade[i];
                     }
                     else if (range.Equals(2))
                     {
                         blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_normal[i];
-                        if (i == upgrade_range)
+                        if (i.Equals(upgrade_range))
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = prison_upgrade[i];
                     }
                     else if (range.Equals(3))
                     {
                         blockArr[i].GetComponent<SpriteRenderer>().sprite = watch_normal[i];
-                        if (i == upgrade_range)
+                        if (i.Equals(upgrade_range))
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = watch_upgrade[i];
                     }
                     else if (range.Equals(4))
                     {
                         blockArr[i].GetComponent<SpriteRenderer>().sprite = wall_normal[i];
-                        if (i == upgrade_range)
+                        if (i.Equals(upgrade_range))
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = wall_upgrade[i];
                     }
                 }
@@ -345,7 +345,7 @@ public class BlockGenerator : MonoBehaviour
                     //blockArr[0].GetComponent<Collider2D>().isTrigger = true;
                     for (int i = 0; i < 5; ++i)
                     {
-                        if (i == 0)
+                        if (i.Equals(0))
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = rope;
                         else
                         {
@@ -361,7 +361,7 @@ public class BlockGenerator : MonoBehaviour
                     //blockArr[0].GetComponent<Collider2D>().isTrigger = true;
                     for (int i = 0; i < 5; ++i)
                     {
-                        if (i == 0)
+                        if (i.Equals(0))
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = handcuffs;
                         else
                         {
@@ -378,7 +378,7 @@ public class BlockGenerator : MonoBehaviour
                     blockArr[0].GetComponent<Collider2D>().isTrigger = true;
                     for (int i = 0; i < 5; ++i)
                     {
-                        if (i == 0)
+                        if (i.Equals(0))
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = bomb;
                         else
                         {
@@ -393,7 +393,7 @@ public class BlockGenerator : MonoBehaviour
                     blockArr[0].tag = "portion";
                     for (int i = 0; i < 5; ++i)
                     {
-                        if (i == 0)
+                        if (i.Equals(0))
                             blockArr[i].GetComponent<SpriteRenderer>().sprite = portion;
                         else
                         {
@@ -419,13 +419,13 @@ public class BlockGenerator : MonoBehaviour
 
             if (!feverStart && !warningStart)
             {
-                if (blockManager.GetComponent<BlockStatusManager>().stage == 1)  // 1단계
+                if (blockManager.GetComponent<BlockStatusManager>().stage.Equals(1))  // 1단계
                 {
                     SetBlock(1);
                     StartCoroutine(BlockHPCheck());
                 }
 
-                else if (blockManager.GetComponent<BlockStatusManager>().stage == 2)     // 2단계
+                else if (blockManager.GetComponent<BlockStatusManager>().stage.Equals(2))     // 2단계
                 {
                     for (int i = 0; i < 5; ++i)
                     {
@@ -441,7 +441,7 @@ public class BlockGenerator : MonoBehaviour
                     StartCoroutine(BlockHPCheck());
                 }
 
-                else if (blockManager.GetComponent<BlockStatusManager>().stage == 3)     // 3단계
+                else if (blockManager.GetComponent<BlockStatusManager>().stage.Equals(3))     // 3단계
                 {
                     for (int i = 0; i < 5; ++i)
                     {
@@ -455,7 +455,7 @@ public class BlockGenerator : MonoBehaviour
                     StartCoroutine(BlockHPCheck());
                 }
 
-                else if (blockManager.GetComponent<BlockStatusManager>().stage == 4)     // 4단계
+                else if (blockManager.GetComponent<BlockStatusManager>().stage.Equals(4))     // 4단계
                 {
                     for (int i = 0; i < 5; ++i)
                     {
@@ -471,7 +471,7 @@ public class BlockGenerator : MonoBehaviour
                     StartCoroutine(BlockHPCheck());
                 }
 
-                else if (blockManager.GetComponent<BlockStatusManager>().stage == 5)     // 5단계
+                else if (blockManager.GetComponent<BlockStatusManager>().stage.Equals(5))     // 5단계
                 {
                     for (int i = 0; i < 5; ++i)
                     {
@@ -489,7 +489,7 @@ public class BlockGenerator : MonoBehaviour
                     StartCoroutine(BlockHPCheck());
                 }
 
-                else if (blockManager.GetComponent<BlockStatusManager>().stage == 6)     // 6단계
+                else if (blockManager.GetComponent<BlockStatusManager>().stage.Equals(6))     // 6단계
                 {
                     for (int i = 0; i < 5; ++i)
                     {
@@ -509,7 +509,7 @@ public class BlockGenerator : MonoBehaviour
                     StartCoroutine(BlockHPCheck());
                 }
 
-                else if (blockManager.GetComponent<BlockStatusManager>().stage == 7)     // 7단계
+                else if (blockManager.GetComponent<BlockStatusManager>().stage.Equals(7))     // 7단계
                 {
                     for (int i = 0; i < 5; ++i)
                     {
@@ -531,7 +531,7 @@ public class BlockGenerator : MonoBehaviour
                     StartCoroutine(BlockHPCheck());
                 }
 
-                else if (blockManager.GetComponent<BlockStatusManager>().stage == 8)     // 8단계
+                else if (blockManager.GetComponent<BlockStatusManager>().stage.Equals(8))     // 8단계
                 {
                     for (int i = 0; i < 5; ++i)
                     {
@@ -555,7 +555,7 @@ public class BlockGenerator : MonoBehaviour
                     StartCoroutine(BlockHPCheck());
                 }
 
-                else if (blockManager.GetComponent<BlockStatusManager>().stage == 9)     // 9단계
+                else if (blockManager.GetComponent<BlockStatusManager>().stage.Equals(9))     // 9단계
                 {
                     for (int i = 0; i < 5; ++i)
                     {
@@ -581,7 +581,7 @@ public class BlockGenerator : MonoBehaviour
                     StartCoroutine(BlockHPCheck());
                 }
 
-                else if (blockManager.GetComponent<BlockStatusManager>().stage == 10)     // 10단계
+                else if (blockManager.GetComponent<BlockStatusManager>().stage.Equals(10))     // 10단계
                 {
                     for (int i = 0; i < 5; ++i)
                     {
@@ -624,7 +624,7 @@ public class BlockGenerator : MonoBehaviour
     {
         for (int i = 0; i < 5; ++i)
         {
-            if (i == upgrade_range)
+            if (i.Equals(upgrade_range))
             {
                 blockArr[i].GetComponent<BlockStatusManager>().SetBlockUpgrade(num);
             }
@@ -649,7 +649,7 @@ public class BlockGenerator : MonoBehaviour
     {
         for (int i = 0; i < 5; ++i)
         {
-            if (i == 0) 
+            if (i.Equals(0)) 
                 blockArr[i].GetComponent<BlockStatusManager>().SetObject(num);
             else
                 blockArr[i] = null;

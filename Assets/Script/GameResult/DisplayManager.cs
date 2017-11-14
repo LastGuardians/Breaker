@@ -28,23 +28,23 @@ public class DisplayManager : MonoBehaviour {
 	
     public void ButtonStatus()
     {
-        if(range == 0)
+        if(range.Equals(0))
         {
             GameObject.Find("ResultManager").GetComponent<RankingManager>().ShowLeaderboardUI();
         }
-        else if(range == 1)
+        else if(range.Equals(1))
         {
             GameObject.Find("AdManager").GetComponent<UnityAdsHelper>().ShowRewardedAd();
         }
-        else if (range == 2)
+        else if (range.Equals(2))
         {
 
         }
-        else if (range == 3)
+        else if (range.Equals(3))
         {
 
         }
-        else if (range == 4)
+        else if (range.Equals(4))
         {
 
         }

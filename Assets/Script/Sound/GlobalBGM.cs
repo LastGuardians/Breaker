@@ -48,6 +48,7 @@ public class GlobalBGM : MonoBehaviour
         DontDestroyOnLoad(this);
         StartCoroutine(SetBGM1());
         StartCoroutine(SetBGM2());
+        StartCoroutine(SetBGM3());
     }
 
     public IEnumerator SetBGM1()
@@ -57,7 +58,7 @@ public class GlobalBGM : MonoBehaviour
             yield return new WaitUntil(() => (SceneManager.GetActiveScene().name.Equals("Main") ||
             SceneManager.GetActiveScene().name.Equals("Weapon") || SceneManager.GetActiveScene().name.Equals("Character") ||
             SceneManager.GetActiveScene().name.Equals("SpecificCharacter") || SceneManager.GetActiveScene().name.Equals("Credit") ||
-            SceneManager.GetActiveScene().name.Equals("Tutorial")));
+            SceneManager.GetActiveScene().name.Equals("Tutorial") || SceneManager.GetActiveScene().name.Equals("Loading")));
             if (bgmOnButton)
             {
                 if (!mainBGM.isPlaying)
@@ -94,6 +95,18 @@ public class GlobalBGM : MonoBehaviour
                 if (mainBGM.isPlaying)
                     mainBGM.Stop();
             }
+        }
+    }
+
+    public IEnumerator SetBGM3()
+    {
+        while (true)
+        {
+            yield return new WaitUntil(() => SceneManager.GetActiveScene().name.Equals("Result"));
+            if (playBGM.isPlaying)
+                playBGM.Stop();
+
+            GlobalSFX.instance.PlayWarningSound(false);
         }
     }
 

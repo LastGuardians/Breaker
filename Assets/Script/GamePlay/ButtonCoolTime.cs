@@ -9,13 +9,13 @@ public class ButtonCoolTime : MonoBehaviour
 {
     public Image shieldFilter;      // 방어버튼 쿨타임 이미지
 
-    public float coolTime = 1.0f;   // 방어 쿨타임
+    public float coolTime = 1.5f;   // 방어 쿨타임
 
     private float currentCoolTime; //남은 쿨타임을 추적 할 변수
 
     public bool canUseShield = true; // 방어를 사용할 수 있는지 확인하는 변수
 
-    GameObject shieldCollider;
+    public GameObject shieldCollider;
     public static ButtonCoolTime instance = null;
 
     void Start()
@@ -54,7 +54,8 @@ public class ButtonCoolTime : MonoBehaviour
         }
 
         canUseShield = true; //방어 쿨타임이 끝나면 방어를 사용할 수 있는 상태로 바꿈
-        GameObject.Find("shield_collider").SetActive(false);
+        //GameObject.Find("shield_collider").SetActive(false);
+        //shieldCollider.SetActive(false);
 
         yield break;
     }

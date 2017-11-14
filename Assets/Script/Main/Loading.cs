@@ -9,6 +9,11 @@ public class Loading : MonoBehaviour
     public Slider slider;
     private bool IsLoadGame = false;
     private float timer = 0.0f;
+    public Text tips;
+    string[] tipStr = new string[6];
+
+    int range = 0;
+    System.Random r = new System.Random();
 
     private AsyncOperation async;
 
@@ -17,6 +22,16 @@ public class Loading : MonoBehaviour
     {
         //가비지 콜렉터 실행
         Resources.UnloadUnusedAssets();
+        range = r.Next(0, 6);
+
+        tipStr[0] = "Check 'Tutorial' on the Setting panel";
+        tipStr[1] = "Contact with bombs will cost you 2 lives";
+        tipStr[2] = "You can break more buildings during fever times";
+        tipStr[3] = "Whenever alert alarm rings, watch out for falling obstacles.";
+        tipStr[4] = "You can share ranking with others by pressing ranking button";
+        tipStr[5] = "You can get 10 keys after watching advertisement by pressing AD button";
+
+        tips.GetComponent<Text>().text = tipStr[range];      
 
         StartCoroutine(StartLoad("GamePlay"));
     }
