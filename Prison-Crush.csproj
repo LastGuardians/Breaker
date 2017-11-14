@@ -288,6 +288,7 @@
     <Compile Include="Assets\Script\GamePlay\CameraController.cs" />
     <Compile Include="Assets\Script\GamePlay\CharacterAnimation.cs" />
     <Compile Include="Assets\Script\GamePlay\ComboManager.cs" />
+    <Compile Include="Assets\Script\GamePlay\CriticalProb.cs" />
     <Compile Include="Assets\Script\GamePlay\EffectAnimation.cs" />
     <Compile Include="Assets\Script\GamePlay\EffectLifeTime.cs" />
     <Compile Include="Assets\Script\GamePlay\FeverTime.cs" />
@@ -307,6 +308,7 @@
     <Compile Include="Assets\Script\Main\GameManager.cs" />
     <Compile Include="Assets\Script\Main\Loading.cs" />
     <Compile Include="Assets\Script\Main\SceneState.cs" />
+    <Compile Include="Assets\Script\Main\Tutorial.cs" />
     <Compile Include="Assets\Script\Network.cs" />
     <Compile Include="Assets\Script\Network\NetWorkManager.cs" />
     <Compile Include="Assets\Script\Network\Rank.cs" />
@@ -315,6 +317,7 @@
     <Compile Include="Assets\Script\Network\UserWeapon.cs" />
     <Compile Include="Assets\Script\Sound\GlobalBGM.cs" />
     <Compile Include="Assets\Script\Sound\GlobalSFX.cs" />
+    <Compile Include="Assets\Script\UI\AutoFade.cs" />
     <Compile Include="Assets\Script\UI\Fade.cs" />
     <Compile Include="Assets\Script\UI\GameUI.cs" />
     <Compile Include="Assets\Script\UnityAds\UnityAdsHelper.cs" />
