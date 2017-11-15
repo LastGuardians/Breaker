@@ -59,6 +59,7 @@ public class GlobalBGM : MonoBehaviour
             SceneManager.GetActiveScene().name.Equals("Weapon") || SceneManager.GetActiveScene().name.Equals("Character") ||
             SceneManager.GetActiveScene().name.Equals("SpecificCharacter") || SceneManager.GetActiveScene().name.Equals("Credit") ||
             SceneManager.GetActiveScene().name.Equals("Tutorial") || SceneManager.GetActiveScene().name.Equals("Loading")));
+            feverBGM.Stop();
             if (bgmOnButton)
             {
                 if (!mainBGM.isPlaying)
@@ -67,8 +68,12 @@ public class GlobalBGM : MonoBehaviour
                 if (playBGM.isPlaying)
                     playBGM.Stop();
 
+                feverBGM.Stop();
                 if (feverBGM.isPlaying)
+                {
+                    //Debug.Log("feverBGM");
                     feverBGM.Stop();
+                }
             }
         }
     }

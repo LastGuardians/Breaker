@@ -33,6 +33,9 @@ public class GPGSManager : MonoBehaviour {
     public int iResultkey = 0;
     public bool bGameEnd = false;
 
+    System.Random r = new System.Random();
+    int idRange = 0;
+
     public static string mainId;
 
     // Use this for initialization
@@ -93,6 +96,22 @@ public class GPGSManager : MonoBehaviour {
             StartCoroutine(UserConnect.instance._SetUser(mainId, (int)UserConnect.CoinAmount, UserConnect.KeyAmount,
                 UserConnect.CurrentWeaponIndex.ToString(), UserConnect.CurrentCharacterIndex.ToString()));
 
+        }
+    }
+
+    IEnumerator TestUserLogin()
+    {
+        int time = 0;
+        while(true)
+        {
+            yield return new WaitForSeconds(1f);
+            time += 1;
+
+            if(time >= 3)
+            {
+                SceneManager.LoadScene("Main");
+                yield break;
+            }
         }
     }
 
@@ -157,12 +176,17 @@ public class GPGSManager : MonoBehaviour {
             {
                 // 로그인 실패 처리
                 Debug.Log("Login Fail...");
-				mainId = "TestUser";
-				GameObject NetworkManagerPrefab = Resources.Load("Prefabs/NetworkManager") as GameObject;
+                idRange = r.Next(0, 100000);
+                mainId = idRange.ToString();
+                //Debug.Log("mainId: " + mainId);
+                GameObject NetworkManagerPrefab = Resources.Load("Prefabs/NetworkManager") as GameObject;
 				GameObject NetworkManager = MonoBehaviour.Instantiate(NetworkManagerPrefab) as GameObject;
-			}
+                StartCoroutine(TestUserLogin());
+            }
         });
 	}
+
+
 
     public void LogOut()
     {
